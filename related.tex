@@ -1,0 +1,82 @@
+\chapter{Related Work}
+\label{c:intro}
+
+\section{Component Based Middleware}
+
+Distributed Systems such as Wireless Sensor Netweorks (WSNs) composed of
+multiple resource constrained devices equipped with low-power radios, low-cost
+sensors collaborating to perform tasks for applications in multiple discipline
+such as habitat monitoring. However, typically WSN applications are huge in
+scale, subject to unreliable network, high risk of node failures, and expected
+to run unattended for a long period of time, several work on lightweight component
+models have been proposed\cite{Costa2007}\cite{Gay2003}\cite{Coulson2008}.
+
+% About LooCI and REMORA
+\subsection{Lightweight Component Models}
+
+Work such as LooCI by Hughes et. al.\cite{Hughes2012} and Remora by Taherkordi
+et. al.\cite{Taherkordi2010a} have demonstrated the feasibility of
+reconfigurable infrastructure with event-driven programming model, event
+management system, dynamic-binding to reduce development overhead, simplify
+abstractions, and easier, dynamic reconfiguration for distributed applications.
+
+\section{Fault Tolerance in Distributed Systems}
+
+Many systems has been proposed to provide fault tolerance in distributed
+systems, as the possibilities partial failures is a fundamental characterisics
+of distributed systems.
+However, distributed systems such as Wireless Sensor Networks typically
+involves a large number of resource-constrained devices equipped with various
+hardware components such as microprocessors, sensors, memory, wireless
+communication. An application rely on the collaboration among the sensor nodes in
+the network to perform tasks.
+
+% No single point of failure
+
+In order to prevent a single point of failure in applications that would bring
+application to a halt in the event of failure, 
+one of the primary goals for most of the work for fault tolerance is to
+eliminiate single
+point of failure in an application, so replications, redundancies are
+recognized to be a good model for tackling the problems mentioned earlier in
+distributed systems.
+% replication and redundancy
+Replication and redundancy are both techniques that allow the system to
+duplicate multiple copies of a specific system component such that in the
+event of failure of one of the components, one of the other duplicated
+components can take over to perform the same services or functionality that the
+previous one provides.
+
+\subsection{Group Communication System}
+
+Some work emphasizes on providing a set of group communication protocols to
+ensure the information among a single replication or redundancy group could be
+synchronized\cite{Sussman2000}. By modeling replications and redundancies into
+a single system component unit in fault tolerant distributed applications, 
+Sussman et. al. work on Virtual Synchrony could allow an efficient, distributed
+way to manage replications autonomously.
+
+\subsection{Multi-Agent System Resource Allocation}
+
+Luna et. al.\cite{Luna2008} proposed a new approach to building reliable
+Multi-Agent Systems involves assigning agents to machines to manage resources,
+and by measuring the criticality of the components in real time to replicate
+only for critical agents under system resource constraints for fault tolerance.
+
+\subsection{Service-Oriented Architecture}
+
+Neumann et. al.\cite{Neumann2010} proposed a new redundancy infrastructure to
+bring Service-oriented Architecture (SOA) to Wireless Sensor Networks (WSN).
+
+SOA is an established approach to ease development of complex distributed
+applications by encapsulating system compoennts into services, this allows a more
+flexible way to construct and develop interactions in application.
+
+% what they lack for solving the problems I face
+However, these approaches don't work well with applications where
+reconfigurability, interoperability, and heterogeneity are requirements.
+Existing approaches do not consider reconfigurability in the
+application level that might invalidate existing infrastructure built upon one
+instance of applications in another new instance when redeployed.
+Most existing approaches also are not efficient in providing reducing the
+development overhead to simplify fault tolerance in existing applications.

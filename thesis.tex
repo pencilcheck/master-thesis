@@ -1,0 +1,82 @@
+\documentclass[a4paper, 12pt]{extbook}
+
+\usepackage{times}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% uncomment this if you want to indent the first paragraph
+%\usepackage{indentfirst}
+
+% uncomment this if you want to make pdf file with hyperlink
+% \usepackage[dvipdf,colorlinks=false,unicode]{hyperref}
+
+% uncomment the following and correct them if you want to set 
+% set the pdf properties
+%\hypersetup{
+    %pdfauthor={Penn H. Su},
+    %pdftitle={Intelligent fault tolerance configuration framework},
+    %pdfsubject={Master Thesis}
+%}
+
+\usepackage{ntu}
+
+\setcounter{tocdepth}{2}
+
+\pagestyle{plain}
+
+\begin{document}
+\doublespacing
+
+% cover page
+\maketitle
+
+% side page, used for printing on spline.
+\makeside
+
+\frontmatter
+
+\begin{CJK}{UTF8}{nkai}
+\CJKhorz
+\makecertification
+
+% comment one of the following unless you are sure you want to 
+% have both english and chinese acknowledgements in your thesis
+\input{acknowledgementsEN}
+\input{acknowledgementsCH}
+
+\input{abstractCH}
+\input{abstractEN}
+\tableofcontents
+\end{CJK}
+\listoffigures
+\listoftables
+
+\mainmatter
+
+% input your thesis here
+\input{introduction}
+\input{background}
+\input{related}
+\input{fur}
+\input{experiments}
+\input{conclusion}
+\input{future}
+
+\backmatter
+
+\addcontentsline{toc}{chapter}{\bibname}
+\bibliographystyle{abbrv}
+
+% input your reference here
+%\bibliography{thesis}
+\bibliography{/Users/penn/Documents/Bibtex/Thesis.bib}
+
+\appendix
+
+\end{document}
