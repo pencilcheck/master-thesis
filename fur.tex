@@ -2,10 +2,12 @@
 \label{c:fur}
 
 This chapter describes how subsystems in Fur collaborate to provide fault tolerance
-for applications. Then we will move 
-on to describing how WuKong Master takes this FBP and policy to convert into 
-low-level intermediate representation ready to be deployed. Lastly, we 
-describe how the sensor network detect, recognize, and recover from failures.
+for applications. First we will describe how users could specify fault
+tolerance policy for the application, and then how WuKong Master take
+the policy, application and discovery results and compile into low-level
+intermediate representation that could be deployed to the network. Lastly, we 
+describe how the sensor network detect, recognize, and recover from failures
+autonomously based on the result of the mapping.
 
 \section{WuKong Applications}
 
@@ -19,106 +21,333 @@ right side are the outputs of an component. Thus one can infer that
 a connection cannot connect to both inputs or outputs of any pair of components
 as both of them have the same data flow.
 
+\section{Fault Tolerance Policy}
+
+In this work, fault tolerance policy can only be specified on the level of
+components, so there is a separate policy for every component. For every
+compoennt, users can specify two rules to guide and influence how fault
+tolerance works at the hardware level.
+
+\begin{enumerate}
+\item[Minimum Redundancy Level] The minimum number of devices that will be
+supported as a backup for a particular component. Therefore when one of the
+devices fail, others will take over.
+\item[Maximum Reaction Time] The maximum latency a failure will take to detect
+within the heartbeat group it is detected.
+\end{enumerate}
+
+The policy for every component will be taken by the WuKong Master, along with
+the FBP application and discovery results, to produce the final mapped results
+that could be compiled into low level bytecode that would be executed on the
+network.
+
 \section{Redundancy}
 
-A typical fault tolerant distributed system is based on the concept of
-redundancy and distributed systems usually have advantages to have spare
-resources.
+The primary design for fault tolerant distributed system is based on the
+concept of redundancy and distributed systems usually have advantages to have
+spare resources. Not only it is good to combat partial failures, it also
+provide durability to the system for an extended period of time.
 
-Spare resources addresses the first fundanmental characteristics of fault
-tolerance that there is no single point of failure.
+Spare resources address the first fundanmental characteristics of fault
+tolerance that there is no single point of failure within the system.
 
-Redundancy in WuKong would be to duplicate the nodes that host critical
-components with the intention to switch to one of the remaining
-instances in case of a failure.
+One of the challeneges in producing a fault tolerant design in a heterogeneous
+network modeled by the WuKong's sensor profile framework is that devices are
+partially homogeneous, meaning that the hardware setup is different from node
+to node, so it is not straightforward to simply assign a device as a complete
+backup of another device.
 
-However, heterogeneous sensor network imposes a challenge to design a fault
-tolerant system when compatible spare resources will have to be considered rather
-than narrowing for identical spare resources for redundancy.
+The solution introduces two new system abstractions that could address the
+challenge: Recovery chains and heartbeat groups.
 
-\section{Groups}
-% Q: Why groups? What's the benefits for this abstraction in WuKong with profile
-% framework? And how does it fit in?
+\section{Mapping for a fault tolerant system}
 
-I propose to use group abstraction to implement redundancy in WuKong
-application.
+The figure~\ref{} above illustrates the essential parts in the mapping process
+for a fault tolerant system.
 
-Any component in the application can thought of a collection of nodes that might be
-hosting this component. When the mapper in WuKong tries to find a mapping for
-a component, instead of looking for just one node, it will try to find a number
-of spare nodes to be part of the redundancy.
+Mapping is a process of converting a high level abstractions from FBP with
+components to low level bytecode representation that will be deployed to the
+network.
 
-When a component needs to increase reliability, a group size is
-specified for that component in the FBP as shown in~\ref{group_size}.
+Heartbeat is an important mechanism to detect failure. Our work assume
+a fail-stop model where sensor nodes fail by not sending messages for a period
+of time. Mapper will have to determine the heartbeat arrangement, dependencies
+to ensure every sensor node is monitored and will not fail without notice.
 
-Every component can set a number greater than one to indicate the intended size
-of the group of nodes which will be mapped to host this component. The
-component will be called a \textit{component group}. The size of the group is
-an positive integer that cannot be less than 1.
+\subsection{Heartbeat Group}
 
-\subsection{Mapping for component groups}
+Heartbeat arrangement usually depends on the applications and sensor
+arrangement~\ref{}, thus most related work aim for a specific type of
+application and sensor arrangement to simplify heartbeat arrangement, however
+since application type and sensor arrangement in WuKong are not known until
+deployment, therefore a new way to arrange heartbeat has to be devised.
 
-As illustrated in~\ref{mapping}, a mapping consists of a set of application
-components as shown as circles on the top of the figure, and a set of nodes
-with a list of capability that certain application components could map to.
+In WuKong, application are drawn on a canvas which consists of blocks that
+gives the type of sensors or resources needed and lines which connects the
+resources together in such a way that would satisfy the requirements. However,
+arranage heartbeat based on the flow of the components is not desirable since
+applications are not the immediate representation of the underlying network
+topology such that some components could be mapped on the same node, and some
+connected components could be mapped to nodes that are far away from each other
+that require multiple hops to reach. Arrangement based on such high
+abstractions would incur extra communication overhead by making a lot of nodes
+as a relay for heartbeats.
 
-An application component can only map to compatible nodes. Compatible nodes are
-nodes with features that match the desire features from the component
-profile. For example, a temperature sensor component requires temperature
-sensor feature. A node with a temperature sensor installed will have this
-feature and it will be a compatible node for this component.
+The proposed solution will produce application agnostic arrangement and at
+the same time be used in producing the arrangement of the compoennts in the
+network to reduce the communication overhead as much as possible.
 
-A software application component can be mapped to any node that is capable of
-computation, but a hardware application component can only map to the nodes
-that has the features corresponded to the component profile.
-
-A valid mapping is a mapping would have all components mapped to at least one
-compatible node or to the number of compatible nodes specified in group size,
-that's the desire output for the mapper.
-
-\subsubsection{Final algorithm}
-
-For the mapper to find a valid mapping, we have to modify the algorithm to
-consider multiple compatible nodes in questions at the same time. The~\ref{mapper} shown is used.
+Assuming that links are symmetrical and toplogy is stable after making the
+arrangement, we proposes the algorithm below to produce heartbeat arrangement
+for applications.
 
 \begin{algorithm}
-\caption{Generate Mapping with groups}
-\label{mapper}
+\caption{Determine Heartbeat Arrangement}
+\label{alg:heartbeat-group}
 \begin{algorithmic}
-\item test
+\Require A list $N$ of node ids of the network
+\Require A function isNeighbor that returns a boolean for whether a pair of
+  node ids are neighbor
+\Ensure A list of lists $H$ which contains the node ids of the groups
+\While{$|N| > 0$}
+  \State Pick a random $i \in N$ as anchor node
+  \State Create a new list $h$
+  \State Add $i$ to $h$
+  \State Remove $i$ from $N$
+  \For{Every $n$ in $N$}
+    \If{isNeighbor$(i, n)$}
+      \State Add $n$ to $h$
+      \State Remove $n$ from $N$
+    \EndIf
+  \EndFor
+  \State Append list $h$ to $H$
+\EndWhile
 \end{algorithmic}
 \end{algorithm}
+
+The algorithm~\ref{alg:heartbeat-group} will produces a clustering with nodes
+that are one hop distance to each other, in other words, fully connected. By
+grouping nodes within one hop distance together, we significantly reduce the
+possibility of heartbeat hopping which is a big factor in communication
+overhead.
+
+The implementation of the function isNeighbor depends on the actual hardware
+used, if it is using ZWave, then it will query ZWave for information.
+
+The worst-case time complexity of the algorithm is $O(n^2)$ given a list of
+disconnected nodes since every single one will form a group of its own,
+therefore the inner loop will be running for every node in the list, thus it is
+quadratic.
+
+The best-case time complexity is $O(n)$ when the nodes are fully
+connected, since the inner loop will be executed only once.
+% possible need some more explanation here :\
+
+The it is possible that due to some peculiar network topology that the
+algorithm would produce single node group which itself could not be of any use.
+
+If that happens, the algorithm will be rerun again. Since the anchor is picked
+randomly from the remaining node list, the algorithm will not produce the same
+result thus eliminating the problem.
+
+\subsection{Recovery chains}
+
+When a component FT policy indicates a minimum redundancy level higher than
+one, WuKong Master will map multiple eligible nodes to carry the WuObject
+coresponding to the component and become the backups in case of a failure.
+
+Since nodes could carry more than one component WuObject, and we assume
+a heterogeneous network where it consists of nodes with different combinations
+of capabilities, so for every comoponent WuObject there should be an ordered
+list of nodes like a chain of command that when one of them failed, the next
+one will be able to replace its place.
+
+When a failure is detected, the detector is not necessarily carrying or knowing
+what resources there are in the network at the given moment, and it would
+produce an enormous of overhead to query for the resources in the network, so
+with this ordered list of recovery, the information could be stored in advance
+to prevent nodes having to do all the work over and over again whenever
+a failure is detected. 
+
+After mapping, the information of recovery is distributed accordingly based on
+the heartbeat group results to ensure the integrity of recovery process such
+that the detector will be able to recover broken links and update the nodes
+that are affected.
+
+The algorithm to produce the recovery chains is shown below, and it is
+separated into several sections.
+
+\subsubsection{Gather Candidates}
+
+First it would have to sort and filter from the list of nodes discovered, which
+are eligible to provide certain resources for components specified in the
+application. Once it is sorted out, the algorithm will produce a dictionary of
+component id as keys and list of node ids as values.
+
+The algorithm requires node info of each node in the network. A node info
+constitudes information such as a list of WuClasses and a list of WuObjects
+that are used to help Master greatly in making an informed decision to gather
+a list of eligible candidates for components.
+
+\begin{algorithm}
+\caption{Gather Eligible Candidates for Components}
+\label{alg:recovery-chain}
+\begin{algorithmic}
+\Require A list $C$ of application component ids
+\Require A list $I$ of node ids of the network
+\Ensure A dictionary $D$ of component id as keys and list of node ids as values
+\Function{isCapable}{$i, c$}
+  \If{ComponentToWuClass($c$) in WuClasses($i$)}
+    \State \Return \texttt{True}
+  \Else
+    \State \Return \texttt{False}
+  \EndIf
+\EndFunction
+\For{Every $c$ in $C$}
+  \For{Every $i$ in $I$}
+    \If{isCapable($i$, $c$)}
+      \State Add $i$ to $D$ under component id $c$ as key
+    \EndIf
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+Function isCapable returns a boolean for whether the node is capable of
+carrying the component
+
+This algorithm will filter out and produce a list of eligible candidates for
+every application component.
+
+\subsubsection{Redundancy Level Enforcement}
+
+Once the candidates has been gathered for every compoennt, here it will be
+doing a check to enforce redundancy level policy to make sure all gathered
+candidates are above the minimum redundancy level. If any of the candidates is
+not satisfied, the deployment process will be terminated and the system will
+send a warning to the users to inform of this situation.
+
+\subsubsection{Sort Candidates}
+
+It would be perfectly safe to deploy at this point with the unsorted candidates
+for each component, but it will be running into a problem that could compromise
+the operation of the system by unoptimized component arrangement. If the
+components placement is unsorted, it is possible that unnecessary communication
+would saturate the system thus compromising the health of the application. On
+the other hand, if the placement is carefully analyzed, the impact of the
+overhead could be minimized to certain degrees such that the system could run
+when deployed.
+
+\begin{algorithm}
+\caption{Build histogram of the nodes appear in candidate list}
+\label{alg:build-histogram}
+\begin{algorithmic}
+\Require A dictionary $D$ of unsorted recovery chains of every component
+\Ensure A dictionary $H$ of node ids and number of occurrances
+\For{Every $c$ in $C$}
+  \For{Every $n$ in $D[c]$}
+    \If{$n$ not in $H$}
+      \State $H[n] = 1$
+    \Else
+      \State $H[n] = H[n] + 1$
+    \EndIf
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Sort Recovery chains}
+\label{alg:sort-recovery-chain}
+\begin{algorithmic}
+\Require A list $C$ of components
+\Require A dictionary $D$ of unsorted recovery chains of every component
+\Require A histogram $H$ of all nodes
+\Ensure A dictionary $D$ of sorted recovery chains of every component
+\For{Every $c$ in $C$}
+  \State Sort $D[c]$, and use $H$ as keys in decending order
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+By sorting based on the occurrances of node as candidates, the nodes with
+highest scores will be hosting a lot more components thus reducing external
+communications within the system especially for the case when WuObjects are
+linked but are placed in separate nodes.
+
+\subsection{Determine Heartbeat Group Period}
+
+Once the placement and ordering for the components in forms of recover chains
+are decided, the heartbeat interval for heartbeat groups could be deteremined.
+Since heartbeat groups could have multiple components, the group heartbeat
+period is half of the minimum maximum reaction time policy of the components.
+
+Our system assumes a fail-stop model where nodes are suspected dead when it
+does not send out messages, but to compensate possible deviation in
+communication latency, a failure is detected when the node does not send
+a heartbeat message within two normal heartbeat periods. Thus the heartbeat
+period is half of the reaction time.
+
+\begin{algorithm}
+\caption{Determine Group Heartbeat Period}
+\label{alg:determine-group-heartbeat-period}
+\begin{algorithmic}
+\Require A list of heartbeat groups $H$
+\Ensure A list of heartbeat groups with heartbeat periods
+\For{Every heartbeat group $g$ in $H$}
+  \For{Every component Component($n$ in $g$)}
+    \State Find the lowest minimum reaction time
+    \State Divided in hald and assign the period to group $g$
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+Since all nodes within the heartbeat group is compared against, so only the
+lowest time will be picked.
+
+\section{Information Distribution}
+
+After mapping and produced heartbeat groups for the network and recovery chains
+for the components, WuKong would have to generate and assignment information
+appropriated to every node to support fault tolerance.
+
+Every node will have information pertain to the list below:
+
+\begin{enumerate}
+\item Recovery chains for the mapped components
+\item List of nodes of the heartbeat group it is in
+\item The recovery chains of the node it will monitor based on
+the heartbeat arrangement
+\item The application links of the components assigned to the node it will
+monitor based on the heartbeat arrangement
+\item Heartbeat period of the group it is in
+\end{enumerate}
+
+\section{Application generation}
+
+WuKong runs a JVM on every node in the network, the VM provides services for
+the application program in Java to access lower parts of the resources.
+This section will introduce the list of newly added interfaces and resources to
+support and enable fault tolerance for the application.
+
+\begin{enumerate}
+\item component instance id to WuObject address map
+\item heartbeat groups member list
+\item heartbeat group period list
+\end{enumerate}
+
+\section{Wireless Deployment}
+
+The rest of the deployment is the same as the deployment described in the
+background work for WuKong, where after it generates the Java code, it compiles
+down to lower bytecode representation and send it to every node wirelessly. The
+nodes will be reprogrammed by taking the code and reload in their flash memory.
 
 \begin{comment}
 \section{Questions}
 
-Q: Inclusion problem, how to solve it? How severe it is?
-
-Q: How do mapper decide the relative locations between group members? How would
-the system prevent lone nodes problem, where one node could be far far away
-from the rest of the group, the cost of monitoring that node is so much that it
-loses the effectiveness of heartbeats and producing so much messages that it
-might saturated the network plus the hops between the nodes makes determining
-the status of the node far less straightforward?
-
-A: This is a legitimate concern, however we could assume that any node far far
-away from the geographical location of other group members will not be
-considered. WuKong Master mapper tries as hard as it can to find group members
-that are close to each other by using location topological tree created by the
-installers to prevent this from happening.
-
-Q: Should we use anchor nodes to reduce hops between heartbeat messages? Should
-we allow specialized nodes to monitor a subset of group memers?
-
-A: Anchor nodes might sound attractive at first, but in reality, the more nodes
-put in monitoring, the more bandwidth it would have to become, since those
-anchor nodes is also at the risk of being dead, the leader of a group would
-just be shifting its focus from monitoring the real member to this specialized
-anchor node. This approach does not reduce the amount of traffic produce for
-monitoring.
-
 Q: How does the system recover from two consequtive failures in the network?
-
 
 A: We assume a much simpler failure model where there can be at most one
 failure happen at any point in time. It is a reasonable assumption given that
@@ -132,31 +361,9 @@ and how does WuKong reconfigure the nodes?
 Q: What happen when an application is deployed? What is specifially at work?
 \end{comment}
 
+\section{Fault Tolerance System}
 
-\section{Goal}
-
-
-\section{Group abstraction}
-
-
-\section{Policy}
-
-\subsection{Fault tolerance category}
-
-
-\section{Mapping}
-
-\subsection{Matching}
-
-\subsection{Translation}
-
-\subsection{Compilation}
-
-\subsection{Reprogramming}
-
-\subsection{Reconfiguration}
-
-\subsubsection{Member ranking}
+\subsection{Member ranking}
 
 % transition to failure diagnosis, and failure recovery, and member ranking
 If application could specify a full ranking among a group, 
@@ -164,8 +371,6 @@ Whenever a leader died, a member has to replace its position.
 Leader identification, successor of current leader.
 
  agent should specify whether this group has any ranking rules for a members. Whether there is a full ranking for current members and future members. This could lead to different actions reacting to similar events. ...
-
-
 
 \section{Agent architecture}
 
@@ -330,7 +535,7 @@ Of course the structure of heartbeat communication pattern highly depends on the
 % tolerance policies?
 
 A heartbeat network in the form of a daisy chain is one of the networks that
-satisfy both properties as shown in~\ref{daisy_chain}. Every daisy chain heartbeat network monitors all nodes
+satisfy both properties as shown in~\ref{fig:daisy-chain}. Every daisy chain heartbeat network monitors all nodes
 in the group, given by the properties that every node has to monitor at least
 one node and every node can only have one node monitor itself. So if there is
 n nodes, there can be at most n nodes being monitored, every monitoring node
@@ -339,7 +544,7 @@ not, thus every node is monitored by only one unique node. Thus this daisy
 chain guarantees every failure can be detected.
 
 \begin{figure}[h!]
-\label{daisy_chain}
+\label{fig:daisy-chain}
 \caption{Daisy Chain of heartbeats}
 \centering
     \includegraphics[width=\linewidth]{figures/daisy-chain}
@@ -508,78 +713,3 @@ The outsiders, whose objects are connected to the group, will be the fault detec
 Since it is also possible that heartbeat is in daisy chain that the any node only monitors one node at a time, and no two nodes monitor the same node. When that happens it is still possible that leader could partition away from the system and appear again later in time. Since the new leader is the one monitoring the old leader, when the old leader resume and start sending heartbeat, the new leader could be sending a reconfiguration message to Master, or if it is not severe enough to do a full reconfiguration, it could resign by sending the old leader a resign message to inform the leader to reconfigure its connected objects about this change of leadership, and it will resume to become a normal member again.
 
 The message complexity for the operation of resignation should be O(2+2H(m)) where H is a function that returns the number of nodes hosting connected objects m.
-
-
-
-\subsubsection{Misc. need review}
-
-% TODO:Should I remove this?
-\paragraph{Reaction table}
-
-Similar to a routing table, Controller agent will also have a table to look up which actions it could take given a certain type of failure event.
-
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{llll}
-Source & Detector & Event & Action id \\ 
-\hline
-“all members” & “any member” & no heartbeat & 0 \\ 
-“all members” & “any leader” & no heartbeat & 0 \\
-“leader” & “any member” & no heartbeat & 4 \\
-\end{tabular}
-\end{center}
-\caption{An example of reaction table}
-\end{table}
-
-
-% TODO:Should I remove this?
-\paragraph{Action table}
-
-This table list all actions that a controller could do. This table follow similar style described in the work of ADAE with rules that provides graceful degradation for most actions.
-
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{llllllll}
-Id & Profile type & Next & Secondary & Doer & Receiver & Function & Expected
-results \\
-\hline
-0 & standard & 3 & 1 & “leader” & “all members” & “member list synchronization” & “member list synced” \\
-1 & secondary &  &  & “leader” & “operating members” & “member list synchronization” & “member list synced” \\
-2 & standard &  &  & “any member” & “leader” & “send” & “relay event” \\
-3 & standard &  &  & “leader” & “all members and connected nodes” & “link table synchronization” & “link table updated” \\
-4 & standard &  &  & “operating members” & “operating members” & “leader election” & “a new leader elected” \\
-\end{tabular}
-\end{center}
-\caption{An example of action table}
-\end{table}
-
-When a standard action failed, the secondary action will be triggered, for example, if action 0 failed, action 1 will take over since it is a secondary of action 0. When action 0 finish execution, action 3 will follow it immediately since it is a next of action 0.
-
-% TODO:Should I remove this?
-\paragraph{Event queue}
-
-Controller will be bombarded by lots of events coming from multiple sources in a short period of time, to ensure all events are stored in chronological or importance order, a event queue is used. Any event that other agents send to notify controller will be stored in this queue.
-
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{ll}
-Event name & Priority \\
-\hline
-“No heartbeat” & 0 \\
-“Event queue synchronization” & 1 \\
-\end{tabular}
-\end{center}
-\caption{Event queue}
-\end{table}
-
-
-
-% TODO:Should I remove this?
-\emph{Event queue synchronization}
-
-It is very likely that if nodes failed, the events carried on the nodes will never see the light of day in other nodes, and will never be handled. To prevent missing events, controller will have to synchronize event queue among members.
-
-\emph{Preemptive event queue}
-
-Some events have higher priority, and those events should come in in sparse intervals. Event queue synchronization is an important event that any controller should preempted before other unhandled events.
-

@@ -4,11 +4,31 @@
 % here I can start rambling about all the limitations and directions on how to
 % improve them
 
-\paragraph{Group connection types}
+\section{Group connection types}
 
-\paragraph{Mapping}
+\section{Mapping}
 
-\paragraph{Policy}
+Q: Inclusion problem, how to solve it? How severe it is?
+
+A: The problem is due to the low redundancy level of a compoennt which is
+mapped to a node with other compoennts which have higher redundancy levels.
+This problem does not always have a solution, it depends highly upon the
+resources in the network, it is unavoidable. However, we are considering
+possible solutions to address this problem in the future by making sure the
+mapping results does not have this pattern and could generate possible
+solutions to solve this problem by either increase the redundancy level of the
+vulnerable component or purposefully avoid mapping to dangerous nodes that
+would put the component to risk.
+
+But the bigger question is, if compoent FT policy is enough to ensure
+application durability, at the current state, if any component does not have
+minimum redundancy level of 2, that application is in the risk of single point
+of fialure, there would be needed a way to inspect whether the policy is fault
+tolerance at the application level, or introducing several application level FT
+policy and that is something that we could be looking into in our next
+research work.
+
+\section{Policy}
 
 % talk briefly about policy, what it is, why it is important, give some examples if possible
 
