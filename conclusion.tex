@@ -1,6 +1,68 @@
 \chapter{Conclusion}
 \label{c:conclusion}
 
-dkljfa;lkfj; sd;lkf j
-
 \section{Summary of Contribution}
+
+\section{Future Work}
+
+% here I can start rambling about all the limitations and directions on how to
+% improve them
+
+\subsection{Questions}
+
+Q: How does the system recover from two consequtive failures in the network?
+
+A: We assume a much simpler failure model where there can be at most one
+failure happen at any point in time. It is a reasonable assumption given that
+our system recover from failures fairly quickly (~2 secs) ....
+
+
+Q: How does an application is being compiled into low level bytecode? And when
+and how does WuKong reconfigure the nodes?
+
+
+Q: What happen when an application is deployed? What is specifially at work?
+
+\subsection{False positive fault detection}
+
+It appears to be possible to have false positive fault detection when a node is not dead but actually got partitioned away from the network for a short period of time. If it is the leader that got partitioned away for too long, several members will be detecting this failure and they might all initiate a leader election. Since they all know of this situation, every node detecting a failure will wait for a random amount of time before sending the message. If a leader election message has been received, it will terminate its current action and continue to the second phase of the leader election process.
+
+However, it is possible that leader is not actually dead, and it is also monitoring the members. The leader might conclude that the members are all gone and will also generate a failure event (since there is no one to synchronize to). This is a split brain problem because the remaining members will elect a new leader and proceed in synchronizing the link table in neighbor nodes, but the old leader is still operating and sending data between the neighbor nodes, this will create a conflict both in the group and cause a confusion among the outsiders.
+
+Assuming both partitions can talk to the neighbor nodes with objects connected to their objects, there is no way for the partitions to detect the problem within themselves but only the outsiders.
+
+The outsiders, whose objects are connected to the group, will be the fault detector and will notify both leaders of their existence along with their scoring. The leader with less scoring will give up their leadership, and try to merge with the other partition if possible. If it is still not possible after a timeout, it will try to notify the Master of this situation.
+
+\subsection{Group connection types}
+
+\subsection{Mapping}
+
+Q: Inclusion problem, how to solve it? How severe it is?
+
+A: The problem is due to the low redundancy level of a compoennt which is
+mapped to a node with other compoennts which have higher redundancy levels.
+This problem does not always have a solution, it depends highly upon the
+resources in the network, it is unavoidable. However, we are considering
+possible solutions to address this problem in the future by making sure the
+mapping results does not have this pattern and could generate possible
+solutions to solve this problem by either increase the redundancy level of the
+vulnerable component or purposefully avoid mapping to dangerous nodes that
+would put the component to risk.
+
+But the bigger question is, if compoent FT policy is enough to ensure
+application durability, at the current state, if any component does not have
+minimum redundancy level of 2, that application is in the risk of single point
+of fialure, there would be needed a way to inspect whether the policy is fault
+tolerance at the application level, or introducing several application level FT
+policy and that is something that we could be looking into in our next
+research work.
+
+\subsection{Policy}
+
+% talk briefly about policy, what it is, why it is important, give some examples if possible
+
+When application are getting complex full with features and configurations, 
+it is important to have a high level declarative configuration policy language 
+to specify the control for features and control of their respective behaviors 
+smoothly. I propose a high level policy for fault tolerance that could be
+translated to low level application requirements.

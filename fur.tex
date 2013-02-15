@@ -28,13 +28,28 @@ components, so there is a separate policy for every component. For every
 compoennt, users can specify two rules to guide and influence how fault
 tolerance works at the hardware level.
 
+Of all policy parameters to model a fault tolerant system, there are two that
+are required for any fault tolerance systems in environment unique to WuKong.
+
 \begin{enumerate}
-\item[Minimum Redundancy Level] The minimum number of devices that will be
+\item \emph{Minimum Redundancy Level} The minimum number of devices that will be
 supported as a backup for a particular component. Therefore when one of the
 devices fail, others will take over.
-\item[Maximum Reaction Time] The maximum latency a failure will take to detect
+
+\item \emph{Maximum Reaction Time} The maximum latency a failure will take to detect
 within the heartbeat group it is detected.
 \end{enumerate}
+
+%TODO: this two will be part of the experiment design to proof that it works
+With the minimum redundancy level per component, each component has
+a guarantee that when deployed the system will be configured to support at
+least the level of fault tolerance for the component in the application.
+
+With the maximum reaction time per component, each component is also guaranteed
+to react to a failure within the specified time (in seconds)
+
+The policy requires the system to changes its design process to produce a fault
+tolerant system that can meet the requirements.
 
 The policy for every component will be taken by the WuKong Master, along with
 the FBP application and discovery results, to produce the final mapped results
@@ -62,30 +77,55 @@ challenge: Recovery chains and heartbeat groups.
 
 \section{Mapping for a fault tolerant system}
 
-The figure~\ref{} above illustrates the essential parts in the mapping process
-for a fault tolerant system.
+\begin{figure}[h!]
+\label{fig:mapping-ft}
+\caption{Elements for mapping a fault tolerant system}
+\centering
+    \includegraphics[width=\linewidth]{figures/mapping-ft}
+\end{figure}
 
-Mapping is a process of converting a high level abstractions from FBP with
-components to low level bytecode representation that will be deployed to the
-network.
+The figure~\ref{fig:mapping-ft} above shows the elements required in the
+mapping process for a fault tolerant system.
 
-Heartbeat is an important mechanism to detect failure. Our work assume
+Mapping is a process of converting a high level abstractions to low level
+bytecode representation that will be deployed to the network.
+
+The high level abstractions are the network node infos, application graph of
+components and links, fault tolerance policy for components.
+
+Mapper requires discovery of the network in terms of node infos, application
+graph. In order to produce a fault tolerant system which satisfy fault
+tolerance policy, mapper produces heartbeat groups and recovery chains
+necessary to construct a fault tolerant system under the unique challenges of
+heterogeneous sensor network modeled by sensor profile framework.
+
+With heartbeat groups, a network of nodes will be able to detect a node failure
+within the network efficiently, and able to reconfigure autonomously to reach
+its stable state after the failure.
+
+With recovery chains, the semantics of application will be persistent as
+long as there is spare parts of components that could be recovered from
+a node failure and still meet its application requirements.
+
+\subsection{Heartbeat Groups}
+
+Heartbeat is a heuristic to detect failure. Our work assume
 a fail-stop model where sensor nodes fail by not sending messages for a period
-of time. Mapper will have to determine the heartbeat arrangement, dependencies
-to ensure every sensor node is monitored and will not fail without notice.
-
-\subsection{Heartbeat Group}
+of time. However, in a group of nodes, heartbeats needs to be arranged in such
+a way that no failures could be left undetected. And thus Mapper will have to
+determine the heartbeat arrangement, dependencies to ensure every sensor node
+is monitored and will not fail without notice.
 
 Heartbeat arrangement usually depends on the applications and sensor
-arrangement~\ref{}, thus most related work aim for a specific type of
+arrangement~\cite{Gobriel2008}, thus most related work aim for a specific type of
 application and sensor arrangement to simplify heartbeat arrangement, however
 since application type and sensor arrangement in WuKong are not known until
 deployment, therefore a new way to arrange heartbeat has to be devised.
 
-In WuKong, application are drawn on a canvas which consists of blocks that
+In WuKong, applications are drawn on a canvas which consists of blocks that
 gives the type of sensors or resources needed and lines which connects the
 resources together in such a way that would satisfy the requirements. However,
-arranage heartbeat based on the flow of the components is not desirable since
+arrange heartbeat based on the flow of the components is not desirable since
 applications are not the immediate representation of the underlying network
 topology such that some components could be mapped on the same node, and some
 connected components could be mapped to nodes that are far away from each other
@@ -94,13 +134,25 @@ abstractions would incur extra communication overhead by making a lot of nodes
 as a relay for heartbeats.
 
 The proposed solution will produce application agnostic arrangement and at
-the same time be used in producing the arrangement of the compoennts in the
+the same time be used in producing the arrangement of the components in the
 network to reduce the communication overhead as much as possible.
 
-Assuming that links are symmetrical and toplogy is stable after making the
-arrangement, we proposes the algorithm below to produce heartbeat arrangement
-for applications.
+The algorithm assumes that links are symmetrical and toplogy is stable after
+making the arrangement.
 
+Heartbeat groups are clustering of nodes
+that are one hop distance to each other, in other words, fully connected. By
+grouping nodes within one hop distance together, we significantly reduce the
+possibility of heartbeat hopping which is a big factor in communication
+overhead.
+
+Heartbeat groups are determined by picking an anchor node by random in the
+nodes, and then iterating through network of nodes to cluster nodes that are
+meeting the criteria (one hop distance) and repeat again until all nodes are
+exhausted. The function to determine topology of the network comes from the
+hardware of the wireless radio specifications.
+
+\begin{comment}
 \begin{algorithm}
 \caption{Determine Heartbeat Arrangement}
 \label{alg:heartbeat-group}
@@ -124,31 +176,23 @@ for applications.
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
+\end{comment}
 
-The algorithm~\ref{alg:heartbeat-group} will produces a clustering with nodes
-that are one hop distance to each other, in other words, fully connected. By
-grouping nodes within one hop distance together, we significantly reduce the
-possibility of heartbeat hopping which is a big factor in communication
-overhead.
+%The algorithm~\ref{alg:heartbeat-group} will produces 
 
-The implementation of the function isNeighbor depends on the actual hardware
-used, if it is using ZWave, then it will query ZWave for information.
-
-The worst-case time complexity of the algorithm is $O(n^2)$ given a list of
-disconnected nodes since every single one will form a group of its own,
-therefore the inner loop will be running for every node in the list, thus it is
-quadratic.
-
-The best-case time complexity is $O(n)$ when the nodes are fully
-connected, since the inner loop will be executed only once.
-% possible need some more explanation here :\
-
-The it is possible that due to some peculiar network topology that the
+It is possible that due to some peculiar network topology that the
 algorithm would produce single node group which itself could not be of any use.
 
 If that happens, the algorithm will be rerun again. Since the anchor is picked
 randomly from the remaining node list, the algorithm will not produce the same
 result thus eliminating the problem.
+
+Once the groups are formed, each group could employed many different heuristics
+to connect such that any failure could be detected. One of the heuristics that
+is used in this work is called daisy chain. Daisy chain makes every node
+monitoring one other unique node in the network such that every node is
+monitored with minimum communication overhead and an even communication load
+for every node.
 
 \subsection{Recovery chains}
 
@@ -344,47 +388,23 @@ background work for WuKong, where after it generates the Java code, it compiles
 down to lower bytecode representation and send it to every node wirelessly. The
 nodes will be reprogrammed by taking the code and reload in their flash memory.
 
-\begin{comment}
-\section{Questions}
 
-Q: How does the system recover from two consequtive failures in the network?
+%%%%%% end of mapper %%%%%%
+%%%%%% end of mapper %%%%%%
 
-A: We assume a much simpler failure model where there can be at most one
-failure happen at any point in time. It is a reasonable assumption given that
-our system recover from failures fairly quickly (~2 secs) ....
-
-
-Q: How does an application is being compiled into low level bytecode? And when
-and how does WuKong reconfigure the nodes?
-
-
-Q: What happen when an application is deployed? What is specifially at work?
-\end{comment}
 
 \section{Fault Tolerance System}
 
-\subsection{Member ranking}
-
-% transition to failure diagnosis, and failure recovery, and member ranking
-If application could specify a full ranking among a group, 
-Whenever a leader died, a member has to replace its position.
-Leader identification, successor of current leader.
-
- agent should specify whether this group has any ranking rules for a members. Whether there is a full ranking for current members and future members. This could lead to different actions reacting to similar events. ...
-
-\section{Agent architecture}
+% begin comment
+\begin{comment}
+\subsection{Agent architecture}
 
 This section will first go into details of how applications in a form of an
 abstract graph are being managed in a distributed system after being compiled 
 and transformed into lower bytecode representation, then I will further discuss 
-how the agent architecture on every node collaborate to form groups that will 
-be the basic unit of redundancy in the application to detect sensor failures, 
-diagnosis the failure, and finally recover from failure.
-
-~\ref{} illustrates the proposed agent architecture in the sensor network.
-Every component in the application is converted into groups, which consists one
-or more nodes, and one of them is a leader. Every group has only one leader.
-Heartbeats are sent out from the members and leaders to monitor each other.
+how the agent architecture on every node collaborate to for the basic unit of
+redundancy in the application to detect sensor failures, diagnosis the failure,
+and finally recover from failure.
 
 \subsection{Autonomous Systems}
 
@@ -405,126 +425,61 @@ real-time.
 As our system consists of complex elements and subsystems mingled together, an
 appropriate way to handle complex behaviors in decentralized systems is to
 based it on a society of agents.~\cite{Minar1999}
+\end{comment}
+% end comment
 
-\subsection{Towards failure detection}
+\subsection{Towards Failure Detection}
 
-As we mentioned earlier why sensor systems has to evolve to adapt to crutial,
+As we mentioned earlier why sensor system has to evolve to adapt to crutial,
 ever changing environment, one of the first things a system could achieve that
 goal is to detect failures autonomously.
 
-\subsubsection{Group membership}
+\subsubsection{Heartbeat}
 
-In our model, sensor networks consists of a diverse of sensor platforms, and some
-subset of sensor nodes are equipped with similar sensors situated near each other.
+A failure in distributed system could come from different causes. Some nodes
+might fail because of software bugs; some nodes might appear to fail because of
+poor wireless link quality. One of the biggest challenges in distributed
+systems is to be able to detect failures when it occurs accurately.
 
-Since sensor networks are inheritly concurrent, it is very hard to reason about
-the states of the nodes in a distributed fashion. In order to provide fault
-tolerance in the system, a number of nodes need to be in sync and form a group
-to monitor and replace faulty node if necessary.
-
-~\ref{} illustrates a running applications with three components: Temperature,
-Light and Threshold. Every component is implemented by a group of sensors
-hosting the same object that represents the component.
-
-Every node consists of two agents, namely membership and controller as
-illustrated in the~\ref{}. When application is deployed, every node is populated with a link table full of links and a list of objects representing the components on the application that are being assigned to.
-
-Membership agent is there to maintain and update the membership list by
-also managing a watchlist and a reportlist to receive/send heartbeat from/to.
-
-\paragraph{Heartbeat and node failure}
-
-% what is a failure, why we assume fail-stop failures
-
-A failure in distributed system could come from different sources. Some nodes
-might fail because of software bugs; some nodes might fail because of poor
-wireless link quality caused by interference. One of the biggest challenges in
-distributed systems is to be able to detect the types of failures when it
-occurs correctly. Pulled between efficiency and reliability, decisions to make
-individual sensor nodes at the same time able to detect failures with knowledge
-of others but also have to reduce the amount of resources is essential for
-designing a effective distributed system.
-
-% Brief introduction to Byzentine failures
-
-There is another type of failures caused by a completely different reasons.
-Byzentine failures are failures inspired by the Byzentine General's Problem
-where components of a system fail in arbitrary ways (besides stopping or
-crashing) by processing requests incorrectly, corrupting local states, or
-producing incorrect or inconsistent outputs.
-
-% Why we choose fail-stop failures
-
-As we assume society of cooperative agents, every agent in the system will
-strive to be helpful, and share a common goal. This is strengthen by the fact
-that the agent goals' are bootstrapped from a common source which is the WuKong
-Master. However, nodes could still fail. In order to be consistent, we model
-failure by whether a node could send messages or not. This is called
-a fail-stop failure model.
-
-% What we choose
-
-A fail-stop failure model is a model in which sensor nodes are suspected of
-failure when they stop sending messages which could caused by multitude of
-reasons such as network partition, or software bugs.
-
-% what is a heartbeat
+In distributed system, nodes could fail. In order to be consistent, we model
+failure by whether a node send messages within predefined period or not. It is
+called a fail-stop failure model.
 
 Heartbeats are messages sent by individual nodes periodically to indicate to
-the monitoring nodes its health~\cite{}.
+the monitoring nodes its health.
 
-~\ref{} illustrates some nodes sending heartbeats that detects
+Figure~\ref{} illustrates some nodes sending heartbeats that detects
 a failure when a number of expected consecutive heartbeats have not been
 received.
 
-% what is a failure in our model
+In our model, a node is considered dead when it has not been sending heartbeats
+for more than 2 timeout periods.
 
-A node is considered dead when it has not been sending heartbeats for more 
-than 2 rounds of timeout.
+% figures to illustrate how heartbeat works?
 
-\paragraph{Group setup}
+\subsubsection{Decentralized Detection}
+% daisy chain
 
-The WuKong Master has already assigned an ordered list of nodes for every component,
-every node would be able to know who are in their group for any particular
-component.
+In a network of nodes, the arrangement of heartbeats has to be addressed to
+have full coverage of the network such that every node is monitored by another
+node which is also monitored by another node and is decided during the mapping
+phase mentioned in the previous section.
 
-Wielded with this knowledge, membership agent will setup all heartbeat links
-between the nodes if not already.
-
-Since the setup is asynchronous without lockstep, all nodes are free to do
-whatever they want while others are being programmed. We added a random backoff
-after the nodes are programmed to prevent the problem of nodes reporting 
-failure when they startup, because when the node finished setup, the nodes it
-is watching might not be finished reprogramming, thus it will delay its
-heartbeat and exceed the timeout causing the node to send false alarm.
-
-As illustrated by~\ref{}, every node has a leader which is elected when the
-group is formed.
-
-\begin{figure}[h!]
-\caption{Node states}
-\centering
-    \includegraphics[width=\linewidth]{figures/node-states}
-\end{figure}
-
-\subsubsection{Connecting them up}
-
-% what happened when a node fails?
-
-When a node failed, or has not sent heartbeats for too long, a node failure
-will be picked up by the monitoring nodes. However, a system is not fault
-tolerant if it cannot decide who could be replacing the failing component. So
-there must be some way to organize groups such that when a failure is detected,
-a replacement could be decided.
+Centralized detection makes one special node to monitor every node in the
+network by making them sending heartbeats to it. The arhictecture has several
+weak points where it requries extra resources to monitor, and since the
+monitoring node cannot be replaced when failed, the system will have single
+point of failure. In addition to that, the average communication overhead for
+the monitoring node will be very high and saturated since all the traffic goes
+towards one place and thus the system performance will deteriorate.
 
 % introduction to heartbeat network
 
-It is possible that there will be multiple failures occurred in a timely
-fashion. We need to be able to detect all possible failures within a group, so we need a heartbeat network.
-
-% talk more about heartbeat network
-
-Of course the structure of heartbeat communication pattern highly depends on the underlying network assumption and infrastructure of the application. To produce the most efficient network with the least connections, heartbeat network has to satisfy two properties.
+A heartbeat can only monitor one node at a time, so in a network of nodes, we
+need a heartbeat network. The structure of heartbeat communication pattern
+highly depends on the underlying network assumption and infrastructure of the
+application. To produce the most efficient network with the least connections,
+  heartbeat network has to satisfy two properties.
 
 \begin{enumerate}
 \item Every node has to monitor at least one node other than itself
@@ -535,13 +490,13 @@ Of course the structure of heartbeat communication pattern highly depends on the
 % tolerance policies?
 
 A heartbeat network in the form of a daisy chain is one of the networks that
-satisfy both properties as shown in~\ref{fig:daisy-chain}. Every daisy chain heartbeat network monitors all nodes
-in the group, given by the properties that every node has to monitor at least
-one node and every node can only have one node monitor itself. So if there is
-n nodes, there can be at most n nodes being monitored, every monitoring node
-can only monitor one node, every node can only monitor node that others have
-not, thus every node is monitored by only one unique node. Thus this daisy
-chain guarantees every failure can be detected.
+satisfy both properties as shown in~\ref{fig:daisy-chain}. Every daisy chain
+heartbeat network monitors all nodes in the group, given by the properties that
+every node has to monitor at least one node and every node can only have one
+node monitor itself. So if there is n nodes, there can be at most n nodes being
+monitored, every monitoring node can only monitor one node, every node can only
+monitor node that others have not, thus every node is monitored by only one
+unique node. Thus this daisy chain guarantees every failure can be detected.
 
 \begin{figure}[h!]
 \label{fig:daisy-chain}
@@ -550,166 +505,118 @@ chain guarantees every failure can be detected.
     \includegraphics[width=\linewidth]{figures/daisy-chain}
 \end{figure}
 
-%\subsubsection{Multi-component nodes}
-
-%Each node maintains a watch list of nodes that it has to monitor health for. The watch list is generated by iterating through all groups and one node from each group that it has to monitor. The watch list is a set, so there will be no duplicate entries, every entry is unique in the watch list.
-
 \paragraph{Message complexity}
 
 Every heartbeat takes one message to send from one to another. As of current,
-      we assume every heartbeat is sent using unicast, and there is no ACK for
-      heartbeat messages. The message complexity for standard one-hop star
-      network takes about
-      O(2n-2) messages since the leader sends n-1 to every member and every
-      member would also has to send a message back to leader, that comes to
-      double of the single traversal from leader to other members.
+we assume every heartbeat is sent using unicast, and there is no ACK for
+heartbeat messages. The message complexity for standard one-hop star
+network takes about
+O(2n-2) messages since the leader sends n-1 to every member and every
+member would also has to send a message back to leader, that comes to
+double of the single traversal from leader to other members.
 
-The message complexity for the daisy loop takes about O(n) messages for a group, because every member only sends one heartbeat to one other member at a time including the leader.
+The message complexity for the daisy loop takes about $O(n)$ messages for
+a group, because every member only sends one heartbeat to one other member at
+a time including the leader.
 
-\subsection{Failure recovery}
+\subsubsection{Heartbeat Group Recovery}
+
+When a node failed and stopped sending heartbeats, the existing network of
+heartbeat needs to recover its arrangement to handle the next error. If we are
+given a network of nodes with heartbeat arranged like in
+Figure~\ref{fig:daisy-chain}, when the leader failed and is picked up by the
+member, the member that is monitoring the leader will notify the member that is
+monitored by the old leader to redirect its heartbeat to itself instead so the
+loop hole is closed. Algorithm~\ref{alg:recover-heartbeat-group} described what
+happened when a node detects a failure.
+
+\begin{algorithm}
+\caption{Recover Heartbeat Group (at detected node)}
+\label{alg:recover-heartbeat-group}
+\begin{algorithmic}
+\Require A list of node ids $G$ of the heartbeat group it is in
+\Require Failed node id $f$
+\Ensure Update list of node ids $G$ of the heartbeat group in other members
+\State Remove failure node id $f$ from local Heartbeat Group $G$
+\State Update the new node id to monitor which is the node before its id in the
+list
+\For{Every $n$ in $G$}
+  \State Send message to $n$ to upload their local heartbeat group and update
+  their monitoring node id
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm requires synchronization among all heartbeat group members since
+if it only updates the affected nodes then after two specific node failures in
+such order that the node will not be able to recover from failure. It is
+illustrated in Figure~\ref{fig:recovery-heartbeat-group-need-synchronization}
+
+\begin{figure}[h!]
+\label{fig:recovery-heartbeat-group-need-synchronization}
+\caption{Heartbeat group cannot recover}
+\centering
+    \includegraphics[width=\linewidth]{figures/recovery-heartbeat-group-need-synchronization}
+\end{figure}
+
+In the first failure, the previous node could update its local list point to
+the alive node to monitor, but if the node fails, the next node will not point
+to the alive node to monitor.
+
+%%% end of failure detection %%%
+
+\subsection{Failure Recovery}
 
 % mention the needs for at least one substitude, and how the candidate is
 % selected
 
-When a node failed, it is guaranteed that at least one node will detect
-this. However, the chain is broken, and it would be impossible for the
-membership agent in the node to decide what the subsequent actions could be.
-They are not designed to do such things.
-There need to have another agent to decide based on local information the
-actions to take to resolve this issue.
+Due to the nature of the network that will have lots of recovery chains for
+several application components on different or same nodes, when a node detects
+failure in a node, the detector will initiate a failure recovery protocol to
+recover the affected component recovery chains and application links for
+nodes hosting connected components.
 
-\subsubsection{Link table entry protocol}
+The detector of node failure will determine the WuObjects running on node, to
+update recovery chains in the network, and to determine nodes that host
+connected WuObjects. For example, if node A runs WuObject 1, and when WuObject
+2 which is hosted on node B is connected, node B is the node hosting the
+  connected WuObjects.
 
-% What is link table
+\subsubsection{Recover Chains}
 
-When the application is deployed, every operating node contains at least one
-object that represents one component in the application. To connect the objects
-just like what it did in the application as shown in FBP needs a table to store
-the information of the links. Link table is broken down into two layers, where
-the top layer gives the information between two components, and the bottom
-layer gives a list of nodes that are part of the same group that could provide
-the service for operating the application. By breaking into two layers gives
-us immense flexibility to handle many different kinds of graph that the FBP could
-produce.
+The algorithm~\ref{alg:recover-recovery-chains} describes how the node detected
+the failure will have to update recovery chains of all nodes that is hosted on
+the dead node.
 
-% Why a protocol for link table
+\begin{algorithm}
+\caption{Recover Recovery Chains (at detected node)}
+\label{alg:recover-recovery-chains}
+\begin{algorithmic}
+\Require A list of components $C$ of the failure node
+\Require Failed node id $f$
+\Ensure Update all host hosting component in $C$ their local recovery chain
+lists
+\State Remove failure node id $f$ from all local recovery chains of component in $C$
+\State Update nodes of their recovery chains in the components in $C$
+\end{algorithmic}
+\end{algorithm}
 
-As illustrated in~\ref{link-table-switch}, the premise of a link between
-components rely on both end's agreement. If either one of them disagree, then
-the link is not valid.
+\subsubsection{Connected Nodes}
 
-When a leader of a component failed, the elected new leader will have to update
-everyone’s
-link table so they all are in consensus of who is currently the representative
-for this component. The result of the protocol affects the lower layer of the
-link table, so all nodes in the network affiliated with a particular component
-could be assure that they are not sending messages to nodes that doesn't exist 
-or listening for messages from nodes that are not in charge of sending the
-sensor values.
+The algorithm~\ref{alg:update-application-links} describes how the node detected
+the failure will have to update application links of all nodes that is
+connected to components on the dead node.
 
-\begin{figure}[h!]
-\label{link-table-switch}
-\caption{Link table switching}
-\centering
-    \includegraphics[width=\linewidth]{figures/link-table-switch}
-\end{figure}
-
-
-\subsubsection{Controller agent}
-
-We have described a part of the system that does membership, fault detection.
-However with only those parts the system, they do not form a fault tolerant
-system. Without a controller making a right decision at the right time,
-to synchronize group states, groups will not have consensus and will not be
-able to proceed as a whole~\ref{}. Controller’s responsibilities range from
-responding to
-failure events, synchronizing states to group members and connected nodes to 
-ensure the application could still operate.
-
-Reactions and actions tables are set up during deployment. Controller will be
-mainly handling events and handle according to the rules defined in the
-tables.
-
-\paragraph{Member ranking}
-
-Most other work on failure recovery relies on leader election to elect a new
-leader when the old leader failed which is followed by a group multicast to
-ensure group state is synchronized to all members.
-
-However, leader election is not necessary if a full member ranking could be
-determined. Member ranking serves as a lookup table to successor to any node if it
-happens to fail, also used to recover heartbeat network.
-
-%TODO: expend this and explain a bit more with figure and examples
-
-\paragraph{Responding to failure}
-
-~\ref{} describes the dynamics between agents when a failure has been detected.
-
-When a member detected a failure from other member, the membership agent on the
-member node will notify local controller agent of this event. 
-
-By default, controller agent will notify the leader of the group if it is not,
-the leader’s controller agent will initiate synchronization protocol to
-synchronize members’ membership list.
-
-If the leader failed, the controller agent of the monitoring node will initiate
-the leader election protocol and become a new leader itself.
-
-
-\paragraph{Leader election}
-
-% Explain why we need leader election
-When there is no clear ranking among members, a leader election could provide a mechanism for determine the successor of a failed node.
-
-% But explain about how member ranking could be used to eliminate leader election
-
-% Then explain that heartbeat network is used as an indication of ranking
-% between members
-
-
-
-% Need a new figure for leader election with member ranking
-%\begin{figure}[h!]
-%\caption{Leader election diagram}
-%\centering
-    %\includegraphics[width=\linewidth]{figures/leader-election-1}
-%\end{figure}
-
-\paragraph{Recover from failure}
-
-% confirm and update local membership table
-
-
-% synchronize membership table in group
-
-\emph{Membership synchronization}
-
-Some actions will be syncing membership list across all members for a particular group. This protocol is triggered either by the reaction table above or by explicit request from other agents, such as the Membership agent. Controller agent will access the current membership table and instruct Synchronization agent to start the membership list synchronization.
-
-% synchronize link table in group and connected nodes
-
-\emph{Link table synchronization}
-
-Once the fault has been confirmed and has shunned the faulty node from the network, GMS coordinator will be responsible for propagating this event to other groups in the system that has subscribe to this event.
-
-Let's say that a group has a simple one hop star topology, so all nodes will transmit its data to the group leader, when the group leader has been reported to be partitioned away from the network or failed, then what will happen is that each group member will elect a new leader by some heuristics, since it has the link table for the previous group leader, it will know which node it is suppose to link to outside the group upstream, and change its local link table accordingly, the new leader will determine the new linking table of its members by consulting the group policy, send a multicast to the group to route all their data to the new leader. The upstream node should either be inside a group managed by the GMS, or a Master assigned gateway, it should also receive this update according to the group policy which GMS will also inform them of.
-
-Essentially, GMS is global in the network and will have full knowledge of the group policy for all groups in the application, and it can follow the group policy to propagation fault events to the appropriate groups.
-
-
-\subsubsection{False positive fault detection}
-
-It appears to be possible to have false positive fault detection when a node is not dead but actually got partitioned away from the network for a short period of time. If it is the leader that got partitioned away for too long, several members will be detecting this failure and they might all initiate a leader election. Since they all know of this situation, every node detecting a failure will wait for a random amount of time before sending the message. If a leader election message has been received, it will terminate its current action and continue to the second phase of the leader election process.
-
-However, it is possible that leader is not actually dead, and it is also monitoring the members. The leader might conclude that the members are all gone and will also generate a failure event (since there is no one to synchronize to). This is a split brain problem because the remaining members will elect a new leader and proceed in synchronizing the link table in neighbor nodes, but the old leader is still operating and sending data between the neighbor nodes, this will create a conflict both in the group and cause a confusion among the outsiders.
-
-Assuming both partitions can talk to the neighbor nodes with objects connected to their objects, there is no way for the partitions to detect the problem within themselves but only the outsiders.
-
-The outsiders, whose objects are connected to the group, will be the fault detector and will notify both leaders of their existence along with their scoring. The leader with less scoring will give up their leadership, and try to merge with the other partition if possible. If it is still not possible after a timeout, it will try to notify the Master of this situation.
-
-\emph{Daisy chaining}
-
-Since it is also possible that heartbeat is in daisy chain that the any node only monitors one node at a time, and no two nodes monitor the same node. When that happens it is still possible that leader could partition away from the system and appear again later in time. Since the new leader is the one monitoring the old leader, when the old leader resume and start sending heartbeat, the new leader could be sending a reconfiguration message to Master, or if it is not severe enough to do a full reconfiguration, it could resign by sending the old leader a resign message to inform the leader to reconfigure its connected objects about this change of leadership, and it will resume to become a normal member again.
-
-The message complexity for the operation of resignation should be O(2+2H(m)) where H is a function that returns the number of nodes hosting connected objects m.
+\begin{algorithm}
+\caption{Update Application Links (at detected node)}
+\label{alg:update-application-links}
+\begin{algorithmic}
+\Require A list of components $C$ of the failure node
+\Require A list of links of components $L$ of the failure node
+\Require Failed node id $f$
+\Ensure Update all local links in $L$ to point to next alive node for the component
+with the dead node
+\State Update links of nodes that host components that is connected to the
+original component with the dead node
+\end{algorithmic}
+\end{algorithm}
