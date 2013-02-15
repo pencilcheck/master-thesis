@@ -152,34 +152,6 @@ meeting the criteria (one hop distance) and repeat again until all nodes are
 exhausted. The function to determine topology of the network comes from the
 hardware of the wireless radio specifications.
 
-\begin{comment}
-\begin{algorithm}
-\caption{Determine Heartbeat Arrangement}
-\label{alg:heartbeat-group}
-\begin{algorithmic}
-\Require A list $N$ of node ids of the network
-\Require A function isNeighbor that returns a boolean for whether a pair of
-  node ids are neighbor
-\Ensure A list of lists $H$ which contains the node ids of the groups
-\While{$|N| > 0$}
-  \State Pick a random $i \in N$ as anchor node
-  \State Create a new list $h$
-  \State Add $i$ to $h$
-  \State Remove $i$ from $N$
-  \For{Every $n$ in $N$}
-    \If{isNeighbor$(i, n)$}
-      \State Add $n$ to $h$
-      \State Remove $n$ from $N$
-    \EndIf
-  \EndFor
-  \State Append list $h$ to $H$
-\EndWhile
-\end{algorithmic}
-\end{algorithm}
-\end{comment}
-
-%The algorithm~\ref{alg:heartbeat-group} will produces 
-
 It is possible that due to some peculiar network topology that the
 algorithm would produce single node group which itself could not be of any use.
 
