@@ -1,0 +1,56 @@
+\cleardoublepage
+\singlespacing
+\chapter{Related Work}
+\label{c:related}
+\doublespacing\nointerlineskip
+
+
+% Now the focus is not on middleware anymore
+\begin{comment}
+\subsubsection{Fault Tolerance in Distributed Systems}
+
+Many systems has been proposed to provide fault tolerance in distributed
+systems, as the possibilities partial failures is a fundamental characterisics
+of distributed systems.
+However, distributed systems such as Wireless Sensor Networks typically
+involves a large number of resource-constrained devices equipped with various
+hardware components such as microprocessors, sensors, memory, wireless
+communication. An application rely on the collaboration among the sensor nodes in
+the network to perform tasks.
+
+% No single point of failure
+
+In order to prevent a single point of failure in applications that would bring
+application to a halt in the event of failure, 
+one of the primary goals for most of the work for fault tolerance is to
+eliminiate single
+point of failure in an application, so replications, redundancies are
+recognized to be a good model for tackling the problems mentioned earlier in
+distributed systems.
+% replication and redundancy
+Replication and redundancy are both techniques that allow the system to
+duplicate multiple copies of a specific system component such that in the
+event of failure of one of the components, one of the other duplicated
+components can take over to perform the same services or functionality that the
+previous one provides.
+
+\section{Component Based Middleware}
+
+Distributed Systems such as Wireless Sensor Netweorks (WSNs) composed of
+multiple resource constrained devices equipped with low-power radios, low-cost
+sensors collaborating to perform tasks for applications in multiple discipline
+such as habitat monitoring. However, typically WSN applications are huge in
+scale, subject to unreliable network, high risk of node failures, and expected
+to run unattended for a long period of time, several work on lightweight component
+models have been proposed\cite{Costa2007}\cite{Gay2003}\cite{Coulson2008}.
+
+% About LooCI and REMORA
+\subsection{Lightweight Component Models}
+
+Work such as LooCI by Hughes et. al.\cite{Hughes2012} and Remora by Taherkordi
+et. al.\cite{Taherkordi2010a} have demonstrated the feasibility of
+reconfigurable infrastructure with event-driven programming model, event
+management system, dynamic-binding to reduce development overhead, simplify
+abstractions, and easier, dynamic reconfiguration for distributed applications.
+\end{comment}
+

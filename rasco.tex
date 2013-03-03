@@ -1,0 +1,224 @@
+\cleardoublepage
+\singlespacing
+\chapter{Reconfigurable Atomic Service for Component Objects}
+\label{c:rasco}
+\doublespacing\nointerlineskip
+
+This chapter presents the Reconfigurable Atomic Service for Component Objects,
+RASCO in short. First the reconfigurable service problem is described in
+section~\ref{s:rss} and the profile framework is described in section~\ref{s:pf}.
+Section~\ref{s:ss} describes a new replicas configuration models called strips
+to track and handle replicas dynamically. After that section~\ref{s:dfd},
+~\ref{s:fr} and ~\ref{s:reconfig} presents the distributed algorithm used to
+solve the problem. The models and algorithms are tested extensively on various
+benchmarks, described in section~\ref{s:benchmarks}, and the results are
+discussed and compared with existing fault tolerant system models in
+section~\ref{s:results}
+
+\section{Reconfigurable Service System}
+\label{s:rss}
+
+Data replication is a fundamental technique to distributed systems as it improves
+availability, eliminiates single points of failure. A system that is hardwired
+to get data from node X will fail when X fails. We want to design a system
+where node Y, which can provide the same service, can take over when X fails.
+
+Reconfigurable Atomic Service for Component Objects (RASCO) is
+designed to solve this problem by introducing a new replication model. RASCO
+allows in situ reconfiguration for maintaining consistency between services and
+replicas.
+
+\section{Profile Framework}
+\label{s:pf}
+
+In this work, we build upon WuKong, a loosely-coupled component based
+architecture for M2M systems. WuKong uses profile
+framework to enable the handling of physical resources on heterogeneous sensor
+nodes, and for higher abstractions of software component capabilities. As
+future M2M systems could consist of many heterogeneous sensor nodes and
+actuator nodes, two main concepts in profile framework, namely WuClass and
+WuObject, was introduced to allow WuKong to track, and manage physical
+resources in the network.~\cite{Reijers} However WuKong has no support for
+fault tolerance. We proposed a solution to track, manage and maintain
+consistency among replicas based on concepts from profile framework.
+
+\section{Strips} % good name?
+\label{s:ss}
+
+\begin{figure}[h!]
+\caption{An example network with several strips}
+\label{fig:strips-network}
+\centering
+    \includegraphics[width=\linewidth]{figures/strips-network}
+\end{figure}
+
+
+This work proposed an algorithm that uses strips, each of which consists of
+service holders prioritized by some metrics to keep track of changes and
+maintain service availability in the presence of failures. Strips consists of
+members which are chained together in series to the next that when one member
+failed, the next one will take over, except the last one. For example, for
+a strip constructed like this $\rightarrow 1-2-3-4-5$, when 3 failed 4 will
+take over the place of 3 and shift all the objects after it forward, and the
+new chain will look like this: $\rightarrow 1-2-4-5$. Now if 1 failed, 2 will
+take over and members after 2 (including 2) will shift one position forward
+that would result in $\rightarrow 2-4-5$. Typically the head of the strips is
+the component in the application, while the rest are replicas.
+
+In a heterogeneous network, each host could carry more than one WuObjects and
+could provide more than one service. Since each strip represents a specific
+component in the application, there will typically be many of these strips
+present in the network where each of them could crisscross with one and others.
+It would mean that a node could be a service provider and a replica at the
+same time.
+
+A node stores membership information of the strips where it is a member of and
+also the strips of the nodes it is monitoring. Each stripe is stored as a list
+with membership address information in the same order as the order of the
+strips so for example, the current head of the strip is the first element of
+the list. Nodes use the information stored to track and notify the nodes for
+any changes in the strips.
+
+Figure~\ref{fig:strips-network} illustrates a network with many strips as
+strips crisscross and layout in the network. Each block represents a host, and
+each circle is a component. The name of the component represents the type of
+the component, and replicas have the same name as the component but with
+an apostrophe next to it. As shown in the figure, each strip could crisscoss
+and could have replicas residing with another component within the same host.
+
+\section{Decentralized Failure Detection}
+\label{s:dfd}
+
+The system assumes a fully connected heterogeneous network with sensors and
+actuators where each node in the network could host multiple components. This
+work uses heartbeat technique, a popular technique widely used to detect
+failures in high-availability distributed systems. Each node would send
+a heartbeat message to its detector periodically in a fixed interval
+until it's unable to send messages anymore. Each node is therefore suspected
+dead when it stops sending messages after a period of time.
+
+There are many related work on heartbeat protocols to ensure high-availability
+whether it uses star topology, or a ring topology; the main purpose for
+a heartbeat protocol is to detect failure within a network as fast as possible.
+Our work assumed a ring topology heartbeat protocol such that a node A would
+send heartbeat to node B and so on, but the last node would send heartbeat back
+to node A.
+
+\section{Failure Recovery}
+\label{s:fr}
+
+Several strips would be cut off in the event of failure, and if the
+failed node carries the component of some strips, the system which hardwire
+the location of the failed component would not able to continue to function. 
+Every node needs to have knowledge of the members of the strips of the nodes it
+is monitoring. For example, if node A is monitoring node B, A would know the
+members of all strips in node B in addition to its local strips.
+In this case, the detected node will prepare a update message to inform all
+members of the strips with which the failed node is associated with. Assuming
+that every node that monitors other node will have knowledge of the strips that
+it contains and the members that the strips pertain. The node would send out
+a marker multicast first to confirm the nodes which are still functioning, and
+once all acknowledges have been received, it will proceed to send the update
+message to update their local knowledge of the strips to reach a consensus. The
+ordering of the messages wouldn't matter since the end state of any failure
+sequence for any strip would be the same. For example, given a strip of three
+members $\rightarrow 1-2-3$, if the updated failure sequence is given in any
+permutation by $[1, 2]$ or $[2, 1]$, the end results would be the same
+$\rightarrow 3$ since the remaining members from those two failure sequence is
+the same and the relative order of the members would stay the same.
+\begin{comment}
+Let's assume there is a pair of failure patterns with the same members but
+different orders that would do update operations on the same strip but would
+leave the strip in different results. If that's true, then by building back the
+strips from the result in the order of update operations would result in
+a different starting state, that implies the strips have different members or
+member orders to start with, a contradiction.
+\end{comment}
+Therefore there is no need for extra communication overhead to maintain
+ordering to gaurantee level of consistency between members since they will all
+come to the same conclusion given each receiver receive the same messages.
+
+% performance? complexity analysis?
+
+\subsection{Reconfiguration}
+\label{s:reconfig}
+
+Even though consensus of the new configuration for each affected strip has been
+reached, some nodes with component that acts as a client to another component
+for data or the reverse would also have to have consensus on the updated
+primary holder of each affected component. And the node that is monitoring the
+node monitored by the dead node would also need to update on its knowledge of
+its monitored node in order to recover the next possible failure.
+
+RASCO will initiate a reconfiguration service to reconfigure the network to adapt
+to the new strip configurations. Reconfiguration service is implemented by
+a distributed algorithm which is inititated by the detected nodes. First the
+initiator node would have to identify the components that are reading/writing
+data with the components carried by the dead host. This would be done by
+requesting the link information between components at the higher level provided
+by the application. Then each member of the strips of the connected components
+would be updated with the information about the change in the host of the
+failed components.
+
+Reconfiguration service has message complexity of $O(m)$ where m is the
+number of strips where its components are linked to the failed components.
+
+\begin{comment} % temporarily
+\section{Benchmarks}
+\label{s:benchmarks}
+
+% here states that we deployed on wireless sensor platform for proving that it
+% works for the most resource limited distributed platform
+
+\subsection{Implementation}
+
+\subsubsection{Setup}
+
+\subsubsection{Hardware Platform}
+
+All boards are equipped with an Atmel ATmega1280-16AU 8-bit microcontroller with 4K of EEPROM and 64k of flash. The boards hardware design is based upon Arduino hardware referenced design, in addition, every board has wires for mounting multiple wireless protocol adapters such as ZWave, ZigBee. In the following experiments, every board is only equipped with a ZWave adapter, and only communicating through ZWave. 
+
+Every board is also pre-installed with a modified version of NanoVM (ref here) called “NanoKong” that supports all the basic WuKong framework protocols including the new additions from the work in the previous chapter.
+
+A PC with wireless access is dedicated for hosting the WuKong Master software which is responsible for managing WuKong applications for the whole system and serves as a mean to present an interface to the users.
+
+Three boards will be used in the experiments below. One of them is equipped with a light sensor that returns a byte indicating the light level around the sensor. The rest are equipped with a relay which each controls the power supply of a lamp.
+
+An additional board with the same hardware specification is used as a gateway between the Master and the sensor network.
+
+\subsubsection{Heartbeat Daisy Chains}
+
+\subsubsection{Strips}
+
+\section{Experimental Results}
+\label{s:results}
+
+
+%Describe limits: 
+%1. Fully connected network
+
+\section{Experiment - Application Deployment}
+
+To evaluate the performance of the result of the new mapping algorithm and the overall fault tolerant framework, an application shown in Figure 1 will be deployed.
+
+\subsection{Experiment Design}
+
+In this experiment, an application shown in figure 1 above will be deployed with a fault tolerance user policy shown in the figure 2 upon the hardware setup described in the previous section three times to evaluate its performance.
+
+The application requires a light sensor and a light actuator. The light actuator will turn on the light if the sensed light value is below a threshold specified from the numeric controller. Numeric controller is fixed on a value of 200. The light value takes a byte ranging from 0 to 255. The comparison is done with a virtual component Threshold in native implementation.
+
+We will simulate a node failure by unplugging the power supply of the active light sensor node on all tries.
+
+\subsection{Experimental Result}
+
+The performance of the fault tolerance system is evaluated with the metrics listed below:
+\begin{enumerate}
+\item Correctness, whether the system is configured to do what the mapping result specifies, including the heartbeats, heartbeat periods, recovery chains, application links.
+\item Communication overhead used for heartbeats
+\item Communication overhead for failure recovery
+\item Failure detection success rate
+\item Fault recovery success rate
+\item The average time to recover from the time of failure
+\item The average number of messages used to recover the system
+\end{enumerate}
+\end{comment} % temporarily
