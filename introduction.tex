@@ -1,5 +1,8 @@
+\cleardoublepage
+\singlespacing
 \chapter{Introduction}
 \label{c:intro}
+\doublespacing\nointerlineskip
 
 This chapter provides an overview of the thesis. First, we describe why
 WSN deployment and maintenance are still difficult, and how 
@@ -135,18 +138,45 @@ the deployment.
 
 \end{comment}
 
-\section{Problem definition}
+\section{Problem Definition}
 
-\subsection{Component Based Fault Tolerance System}
+\subsection{Service Availability for Component Systems}
 
+Overview: State the fault tolerance problem for WuKong
+
+\subsubsection{Loosely-coupled Component Based Systems for M2M Applications}
+
+Overview: Motivates the problem in M2M systems, the unique situations that
+leads to RASCO and SetCovering algorithms, namely service availability, and
+deployment problem
+
+\begin{comment}
+It is a challenge as most embedded systems have
+really hard resource constraints and usually deploy in large quantity which
+dooms the thought of storing or maintaining any internal states.
+Without able to store or maintain states, data replication is infeasible for
+systems under this constraints.
+\end{comment}
+
+\begin{comment}
 The development and deployment for a fault tolerant application is still
 immature in most component based middleware. Even though components are modular
 in providing reconfigability to applications, they are still not failure resistent
 and cannot recover from failures. The problem is worsen when the number of
 components increase in applications, the developers would still bear the burden
 of manually programming the applications to ensure fault tolerance.
+\end{comment}
 
-\section{Proposed Solution}
+\begin{comment}
+The development and deployment for a fault tolerant application is still
+immature in most component based middleware. Even though components are modular
+in providing reconfigability to applications, they are still not failure resistent
+and cannot recover from failures. The problem is worsen when the number of
+components increase in applications, the developers would still bear the burden
+of manually programming the applications to ensure fault tolerance.
+\end{comment}
+
+\section{Approach}
 
 % an overview of what I propose, what could benefit from it
 I propose to investigate how applications described in high-level flow based 
@@ -208,6 +238,31 @@ Profile Framework, a new group communication protocol is needed to support
 fault tolerence.
 
 \end{description}
+
+\subsection{Related Work}
+
+\subsubsection{RAMBO: A Reconfigurable Atomic Memory Service for Dynamic
+  Networks}
+
+\subsubsection{ESDS: Eventually-Serializable Data Services}
+
+\subsubsection{Service-Oriented Architecture}
+
+Neumann et. al.\cite{Neumann2010} proposed a new redundancy infrastructure to
+bring Service-oriented Architecture (SOA) to Wireless Sensor Networks (WSN).
+
+SOA is an established approach to ease development of complex distributed
+applications by encapsulating system compoennts into services, this allows a more
+flexible way to construct and develop interactions in application.
+
+% what they lack for solving the problems I face
+However, these approaches don't work well with applications where
+reconfigurability, interoperability, and heterogeneity are requirements.
+Existing approaches do not consider reconfigurability in the
+application level that might invalidate existing infrastructure built upon one
+instance of applications in another new instance when redeployed.
+Most existing approaches also are not efficient in providing reducing the
+development overhead to simplify fault tolerance in existing applications.
 
 \section{Thesis Organization}
 

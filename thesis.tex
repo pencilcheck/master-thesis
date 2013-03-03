@@ -9,9 +9,11 @@
 \usepackage{setspace}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{pseudocode}
+\usepackage[none]{hyphenat} % no dash at line break
 
 % uncomment this if you want to indent the first paragraph
-%\usepackage{indentfirst}
+\usepackage{indentfirst}
 
 % uncomment this if you want to make pdf file with hyperlink
 % \usepackage[dvipdf,colorlinks=false,unicode]{hyperref}
@@ -31,7 +33,6 @@
 \pagestyle{plain}
 
 \begin{document}
-\doublespacing
 
 % cover page
 \maketitle
@@ -62,9 +63,8 @@
 % input your thesis here
 \input{introduction}
 \input{background}
-\input{related}
-\input{fur}
-\input{experiments}
+\input{rasco}
+\input{deploy}
 \input{conclusion}
 
 \backmatter
