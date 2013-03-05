@@ -72,12 +72,13 @@ any changes in the strips.
 
 Figure~\ref{fig:strips-network} illustrates a network with many strips as
 strips crisscross and layout in the network. Each block represents a host, and
-each circle is a WuObject. Notice that only the head (one with no arrows
-pointing at) of the strip is active. The name of the component represents the
-type of the component, and replicas have the same name as the component but
-with an apostrophe next to it. As shown in the figure, each strip could
-crisscoss and could have replicas residing with another component within the
-same host.
+each circle is a WuObject. Notice that only the head (ones with no arrows
+pointing at) of the strip is active and will have data flow through them as
+represented by a thick arrow. The name of the component represents the type of
+the component, and replicas have the same name as the component but with an
+apostrophe next to it. As shown in the figure~\ref{fig:strips-network}, each
+strip could crisscoss and could have replicas residing with another component
+within the same host.
 
 \section{Decentralized Failure Detection}
 \label{s:dfd}
@@ -102,20 +103,32 @@ the ordering of the strips. The heartbeat protocol is a layer below the strips
 as a support for network fault detection, the algorithm above will take
 advantage of the given information from the layer below to recover the system.
 
+One of the reasons this is good for the system is extensibility and
+separation of concerns, by excluding both domains into separate layers each
+layer could optimize on its own record without being binded by another layer
+which might hinder each other. The separation of concerns would make each layer
+modular and be able to switch and plug in for a different algorithms that might
+result in a better performance for a particular deployment. Besides, because
+every node could carry more than one WuObject, and the distribution of the
+WuObjects might not always be ideal and evenly spread out to the network,
+heartbeat protocol designed around current strip assignments will not
+be able to cover the whole network or to be optimized in communication overhead.
+
 \section{Failure Recovery}
 \label{s:fr}
 
 When a failure is detected, there are two tasks that the system will have to do
-to recover from failures. First it has to maintain membership consistency among
-affected strip members. Second, it would need to propagate the changes to
-reconfigure other parts of the system that depend on the locations of the heads
-of the affected strips in order to function. The work built on a stateless
-system as defined by WuKong middleware with FBP applications where none of the
-services need to store any states or to remember any history. For example,
-WuKong applications don't have services that require to store past values of
-some variables. Therefore strips members (except the head) with inactive
-WuObjects are not the same replication as defined in other related work, but
-simply as backups that will take over when the active WuObject failed.
+to recover from failures. First it has to make sure all members that carries
+the strips in the failure nodes will have consistent view of the strips.
+Second, it would need to propagate the changes to reconfigure other parts of
+the system that depend on the locations of the heads of the affected strips in
+order to function. The work built on a stateless system as defined by WuKong
+middleware with FBP applications where none of the services need to store any
+states or to remember any history. For example, WuKong applications don't have
+services that require to store past values of some variables. Therefore strips
+members (except the head) with inactive WuObjects are not the same replication
+as defined in other related work, but simply as backups that will take over
+when the active WuObject failed.
 
 
 % should state stateless distributed system to enable no replication in the
@@ -124,7 +137,7 @@ simply as backups that will take over when the active WuObject failed.
 % should also state how it is stateless, and how it is different from other
 % distributed systems
 
-\subsection{Consistency within strip members}
+\subsection{Consistency among strip members}
 
 Typically several strips would be cut off in the event of failure, and if the
 failed node carries some active WuObjects from some strips, the system would
@@ -161,12 +174,21 @@ member orders to start with, a contradiction.
 \end{comment}
 Therefore there is no need for extra communication overhead to maintain
 ordering to gaurantee level of consistency between members since they will all
-come to the same conclusion given each receiver receive the same messages.
+come to the same conclusion given each receiver receive the same messages. The
+overhead are messages required to update each member's internal membership
+information.
 
 % performance? complexity analysis?
 
 \subsection{Reconfiguration}
 \label{s:reconfig}
+
+\begin{figure}[h!]
+\caption{A reconfiguration of a network}
+\label{fig:reconfig-network}
+\centering
+    \includegraphics[width=\linewidth]{figures/reconfig-network}
+\end{figure}
 
 Even though consensus of the new configuration for each affected strip has been
 reached, some nodes with component that acts as a client to another component
@@ -191,17 +213,18 @@ update and bring the recovered nodes up to date, and vice versa, so the nodes
 whose WuObjects are receiving data from the failed nodes will initiate a data
 pull after receiving the \emph{reconfig} message.
 
-% remember also to state the important of reacting the other hosts with
-% connected WuObjects to push or pull to get the new head to get to the last
-% valid state
-
-% state clearly what happened, for each case, push or pull
-
+As shown in figure~\ref{fig:reconfig-network}, the network on the right has
+a node failed that bring both current heads of strips A, and B down. As shown
+on the right, after recovery, the nodes that have the active WuObjects
+connecting to each new heads in both strips A and B both will be updated on the
+current location of the heads of both strips. Because the bottom left node
+contains the new head of strip B and is connected to strip A, therefore it will
+be updated on the location of the new head of strip B, and vice versa.
 
 Reconfiguration service has message complexity of $O(m)$ where m is the
 number of strips where its components are linked to the failed components.
 
-\begin{comment} % temporarily
+\begin{comment} % temporary
 \section{Benchmarks}
 \label{s:benchmarks}
 
