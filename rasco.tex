@@ -5,8 +5,7 @@
 \doublespacing\nointerlineskip
 
 This chapter presents the Reconfigurable Atomic Service for Component Objects,
-RASCO in short. First the reconfigurable service problem is described in
-section~\ref{s:rss} and the profile framework is described in section~\ref{s:pf}.
+RASCO in short. First, the profile framework is described in section~\ref{s:pf}.
 Section~\ref{s:ss} describes a new replicas configuration models called strips
 to track and handle replicas dynamically. After that section~\ref{s:dfd},
 ~\ref{s:fr} and ~\ref{s:reconfig} presents the distributed algorithm used to
@@ -14,19 +13,6 @@ solve the problem. The models and algorithms are tested extensively on various
 benchmarks, described in section~\ref{s:benchmarks}, and the results are
 discussed and compared with existing fault tolerant system models in
 section~\ref{s:results}
-
-\section{Reconfigurable Service System}
-\label{s:rss}
-
-Data replication is a fundamental technique to distributed systems as it improves
-availability, eliminiates single points of failure. A system that is hardwired
-to get data from node X will fail when X fails. We want to design a system
-where node Y, which can provide the same service, can take over when X fails.
-
-Reconfigurable Atomic Service for Component Objects (RASCO) is
-designed to solve this problem by introducing a new replication model. RASCO
-allows in situ reconfiguration for maintaining consistency between services and
-replicas.
 
 \section{Profile Framework}
 \label{s:pf}
@@ -40,7 +26,11 @@ actuator nodes, two main concepts in profile framework, namely WuClass and
 WuObject, was introduced to allow WuKong to track, and manage physical
 resources in the network.~\cite{Reijers} However WuKong has no support for
 fault tolerance. We proposed a solution to track, manage and maintain
-consistency among replicas based on concepts from profile framework.
+consistency among replicas based on concepts of WuClasses and WuObjects from
+profile framework. Replicas replicate WuObjects, such as WuClass ids but not
+their respective ports on their respective hosts, and link information. Among
+the hosts that have the same WuObjects, only one is active and is the primary
+service provider in the eyes of other services and clients.
 
 \section{Strips} % good name?
 \label{s:ss}
@@ -52,39 +42,42 @@ consistency among replicas based on concepts from profile framework.
     \includegraphics[width=\linewidth]{figures/strips-network}
 \end{figure}
 
+This work proposed an algorithm that uses strips. Strips are a sequence of
+WuObjects on different nodes where the node holding the first WuObject is
+active in the system while the rest are backups. The order of a strip is
+typically determined by the system that deploys the application. Strips
+consists of members which are chained together in series to the next that when
+one member failed, the next one will take over, except the last one. For
+example, for a strip constructed like this $\rightarrow 1-2-3-4-5$, when
+3 failed 4 will take over the place of 3 and shift all the objects after it
+forward, and the new chain will look like this: $\rightarrow 1-2-4-5$. Now if
+1 failed, 2 will take over and members after 2 (including 2) will shift one
+position forward that would result in $\rightarrow 2-4-5$. When a backup
+becomes the head of the strip, it will become active in the system.
 
-This work proposed an algorithm that uses strips, each of which consists of
-service holders prioritized by some metrics to keep track of changes and
-maintain service availability in the presence of failures. Strips consists of
-members which are chained together in series to the next that when one member
-failed, the next one will take over, except the last one. For example, for
-a strip constructed like this $\rightarrow 1-2-3-4-5$, when 3 failed 4 will
-take over the place of 3 and shift all the objects after it forward, and the
-new chain will look like this: $\rightarrow 1-2-4-5$. Now if 1 failed, 2 will
-take over and members after 2 (including 2) will shift one position forward
-that would result in $\rightarrow 2-4-5$. Typically the head of the strips is
-the component in the application, while the rest are replicas.
+In a heterogeneous network, each host could carry more than one WuObjects.
+Since each strip represents a specific component in the application, there will
+typically be many of these strips present in the network where each of them
+could crisscross with one and others. So it is typical that a node could be
+carrying inactive WuObjects and active WuObjects at the same time.
 
-In a heterogeneous network, each host could carry more than one WuObjects and
-could provide more than one service. Since each strip represents a specific
-component in the application, there will typically be many of these strips
-present in the network where each of them could crisscross with one and others.
-It would mean that a node could be a service provider and a replica at the
-same time.
-
-A node stores membership information of the strips where it is a member of and
-also the strips of the nodes it is monitoring. Each stripe is stored as a list
-with membership address information in the same order as the order of the
+A node stores membership information of the strips where it is a member of. As
+later sections will also introduce to the heartbeat protocols that each node will
+be monitoring some other nodes, each node will also store the membership
+information of the strips of the nodes it is monitoring. Each stripe is stored
+as a list with membership address information in the same order as the order of the
 strips so for example, the current head of the strip is the first element of
 the list. Nodes use the information stored to track and notify the nodes for
 any changes in the strips.
 
 Figure~\ref{fig:strips-network} illustrates a network with many strips as
 strips crisscross and layout in the network. Each block represents a host, and
-each circle is a component. The name of the component represents the type of
-the component, and replicas have the same name as the component but with
-an apostrophe next to it. As shown in the figure, each strip could crisscoss
-and could have replicas residing with another component within the same host.
+each circle is a WuObject. Notice that only the head (one with no arrows
+pointing at) of the strip is active. The name of the component represents the
+type of the component, and replicas have the same name as the component but
+with an apostrophe next to it. As shown in the figure, each strip could
+crisscoss and could have replicas residing with another component within the
+same host.
 
 \section{Decentralized Failure Detection}
 \label{s:dfd}

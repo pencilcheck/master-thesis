@@ -5,20 +5,16 @@
 \doublespacing\nointerlineskip
 
 This chapter provides an overview of the thesis. First, we describe why
-WSN deployment and maintenance are still difficult, and how 
-an intelligent middleware which employs a new programming model which separates
-design abstractions between high-level application design and low-level
-hardware constructs could be addressing the challenge. Next, we describe
-the needs for fault tolerance and why it is hard on such middleware. Lastly, we
-describe our proposed solution to this problem.
+WSN deployment and maintenance are still difficult and then we introduce the
+reconfigurable fault tolerance system problem and approaches to solving this
+problem. Next, we describe some related work. Lastly, we present our proposed
+solution to this problem.
 
-\section{Motivation}
-
-\subsection{Wireless Sensor Network Deployment is Hard}
+\section{Wireless Sensor Network Deployment is Hard}
 
 Wireless sensor networks are areas filled with network of tiny, resource
 limited sensors communicating wirelessly. Each sensor is capable of sensing the
-enviornment in its proximity. Wireless sensor networks are employed in
+enviornment in its proximity. Wireless sensor networks are typically employed in
 a variety of applications ranging from home automation to millitary.
 
 Sensor networks offer the ability to monitor real-world phenomena in detail and
@@ -42,245 +38,105 @@ Testbed in laboratory environment can still not model the full extents of the
 influences a real world enviroment could do. Deployment still a big problem in
 wireless sensor network applications.
 
-\subsection{Maintaining WSN deployment}
+\section{Redundancy architecture}
 
-% TODO: could also borrow(rephrase the introduction in related work for FT
-
-% talk briefly about fault tolerance, what it is, why it is important, give some examples if possible
-
-The possibilities of sensor failures is a fundamental characteristic of 
-distributed applications. So it is critical for distributed applications to
-have the ability to detect and recover from failures automatically, since not
-only the sensor deployments are usually huge in scale, the deployment are to
-run unattended for a long period of time.
-
-There have been abundance of research in fault tolerance for wireless sensor
-network deployments proposing low-level programming abstractions or framework
-to implement redundancy or replication.\cite{Whitehouse}\cite{Neumann2010}
-
-\subsection{Component based middleware for distributed applications}
-
-% TODO: need to change the paragraphs below, the reaons is slightly different
-% now
-
-% reasons for software componentization
-However, the increase in number, size and complexity in WSN applications makes
-high-level programming an essential needs for development in WSN platforms.
-
-This is supported by several reasons. Firstly, the diversity of hardware and
-software for WSN platform is as diverse as the programming models for such
-platforms\cite{Sugihara2008}. Secondly, existing programming models usually
-sacrifice resource usage with efficiency, which is not suitable for tiny
-sensors in sensor networks. Thirdly, existing programming models still forces
-developers to learn low-level languages, which imposes an extra burden to
-developers, and it goes to show when the reusability for those programming
-models are low in existing applications.
-
-% what is software componentization, what is component models
-Software componentization, or lightweight component models, has been recognized to
-tackle the concerns above. It brings several advantages over past
-approaches with separate of concern, module reusability, de-coupling, late
-binding.
-
-The primary advantages of this approach is reconfigability, adaptability in 
-applications like never before, since the high-level components and
-low-level constructs are loosely decoupled and interpretted by the middleware, 
-high-level application logic can be added functionalities and framework around
-it without changing the application logic at all, and applications can adapt to
-different hardware configurations without changing any internal logic.
-
-In Intel-NTU Center Special Interests Group for Context Analysis and Management 
-(SIGCAM), our team have been collaborating on a project, called WuKong, to develop 
-an intelligent middleware for developing, and deploying machine-to-mahicne 
-(M2M) applications. The main contribution of this project is to support
-inlligent mapping from a high-level flow based program (FBP) to
-self-identified, context-specific sensors in a target
-environment\cite{Reijers}.
-
-
-
-
-
-
-% misc not needed for now
-\begin{comment}
-heterogeneous sensor platform where the level of resource constrains would be
-different as some are designed for doing very specific job (such as sensor
-motes), some were designed for handling large traffic and relaying messages
-(such as gateway), the sensor network will each be connected to different types
-network interfaces, and will have different types of sensors connected. The
-complexity involved grows exponentially high.
-
-, subject to unreliable network, high risk of node failures, and expected
-to run unattended for a long period of time, several work have been proposing
-lightweight component models to ease the development and deployment for WSN
-applications.
-
-problem is to separate applications into components where each will be
-encapsulated into a single unit of operation that could be mapped into
-low-level hardware functions running on the sensor
-nodes\cite{Hughes2012}\cite{Taherkordi2010}.
-
-However, as most work in this field of research assume homogeneous sensor
-platforms and application requirements, fault tolerant solution for one
-application cannot be extended to other applications. The chance of reusability
-in those solutions among applications is still low.
-
-Advances in sensor, radio technology and programming tools in recent years
-enables rapid development of complex WSN applications on heterogeneous sensor
-platforms, however, as current architectures are built around the idea of
-a long deployment cycle, rapid redeployment is nearly impossible execute.
-
-By bringing component based middleware to the playground, we could decouple
-application logic and actual implementation easily, fault tolerance can be
-broken down into several components which can be reused in different stage of
-the deployment.
-
-\end{comment}
+A distributed system usually consists of hosts that host services that clients or
+other services could read or write with some associated communication
+frequencies according to the application requirements. The
+problem of partial failures makes service redundancy a fundamental technique to
+distributed systems as it improves availability, eliminiates single points of
+failure. A system that is hardwired to get data from node X will fail when
+X fails. The problem of designing a system with replicas where node Y, which
+can provide the same service as X, can take over when X fails. To design such
+system, it is important to have a clear definition of a service such that it
+could be replicated onto heterogeneous hosts. It is
+also essential that the system could track and manage available replicas in the
+network. Autonomy is an important attribute of distributed systems since most
+of them would be left unattended for a long period of time; systems should be
+able to reconfigure and recover themselves in the event of failure.
 
 \section{Problem Definition}
 
-\subsection{Service Availability for Component Systems}
+%Overview: State the fault tolerance problem
+%Overview: Motivates the problem in M2M systems, the unique situations that
+%leads to RASCO
+The problem of designing a distributed system that could handle failures and
+increase availability for all services is different depending on the system and
+application requirements. However, some generalities can be established. There will
+usually be a set of components which will be assigned to a set of hosts where 
+components are associated with some communication frequencies and are
+reading/writing data from other components. Hosts could fail, and there is
+a time constraints on the recovery process. The objective is to detect and
+handle failures with mimimum communication and memory overhead.
 
-Overview: State the fault tolerance problem for WuKong
+In this thesis, the problem of reconfigurable fault tolerant system based on
+WuKong component based architecture is considered. The problem is
+interesting and worth solving by itself as this problem existed in all
+kinds of distributed systems.
 
-\subsubsection{Loosely-coupled Component Based Systems for M2M Applications}
+\subsection{WuKong: Intelligent Middleware for Flexible Sensor Configurations in
+  M2M Systems}
 
-Overview: Motivates the problem in M2M systems, the unique situations that
-leads to RASCO and SetCovering algorithms, namely service availability, and
-deployment problem
+WuKong: Intelligent Middleware for Flexible Sensor Configurations in M2M
+Systems~\cite{Reijers} consists of frameworks that supports flexible
+configurations of application specifications from flow-based programming.
+It uses component based architecture where services could be represented by
+software components which will be deployed to a set of hosts, and each host
+could hold more than one component.
 
-\begin{comment}
-It is a challenge as most embedded systems have
-really hard resource constraints and usually deploy in large quantity which
-dooms the thought of storing or maintaining any internal states.
-Without able to store or maintain states, data replication is infeasible for
-systems under this constraints.
-\end{comment}
+\subsection{Challenges}
 
-\begin{comment}
-The development and deployment for a fault tolerant application is still
-immature in most component based middleware. Even though components are modular
-in providing reconfigability to applications, they are still not failure resistent
-and cannot recover from failures. The problem is worsen when the number of
-components increase in applications, the developers would still bear the burden
-of manually programming the applications to ensure fault tolerance.
-\end{comment}
+Most existing work treat the problem as a consensus problem where, based on the
+terminologies from Leslie Lamport on his paper Paxos~\cite{Lamport2001}
+where acceptors will come to a consensus for the value of a particular
+variable. And so the ordering properties is really important among the
+acceptors so none of them could reach a different state. However distributed
+systems have some unique properties that makes this problem really hard is that
+communication between nodes are not reliable and the ordering of the messages
+received could be out of order or dropped.
 
-\begin{comment}
-The development and deployment for a fault tolerant application is still
-immature in most component based middleware. Even though components are modular
-in providing reconfigability to applications, they are still not failure resistent
-and cannot recover from failures. The problem is worsen when the number of
-components increase in applications, the developers would still bear the burden
-of manually programming the applications to ensure fault tolerance.
-\end{comment}
+Typically distributed systems such as wireless sensor networks have tight
+resource constraints and usually deploy in large quantity which
+dooms the thought of storing or maintaining any additional states, resouces has
+to be used economically.
 
 \section{Approach}
 
-% an overview of what I propose, what could benefit from it
-I propose to investigate how applications described in high-level flow based 
-program language could translate to low level constructs to create a
-fault tolerant, applications in WuKong. In detail, we investigate how
-system components collaborate to achieve a common goal while satisfying
-application requirements to achieve self-fault detection, self-fault diagnosis,
-and self-fault recovery. 
-
-% NEED REVIEW
-With colleagues from the Intel-NTU Special Interests Group for Context Analysis 
-and Management (SIGCAM) at National Taiwan University, I have developed a 
-new intelligent fault tolerance system, called Fur (temp), as part of WuKong
-project, an Intelligent Middleware for developing and deploying 
-applications on distributed platforms. Our proposed system consists of agents
-collaborating to simplify fault
-tolerance development and to shorten deployment cycle for heterogeneous M2M
-applications.
-
-% NEED REVIEW
-The frivolous nature of requirements in applications, and actual physical sensor 
-environements, along with the hard to predict user priorities, each contributes
-a unique challenge in its flavor to developing an adapatable fault tolerance 
-solution.
-
-Below are the list of areas that this work will address solutions in.
-
-\begin{description}
-\item[Intelligent Mapping] \hfill \\
-% talk briefly about compilation, what it is, why it is important, give some examples if possible
-Flow-Based Programming (FBP) Paradigm has been used in WuKong to enable loosely
-coupling between high-level application logic and low-level hardware
-constructs. WuKongs
-also achieves late-binding to bridge the worlds together at the last stage of
-deployment using a technique
-known as intelligent mapping. Intelligent Mapping is a process in which
-high-level application logics are broken down into components and then mapped
-to appropriate nodes. Sensor Profile Framework (SPF) are used in mapping to
-handle heterogeneous sensor platforms, thus applications can be successfully
-converted into lower hardware constructs to generate low-level intermediate
-code to deploy to the sensor network.
-
-\item[Sensor Profile Framework] \hfill \\
-Sensor Profile framework provides an high-level abstraction to
-sensor capabilities to enable building more complex application
-logic.\cite{Reijers}
-
-\item[User Policy Framework] \hfill \\
-Allowing user-friendly specification of application executive objectives, and
-context-dependent management of system peformance.
-
-\item[Group Communication Systems] \hfill \\
-A group communication system deals protocols for
-synchronizing group states among group members in an consistent manner.\cite{Birman2012c}.
-When the applications are deployed to the sensor network, groups will be
-formed to implement redundancy. For a group of low-power sensor to collaborate on
-a common goal, along with high-level application requirements and Sensor
-Profile Framework, a new group communication protocol is needed to support 
-fault tolerence.
-
-\end{description}
+This thesis proposed an original approach that hasn't been done before.
+Previous work on the problems has been considered the use of consensus
+protocols with some sort of configurations that contain a set of members, and
+for every failure the configuration will be reconfigured using the said
+consensus protocol to reach consensus in the system. However, the results
+haven't shown to work under heterogeneous network with nodes that could carry
+multiple components. This thesis proposed a novel algorithm with the use of
+a distributed data structure to maintain the list of members in order that
+provides a way to track redundancies and recovery from failures when nodes
+could potentially be both a backup and a service provider, and it also
+eliminates the needs for messages ordering to reach consensus.
 
 \subsection{Related Work}
 
-\subsubsection{RAMBO: A Reconfigurable Atomic Memory Service for Dynamic
-  Networks}
-
-\subsubsection{ESDS: Eventually-Serializable Data Services}
-
-\subsubsection{Service-Oriented Architecture}
-
-Neumann et. al.\cite{Neumann2010} proposed a new redundancy infrastructure to
-bring Service-oriented Architecture (SOA) to Wireless Sensor Networks (WSN).
-
-SOA is an established approach to ease development of complex distributed
-applications by encapsulating system compoennts into services, this allows a more
-flexible way to construct and develop interactions in application.
-
-% what they lack for solving the problems I face
-However, these approaches don't work well with applications where
-reconfigurability, interoperability, and heterogeneity are requirements.
-Existing approaches do not consider reconfigurability in the
-application level that might invalidate existing infrastructure built upon one
-instance of applications in another new instance when redeployed.
-Most existing approaches also are not efficient in providing reducing the
-development overhead to simplify fault tolerance in existing applications.
+The problem of a distributed fault tolerant system has been addressed in many
+literature~\cite{Neumann2010,Lamport2001,Luna2008,Liu2009,Sussman2000,Lynch2002},
+however none of the results considered the case of nodes that could carry
+multiple components and applications with complicated structure with sensors,
+computation, and actuators. In contrast, most of their assumptions
+are based on homogeneous network and applications with a few types
+of services.
 
 \section{Thesis Organization}
 
 % an overview of subsequent chapters
 Our work overlaps many diverse but interconnected domains, each topic being 
-itself a subject of advanced research and abundant literature. The second chapter
-gives a brief background overview of these domains. We start by describing 
-wireless sensor networks. Then we go on to discuss fault tolerant design for
-distributed systems, it's objectives and recent developments. Finally, we will
-be talking about component model based middleware. The third chapter gives some
-overview of related work. The following two chapters describe our work in fault
-tolerance for WuKong system. We first give an overview of some essential
-components in WuKong. Then we give a comprehensive description of our fault
-tolerance system architecture. We conclude this chapter by highlighting how the
-integration of those subsystems, through careful scrutiny, could bring to the
-development of a fault tolerant WSN application. We then present two
-experiments to evaluate the performance, correctness of each mechanism in the
-following chapter.
-%TODO:Case studies, experiments and evaluation
-This thesis concludes with a summarization of our proposed system and future
-work.
+itself a subject of advanced research and abundant literature.
+Chapter~\ref{c:intro} gives an introduction to the problem and outline of the
+approach used to solve the problem. The second chapter
+gives a brief background overview of the topic that this work based on. 
+We start by describing wireless sensor networks. Then we go on to discuss fault
+tolerant design for distributed systems, it's objectives and recent
+developments. Then we talked about component model based middleware. The
+following chapter describe our work in a reconfigurable component based fault
+tolerance system. In this chapter we give detail description of our method and
+algorithms, then we present benchmark results to evaluate the performance,
+correctness of each mechanism followed up with a deployment with an application
+from WuKong. And finally, chapter~\ref{c:conclusion} presents some conclusions.

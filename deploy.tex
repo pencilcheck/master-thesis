@@ -21,15 +21,51 @@ with certain metrics.
 Limits will be hard to define here
 \end{comment}
 
-\section{Policy Framework}
+RASCO allows for continuous and large changes in the underlying
+network. Providing consistent shared objects in a dynamic network is what RASCO
+is developed for. RASCO achieves this by introducing the use of strips. Strips
+enable the system to track, maintain replicas and maintain consistency in the
+presence of failures. However, the number of failures RASCO can handle is still
+limited by the number of spare nodes that could provide required services. It is
+possible after a large change in the network, none of the nodes providing
+a service is there anymore, so it is impossible for the newly joined
+nodes to tap in and take over. To handle this large and permanent changes,
+WuKong supports a system progression framework that could handle such large
+change in the network with dynamic \emph{reconfiguration}. WuKong
+reconfiguration reassigns associations between software components and hosts.
+But it does not have a solution to what the new assignment would look like.
+This deployment problem is a gap that should be considered.
 
-\subsection{Fault Tolerance Policy}
+In the case of RASCO where deployment has to be continuously adjusted, the
+deployment problem is more of a online problem, so there is a tighter limit on
+time available to compute the assignment and strips.
+
+\section{Optimal deployment}
+
+The problem of deploying a specific distributed system onto a network structure
+typically consists of mapping the components of the system onto the hosts of
+the network. The mapping is subject to constraints. In the case for RASCO, the
+constraints are whether a node supports certain service to host certain
+components, and how much communication overhead would induce from the
+assignment to maintain consistency for the strips, and from the perspective of
+WuKong, some components need to seaparate from other components to achieve
+fault tolerance, and some needs to place together to function properly.
+
+Determining such an optimal deployment is a \emph{combinatorial optimization}
+problem. Combinatorial optimization problems are generally extremely
+challenging computationally. However, the problem is ubiquitous as it happens
+all around our lifes, whether it is companies trying to assign limited
+resources to meet certain objectives, or institutions allocating resources to
+its staff members to minimize cost, are examples of combinatorial optimization
+problems. However it is difficult to predict what will and what will not work.
+It is unlikely that a single approach will be effective on all problems or
+instances of the same problems.
 
 \section{Set Covering Problem}
 
 % http://www.cs.dartmouth.edu/~ac/Teach/CS105-Winter05/Notes/wan-ba-notes.pdf
 
-\section{Greedy Approximation Method}
+\subsection{Greedy Approximation Method}
 
 \section{Hybrid Method}
 
