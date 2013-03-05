@@ -97,28 +97,60 @@ Our work assumed a ring topology heartbeat protocol such that a node A would
 send heartbeat to node B and so on, but the last node would send heartbeat back
 to node A.
 
+However, the heartbeat protocol used in the network is not directly related to
+the ordering of the strips. The heartbeat protocol is a layer below the strips
+as a support for network fault detection, the algorithm above will take
+advantage of the given information from the layer below to recover the system.
+
 \section{Failure Recovery}
 \label{s:fr}
 
-Several strips would be cut off in the event of failure, and if the
-failed node carries the component of some strips, the system which hardwire
-the location of the failed component would not able to continue to function. 
-Every node needs to have knowledge of the members of the strips of the nodes it
+When a failure is detected, there are two tasks that the system will have to do
+to recover from failures. First it has to maintain membership consistency among
+affected strip members. Second, it would need to propagate the changes to
+reconfigure other parts of the system that depend on the locations of the heads
+of the affected strips in order to function. The work built on a stateless
+system as defined by WuKong middleware with FBP applications where none of the
+services need to store any states or to remember any history. For example,
+WuKong applications don't have services that require to store past values of
+some variables. Therefore strips members (except the head) with inactive
+WuObjects are not the same replication as defined in other related work, but
+simply as backups that will take over when the active WuObject failed.
+
+
+% should state stateless distributed system to enable no replication in the
+% sense of other related work
+
+% should also state how it is stateless, and how it is different from other
+% distributed systems
+
+\subsection{Consistency within strip members}
+
+Typically several strips would be cut off in the event of failure, and if the
+failed node carries some active WuObjects from some strips, the system would
+not able to continue to function. RASCO will attempt to recover by letting the
+detector of the failure to initiate the recovery algorithms.
+Since the detector will be responsible for recoverying for the failed node,
+every node needs to have membership knowledge of the strips from the nodes it
 is monitoring. For example, if node A is monitoring node B, A would know the
-members of all strips in node B in addition to its local strips.
-In this case, the detected node will prepare a update message to inform all
-members of the strips with which the failed node is associated with. Assuming
-that every node that monitors other node will have knowledge of the strips that
-it contains and the members that the strips pertain. The node would send out
-a marker multicast first to confirm the nodes which are still functioning, and
-once all acknowledges have been received, it will proceed to send the update
-message to update their local knowledge of the strips to reach a consensus. The
-ordering of the messages wouldn't matter since the end state of any failure
-sequence for any strip would be the same. For example, given a strip of three
-members $\rightarrow 1-2-3$, if the updated failure sequence is given in any
-permutation by $[1, 2]$ or $[2, 1]$, the end results would be the same
-$\rightarrow 3$ since the remaining members from those two failure sequence is
-the same and the relative order of the members would stay the same.
+members of all strips in node B in addition to its local strips. Strips only
+specifies the order of recovery, it is not correlated with the network
+structure for the fault detection, in other words, a strip with A and B doesn't
+mean B is monitoring A, as B could be monitored by C which depends on the
+structure of heartbeat protocol layer.
+In the initial algorithm, the detector node will prepare a update message to
+inform all members of the strips with which the failed node is associated with.
+Assuming that every node that monitors other node will have knowledge of the
+strips that it contains and the members that the strips pertain. The node would
+send out a marker multicast first to confirm the nodes which are still
+functioning, and once all acknowledges have been received, it will proceed to
+send the update message to update their local knowledge of the strips to reach
+a consensus. The ordering of the messages wouldn't matter since the end state
+of any failure sequence for any strip would be the same. For example, given
+a strip of three members $\rightarrow 1-2-3$, if the updated failure sequence
+is given in any permutation by $[1, 2]$ or $[2, 1]$, the end results would be
+the same $\rightarrow 3$ since the remaining members from those two failure
+sequence is the same and the relative order of the members would stay the same.
 \begin{comment}
 Let's assume there is a pair of failure patterns with the same members but
 different orders that would do update operations on the same strip but would
@@ -151,7 +183,20 @@ data with the components carried by the dead host. This would be done by
 requesting the link information between components at the higher level provided
 by the application. Then each member of the strips of the connected components
 would be updated with the information about the change in the host of the
-failed components.
+failed components with a \emph{reconfig} message containing the change in the
+location of the specific WuObjects. Right after receiving the \emph{reconfig}
+message, if the connected nodes whose WuObjects are pushing data to the
+WuObjects on the failed nodes, they will force to initiate a data push to
+update and bring the recovered nodes up to date, and vice versa, so the nodes
+whose WuObjects are receiving data from the failed nodes will initiate a data
+pull after receiving the \emph{reconfig} message.
+
+% remember also to state the important of reacting the other hosts with
+% connected WuObjects to push or pull to get the new head to get to the last
+% valid state
+
+% state clearly what happened, for each case, push or pull
+
 
 Reconfiguration service has message complexity of $O(m)$ where m is the
 number of strips where its components are linked to the failed components.
