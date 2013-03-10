@@ -6,7 +6,7 @@
 
 This chapter presents the Reconfigurable Atomic Service for Component Objects,
 RASCO in short. First, the profile framework is described in section~\ref{s:pf}.
-Section~\ref{s:ss} describes a new redundancy configuration model called Strips
+Section~\ref{s:ss} describes a new redundancy abstraction called Strips
 to track and handle redundant WuObjects dynamically. After that section~\ref{s:dfd}, ~\ref{s:fr} and ~\ref{s:reconfig} presents the distributed algorithm used to
 solve the problem. %#############The models and algorithms are tested extensively on various benchmarks, described in section~\ref{s:benchmarks}, and the results are discussed and compared with existing fault tolerant system models in section~\ref{s:results}##############
 
@@ -150,7 +150,7 @@ In the initial algorithm, the detector node will prepare a update message to
 inform all members of the strips with which the failed node is associated with.
 Assuming that every node that monitors other node will have knowledge of the
 strips that it contains and the members that the strips pertain. The node would
-send out a marker multicast first to confirm the nodes which are still
+send out a marker message first to confirm the nodes which are still
 functioning, and once all acknowledges have been received, it will proceed to
 send the update message to update their local knowledge of the strips to reach
 a consensus. The ordering of the messages wouldn't matter since the end state
@@ -217,7 +217,7 @@ be updated on the location of the new head of strip B, and vice versa.
 Reconfiguration service has message complexity of $O(m)$ where m is the
 number of strips where its components are linked to the failed components.
 
-\begin{comment} % temporary
+\begin{comment} 
 \section{Benchmarks}
 \label{s:benchmarks}
 
@@ -237,6 +237,7 @@ The performance of the fault tolerance system is evaluated with the metrics list
 \end{enumerate}
 \end{comment} % temporarily
 
+\begin{comment} 
 \section{Evaluation}
 
 In order to evaluate the performance of the fault tolerant system on RASCO and Strips, application shown in Figure~\ref{fid:application} will be deployed through WuKong. First we describe the hardware platform that will be hosting the Strips, then we describe the experimental setup for the deployment. Lastly, we present the results with discussion.
@@ -276,8 +277,7 @@ We will simulate a node failure by unplugging the power supply of the active lig
 
 \subsubsection{Heartbeat Protocols}
 
-\subsubsection{Strips}
-
 \section{Results}
 \label{s:results}
 
+\end{comment} 

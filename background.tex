@@ -7,8 +7,7 @@
 \section{Wireless Sensor Networks}
 
 Sensor nodes are equipped with low-power, low-cost, and failure-prone
-sensors or actuators. Sensor networks are networks of sensor nodes that connect to the
-physical space that are intrumented to produce data that could be meaningful
+sensors or actuators. Sensor networks are networks of sensor nodes that connect to the physical space that are intrumented to produce data that could be meaningful
 for further research. They collaborate to collect, process and disseminate
 environmental information\cite{ArchanaBharathidasan}.
 
@@ -49,7 +48,6 @@ It is also not successful in terms of making them adapatable and evolvable
 for new services in new environments.
 
 Next section presents an instance of a component based middleware.
-
 
 \section{WuKong: The intelligent middleware for M2M applications}
 
@@ -132,7 +130,7 @@ There are two main concepts in Sensor Profile Framework, WuClasses and
 WuObjects. WuClasss model components by exposing a number of properties
 describing, and allow access to, a specific resource represented by the class.
 Drawing from the example in Figure~\ref{fig:fbp-application}, the on off property of Light
-Actuator component is boolean writeonly. WuClass also implements an update()
+Actuator component is boolean writeonly. WuClass also implements an update
 function to describe a component's behavior. For
 example, Threshold has four properties: operator, threshold, value, output. The
 output value is determined from the previous 3 properties that it returns true
@@ -217,8 +215,8 @@ outside world. In WuKong system, one of the gateways will take on the role of
 higher management decision maker called \emph{Master} to making the decisions for
 deployment and producing the configuration of wireless sensor networks.
 
-% TODO:probably need more here
-
+% No cowboy surprises here
+\begin{comment}
 \subsection{User Policy Framework}
 
 \begin{figure}[h!]
@@ -240,5 +238,5 @@ M2M applications are inherently distributed, and hence it is inherently prone
 to failures since all nodes are running autonomously unattended for a long
 period of time where the external enviornmental influences could break and shut
 down the devices easily. Fault Tolerance policy enables users to specify
-relevent policy for tolerating failures in the granular level. This thesis will
-discuss more on fault tolerance policy in the following chapter.
+relevent policy for tolerating failures in the granular level.
+\end{comment}

@@ -4,40 +4,32 @@
 \label{c:conclusion}
 \doublespacing\nointerlineskip
 
-We introduced RASCO, a reconfigurable fault tolerance system for tracking, managing duplicated WuObjects, or software components where multi-model nodes are assumed in the network.
-
-We also described Strips, a redundancy configuration model, on how they are used in RASCO to achieve consistent views among strip members without any message ordering guarantees.
-
-Then we described algorithms that made this kind of architecture recovery from failures and reconfigure other parts of the network in linear message complexity.
-
-The previous chapters have described the work that has been done on WuKong
-platform on the reconfigurable fault tolerance system problem, and the results
-that were obtained from experiment. It is useful to reflect on what has been accomplished and place them in the broader context of the more general fault tolerance problem as well as the specific contributions of this work.
+The previous chapters have described the method that has been done on WuKong platform with WuObjects. It is useful to reflect on what has been accomplished and place them in the broader context of the more general fault tolerance problem as well as the specific contributions of this work.
 
 \section{Discussion}
 
-We have shown it is possible to design a reconfigurable fault tolerant system without a strong message ordering properties in order to achieve consensus compared to other related works. Strips makes it really easy to describe a component system with redundancy and it scales with complexity as well.
+We introduced RASCO, a reconfigurable fault tolerance system for tracking, 
+managing duplicated WuObjects, or software components where multi-model nodes 
+are assumed in the network. We also described Strips, a redundancy 
+abstraction, on how they are used in RASCO to achieve consistent views 
+among strip members with no need of any message ordering guarantees. Then 
+we described algorithms that made this kind of architecture recovery from 
+failures and reconfigure other parts of the network in linear message 
+complexity. The solutions developed for WuKong system performs very consistently, as the recovery time is always under two secs on average with a handful of sensors. However, occationally heartbeats could report erroneous failures and result in a quick false recovery, and left the partitioned nodes behind, but the system as a whole still function properly.
 
-However, RASCO can only handle one failure at a time, since without a distributed locking mechanism, simultaneous failures occurring across the network would put detectors in discordance and causes confusion as they all assume the rest of the network stays the same as before the failure. 
+The developed methods adds new and useful solutions to build a fault tolerant system that could be reasoned easily and with a performance as expected on average. This method might not be superior to other methods in terms of completeness and complexity, it serves as a quick and unbias solution to a distributed systems to provide decent fault tolerance.
 
-RASCO also could not account for network partitions where a group of nodes could be disconnected from the network for a period of time and then come back as RASCO encourages the system to recovery as quickly as possible given the current events, it leaves no room of tolerance for nodes partitioning away from the network. But given how often those partitioning occurs, it is important to be able to tell from a partition or not, or employ a tolerance period to compensate when the nodes are gone, and revert back when they are back. But in a partition scenario, two partitions of the network could both be thinking each other's dead, therefore both will try to be active and take over the network, this is typically described as the split brain problem in literature. Therefore it is also important that the split brain problem will be prevented when the split occurs.
+\section{Future Work}
 
-Heartbeat is a useful heuristic to detect possible failures in a distributed network, however the binary failure model supporting this heuristic is usually too simple in the context of most distributed systems that it usually gives false positive results on the health of the monitored nodes, thus it couldn't detect possible network partition as a result.
+We have shown that it is possible to design a reconfigurable fault tolerant system without any message ordering properties to achieve consensus compared to other related works with minimum communication overhead. Strips makes it really easy to describe a component system with redundancy and it scales with well with complexity. 
+The reconfiguration algorithm is also shown to take linear message complexity to recover from failures. However, there is clearly more work to be done. This section will address some directions future research can take.
 
-As we have stated in previous chapters, this thesis assumed a stateless application where no services need to store any past states, such as a transactional database. 
-Support application with services that needs to have states, e.g. databases.
+Even though when failure occurs, RASCO does not do lock step to prevent other parts of the system to halt while doing the recovery, RASCO can only handle one failure at a time, since without a distributed locking mechanism, simultaneous failures occurring across the network would put detectors in discordance and causes confusion as they all assume the rest of the network stays the same as before the failure. It is possible to be clever about when to relax the requirements to only update the critical component holders first, before synchronizing the rest, so when failures occurs recovery could be done more quickly and leave more time for the detector to figure out and update the rest that are still in inconsistency. 
 
+RASCO also could not account for network partitions where a group of nodes could be disconnected from the network for a period of time and then come back as RASCO encourages the system to recovery as quickly as possible given the current events, it leaves no room of tolerance for nodes partitioning away from the network. But given how often those partitioning occurs, it is important to be able to tell from a partition or not, or employ a tolerance period to compensate when the nodes are gone, and revert back when they are back. But in a partition scenario, two partitions of the network could both be thinking each other's dead, therefore both will try to be active and take over the network, this is typically described as the split brain problem in literature. Therefore it is also important that the split brain problem will be prevented when the split occurs. One possible direction is enhancing failure model. Heartbeat is a useful heuristic to detect possible failures in a distributed network, however the binary failure model supporting this heuristic is usually too simple in the context of most distributed systems that it usually gives false positive results on the health of the monitored nodes, thus it couldn't detect possible network partition as a result. There are existing work on more accurate failure detection models that could shine a light on this problem.
 
+As we have stated in previous chapters, this thesis assumed a stateless application where no services need to store any past states, such as a transactional database. There is also a direction this research can take is to take Strips and make it work on applications with states, as a field of applications require services that store past records in a certain order.
 
-Deployment problem, what to optimize and how to optimize
+That beings us to another important element, which is the applicability of the developed methods on other types of distributed systems. Even though we have shown how the developed method works under systems with stateless applications. There are other problems that might emerged from different time or frequency communciation requirements between nodes that would require a more rigorous methods to handle.
 
-
-
-
-Fault tolerance policy
-
-When application are getting complex full with features and configurations, 
-it is important to have a high level declarative configuration policy language 
-to specify the control for features and control of their respective behaviors 
-smoothly. I propose a high level policy for fault tolerance that could be
-translated to low level application requirements.
+Another important element is the deployment problem as we have stated in chapter~\ref{c:deploy} when reconfiguration needs the assistent of external mastermind such as WuKong Master. As there are limitations to the number of failures one network could take, the optimal deployment problem is definitely one direction this research could take. 
