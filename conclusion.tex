@@ -4,71 +4,37 @@
 \label{c:conclusion}
 \doublespacing\nointerlineskip
 
+We introduced RASCO, a reconfigurable fault tolerance system for tracking, managing duplicated WuObjects, or software components where multi-model nodes are assumed in the network.
+
+We also described Strips, a redundancy configuration model, on how they are used in RASCO to achieve consistent views among strip members without any message ordering guarantees.
+
+Then we described algorithms that made this kind of architecture recovery from failures and reconfigure other parts of the network in linear message complexity.
+
 The previous chapters have described the work that has been done on WuKong
 platform on the reconfigurable fault tolerance system problem, and the results
-that were obtained. It is useful to review these results and place them in the
-broader context of the more general fault tolerance problem, and reflect on
-what has been accomplished as well as the specific contributions of this work.
+that were obtained from experiment. It is useful to reflect on what has been accomplished and place them in the broader context of the more general fault tolerance problem as well as the specific contributions of this work.
 
-\section{Results}
+\section{Discussion}
 
-\section{Future Work}
+We have shown it is possible to design a reconfigurable fault tolerant system without a strong message ordering properties in order to achieve consensus compared to other related works. Strips makes it really easy to describe a component system with redundancy and it scales with complexity as well.
 
-% here I can start rambling about all the limitations and directions on how to
-% improve them
+However, RASCO can only handle one failure at a time, since without a distributed locking mechanism, simultaneous failures occurring across the network would put detectors in discordance and causes confusion as they all assume the rest of the network stays the same as before the failure. 
 
-\subsection{Questions}
+RASCO also could not account for network partitions where a group of nodes could be disconnected from the network for a period of time and then come back as RASCO encourages the system to recovery as quickly as possible given the current events, it leaves no room of tolerance for nodes partitioning away from the network. But given how often those partitioning occurs, it is important to be able to tell from a partition or not, or employ a tolerance period to compensate when the nodes are gone, and revert back when they are back. But in a partition scenario, two partitions of the network could both be thinking each other's dead, therefore both will try to be active and take over the network, this is typically described as the split brain problem in literature. Therefore it is also important that the split brain problem will be prevented when the split occurs.
 
-Q: How does the system recover from two consequtive failures in the network?
+Heartbeat is a useful heuristic to detect possible failures in a distributed network, however the binary failure model supporting this heuristic is usually too simple in the context of most distributed systems that it usually gives false positive results on the health of the monitored nodes, thus it couldn't detect possible network partition as a result.
 
-A: We assume a much simpler failure model where there can be at most one
-failure happen at any point in time. It is a reasonable assumption given that
-our system recover from failures fairly quickly (~2 secs) ....
+As we have stated in previous chapters, this thesis assumed a stateless application where no services need to store any past states, such as a transactional database. 
+Support application with services that needs to have states, e.g. databases.
 
 
-Q: How does an application is being compiled into low level bytecode? And when
-and how does WuKong reconfigure the nodes?
+
+Deployment problem, what to optimize and how to optimize
 
 
-Q: What happen when an application is deployed? What is specifially at work?
 
-\subsection{False positive fault detection}
 
-It appears to be possible to have false positive fault detection when a node is not dead but actually got partitioned away from the network for a short period of time. If it is the leader that got partitioned away for too long, several members will be detecting this failure and they might all initiate a leader election. Since they all know of this situation, every node detecting a failure will wait for a random amount of time before sending the message. If a leader election message has been received, it will terminate its current action and continue to the second phase of the leader election process.
-
-However, it is possible that leader is not actually dead, and it is also monitoring the members. The leader might conclude that the members are all gone and will also generate a failure event (since there is no one to synchronize to). This is a split brain problem because the remaining members will elect a new leader and proceed in synchronizing the link table in neighbor nodes, but the old leader is still operating and sending data between the neighbor nodes, this will create a conflict both in the group and cause a confusion among the outsiders.
-
-Assuming both partitions can talk to the neighbor nodes with objects connected to their objects, there is no way for the partitions to detect the problem within themselves but only the outsiders.
-
-The outsiders, whose objects are connected to the group, will be the fault detector and will notify both leaders of their existence along with their scoring. The leader with less scoring will give up their leadership, and try to merge with the other partition if possible. If it is still not possible after a timeout, it will try to notify the Master of this situation.
-
-\subsection{Group connection types}
-
-\subsection{Mapping}
-
-Q: Inclusion problem, how to solve it? How severe it is?
-
-A: The problem is due to the low redundancy level of a compoennt which is
-mapped to a node with other compoennts which have higher redundancy levels.
-This problem does not always have a solution, it depends highly upon the
-resources in the network, it is unavoidable. However, we are considering
-possible solutions to address this problem in the future by making sure the
-mapping results does not have this pattern and could generate possible
-solutions to solve this problem by either increase the redundancy level of the
-vulnerable component or purposefully avoid mapping to dangerous nodes that
-would put the component to risk.
-
-But the bigger question is, if compoent FT policy is enough to ensure
-application durability, at the current state, if any component does not have
-minimum redundancy level of 2, that application is in the risk of single point
-of fialure, there would be needed a way to inspect whether the policy is fault
-tolerance at the application level, or introducing several application level FT
-policy and that is something that we could be looking into in our next
-research work.
-
-\subsection{Policy}
-
-% talk briefly about policy, what it is, why it is important, give some examples if possible
+Fault tolerance policy
 
 When application are getting complex full with features and configurations, 
 it is important to have a high level declarative configuration policy language 

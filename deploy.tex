@@ -9,6 +9,8 @@ Niels:about the tradeoffs in determining the deployment from your fault
 tolerance perspective
 \end{comment}
 
+This chapter discussed the tradeoffs in determining optimal deployment for fault tolerance system such as RASCO. First it gives an overview of why it is a problem that we need to reconfigure the underlying network in a larger scale and how it is a problem to the system in itself in the long run. Then we will describe the deployment problem in the next section. Lastly, we identify certain tradeoffs in deployments for fault tolerance that could influence the system in a big way.
+
 \section{Reconfigurable Atomic Service for Component Object}
 
 \begin{comment}
@@ -31,7 +33,7 @@ possible after a large change in the network, none of the nodes providing
 a service is there anymore, so it is impossible for the newly joined
 nodes to tap in and take over. To handle this large and permanent changes,
 WuKong supports a system progression framework that could handle such large
-change in the network with dynamic \emph{reconfiguration}. WuKong
+change in the underlying network with dynamic \emph{reconfiguration}. WuKong
 reconfiguration reassigns associations between software components and hosts.
 But it does not have a solution to what the new assignment would look like.
 This deployment problem is a gap that should be considered.

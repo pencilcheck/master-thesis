@@ -7,8 +7,7 @@
 This chapter provides an overview of the thesis. First, we describe why
 WSN deployment and maintenance are still difficult and then we introduce the
 reconfigurable fault tolerance system problem and approaches to solving this
-problem. Next, we describe some related work. Lastly, we present our proposed
-solution to this problem.
+problem. Next, we describe some related work on a reconfigurable fault tolerant distributed system. Lastly, we present our proposed solution to this problem.
 
 \section{Wireless Sensor Network Deployment is Hard}
 
@@ -83,19 +82,9 @@ could hold more than one component.
 
 \subsection{Challenges}
 
-Most existing work treat the problem as a consensus problem where, based on the
-terminologies from Leslie Lamport on his paper Paxos~\cite{Lamport2001}
-where acceptors will come to a consensus for the value of a particular
-variable. And so the ordering properties is really important among the
-acceptors so none of them could reach a different state. However distributed
-systems have some unique properties that makes this problem really hard is that
-communication between nodes are not reliable and the ordering of the messages
-received could be out of order or dropped.
+Distributed systems have some unique properties that makes this problem really hard is that communication between nodes are not reliable and the ordering of the messages received could be out of order or dropped. Therefore most existing work treat the problem as a consensus problem where, mostly a variant of the solution proposed by Leslie Lamport in his paper~\cite{Lamport2001} where acceptors need to come to a consensus for the value of a particular variable made by the proposers, and the learners will have to learn of that decision. Under the assumption of a finite state machine for every process, the ordering properties is really important among the acceptors so none of them could reach a different state thus deviating from consensus. However, we will show that this is unnecessary in our approach.
 
-Typically distributed systems such as wireless sensor networks have tight
-resource constraints and usually deploy in large quantity which
-dooms the thought of storing or maintaining any additional states, resouces has
-to be used economically.
+It is a challenege designing a solution that is scalable and also pertaining to the limitations when typical distributed systems such as wireless sensor networks have tight resource constraints and usually deploy in large quantity which dooms the thought of storing or maintaining any additional states, resouces has to be used economically. 
 
 \section{Approach}
 
@@ -118,8 +107,7 @@ literature~\cite{Neumann2010,Lamport2001,Luna2008,Liu2009,Sussman2000,Lynch2002}
 however none of the results considered the case of nodes that could carry
 multiple components and applications with complicated structure with sensors,
 computation, and actuators. In contrast, most of their assumptions
-are based on homogeneous network and applications with a few types
-of services.
+are based on homogeneous network with nodes with reasonable large memory and computation constraints and services with states.
 
 \section{Thesis Organization}
 
@@ -134,6 +122,6 @@ tolerant design for distributed systems, it's objectives and recent
 developments. Then we talked about component model based middleware. The
 following chapter describe our work in a reconfigurable component based fault
 tolerance system. In this chapter we give detail description of our method and
-algorithms, then we present benchmark results to evaluate the performance,
+algorithms, then we present deployment to evaluate the performance,
 correctness of each mechanism followed up with a deployment with an application
 from WuKong. And finally, chapter~\ref{c:conclusion} presents some conclusions.
