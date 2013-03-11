@@ -4,7 +4,7 @@
 \label{c:conclusion}
 \doublespacing\nointerlineskip
 
-The previous chapters have described the method that has been done on WuKong platform with WuObjects. It is useful to reflect on what has been accomplished and place them in the broader context of the more general fault tolerance problem as well as the specific contributions of this work.
+Previous chapters have described the work that has been done on WuKong platform with WuObjects. It is useful to reflect on what has been accomplished and place them in the broader context of the more general fault tolerance problem as well as the specific contributions of this work.
 
 \section{Discussion}
 
@@ -17,12 +17,11 @@ we described algorithms that made this kind of architecture recovery from
 failures and reconfigure other parts of the network in linear message 
 complexity. The solutions developed for WuKong system performs very consistently, as the recovery time is always under two secs on average with a handful of sensors. However, occationally heartbeats could report erroneous failures and result in a quick false recovery, and left the partitioned nodes behind, but the system as a whole still function properly.
 
-The developed methods adds new and useful solutions to build a fault tolerant system that could be reasoned easily and with a performance as expected on average. This method might not be superior to other methods in terms of completeness and complexity, it serves as a quick and unbias solution to a distributed systems to provide decent fault tolerance.
+The developed methods adds new and useful solutions to build a fault tolerant system that could be reasoned easily and with a performance as expected on average. This method might not be superior to other methods in terms of completeness and complexity, but it serves as a quick, easy and unbias solution to provide decent fault tolerance for distributed systems.
 
 \section{Future Work}
 
-We have shown that it is possible to design a reconfigurable fault tolerant system without any message ordering properties to achieve consensus compared to other related works with minimum communication overhead. Strips makes it really easy to describe a component system with redundancy and it scales with well with complexity. 
-The reconfiguration algorithm is also shown to take linear message complexity to recover from failures. However, there is clearly more work to be done. This section will address some directions future research can take.
+We have shown that it is possible to design a reconfigurable fault tolerant system without any message ordering properties to achieve consensus compared to other related works with minimum communication overhead. Strips makes it really easy to describe a component system with redundancy and it scales with well with complexity. The reconfiguration algorithm is also shown to take linear message complexity to recover from failures. However, there is clearly more work to be done. This section will address some directions future research can take.
 
 Even though when failure occurs, RASCO does not do lock step to prevent other parts of the system to halt while doing the recovery, RASCO can only handle one failure at a time, since without a distributed locking mechanism, simultaneous failures occurring across the network would put detectors in discordance and causes confusion as they all assume the rest of the network stays the same as before the failure. It is possible to be clever about when to relax the requirements to only update the critical component holders first, before synchronizing the rest, so when failures occurs recovery could be done more quickly and leave more time for the detector to figure out and update the rest that are still in inconsistency. 
 
@@ -33,3 +32,5 @@ As we have stated in previous chapters, this thesis assumed a stateless applicat
 That beings us to another important element, which is the applicability of the developed methods on other types of distributed systems. Even though we have shown how the developed method works under systems with stateless applications. There are other problems that might emerged from different time or frequency communciation requirements between nodes that would require a more rigorous methods to handle.
 
 Another important element is the deployment problem as we have stated in chapter~\ref{c:deploy} when reconfiguration needs the assistent of external mastermind such as WuKong Master. As there are limitations to the number of failures one network could take, the optimal deployment problem is definitely one direction this research could take. 
+
+The major limitation on the developed methods is the scale of the distributed systems on which they are applied. Many real world deployment is much larger in size which consist of more nodes with components. Currently, our method cannot scale well enough for such network. As the network size increases, the memory used for Strips will exceed the limits and reconfiguration time will explode. A challenging and interesting direction is to investigate the possibilities of scalability with Strips, and reconfiguration algorithms. A possible option is to divide a large network into small partitions which can be deployed. But the effectiveness, and to what extend this approach can lead to desired performance still remains something to be investigated.
