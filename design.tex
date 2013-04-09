@@ -4,120 +4,98 @@
 \label{c:design}
 \doublespacing\nointerlineskip
 
-\begin{comment}
-Niels:about the tradeoffs in determining the deployment from your fault
-tolerance perspective
-Penn:Remember what the prof told me, about policy, first fit, last fit, etc
-\end{comment}
+The design for WuKong fault tolerance system is guided by the goals and
+challenges outlined in chapter~\ref{c:intro}: We want fault tolerance
+policy to be expressive, component specific, yet decoupled from physical
+hardware specifications so it will work with a range of network configurations.
+Furthermore, we want a reconfigurable redundancy architecture for
+service-oriented heterogeneous WSNs so components would be resilient to partial
+failures and degrade gracefully as indicated in the policy while being efficient
+and simple in terms of engineering design.
 
-%This chapter discussed the tradeoffs in determining optimal deployment for fault tolerance system such as RASCO. First it gives an overview of why it is a problem that we need to reconfigure the underlying network in a larger scale and how it is a problem to the system in itself in the long run. Then we will describe the deployment problem in the next section. Lastly, we identify certain tradeoffs in deployments for fault tolerance that could influence the system in a big way.
-
-\section{System Design}
-\label{s:sd}
-
-The design for fault tolerance for WuKong is guided by the goals of WuKong to
-have extensibility and flexibility. 
-
-We want to support user policy that could configure how much nodes
-should provide redundancy for a component to ensure certain level of
-availability, and we want to be able to support for every component in the
-application.  We also want the heartbeat protocol to reach the entire network in
-an efficient way, the distribution of WuObjects in the network are not always be
-ideal and evenly spread out in the network, thus heartbeat protocol designed
-around strips will not be able to cover the whole network or to be optimized, so
-by removing strip ordering from the concerns of heartbeat protocol design,
-heartbeat protocol could be more efficient and adapatble.
-
-\subsection{Fault Tolerance Policy for WuKong}
-
-% No cowboy surprises here
-\begin{comment}
-\subsection{User Policy Framework}
+\section{User Preference for Fault Tolerance}
 
 \begin{figure}[h!]
-\caption{A user component policy dialog}
+\caption{An example of categories a user policy could impose on a component}
 \centering
     \includegraphics[width=\linewidth]{figures/fbp-policy}
 \label{fig:fbp-policy}
 \end{figure}
 
-Many M2M applications are heavily influenced by user preferences and current
-environmental context, as users and objects are mobile and application
-requirements and policy could change in time. Users are able to specify
-user policy for every component in the FBP and the application as a whole as
-illustrated in Figure~\ref{fig:fbp-policy}
+\begin{figure}[h!]
+\caption{An example of fault tolerance policy}
+\centering
+    \includegraphics[width=\linewidth]{figures/fbp-ft-policy}
+\label{fig:fbp-ft-policy}
+\end{figure}
 
-\subsubsection{Fault Tolerance policy}
+% What is user policy, What is it for, how does it influence the system
+User policy guides the decisions and achieves certain outcomes for the system.
+Specifically, user policy controls how the system could behave in high level
+concept.
+When users starts up WuKong user interface, they will be confronted with the
+application where users could specify policy for each application component on,
+for instance, specific location the application component should be mapped to,
+or number of redundant devices the application component would have as
+illustrated in figure~\ref{fig:fbp-policy}.
 
-M2M applications are inherently distributed, and hence it is inherently prone
-to failures since all nodes are running autonomously unattended for a long
-period of time where the external enviornmental influences could break and shut
-down the devices easily. Fault Tolerance policy enables users to specify
-relevent policy for tolerating failures in the granular level.
-\end{comment}
+% What are fault tolerance policy
+Users are also capable of specifying fault tolerance requirements via the
+user policy for fault tolerance as shown in figure~\ref{fig:fbp-ft-policy}
+Redundancy level indicates the number of devices that will be able to take over
+when the service failed. Fault Detection Time represents the time the system
+should take at most to detect an failure in seconds.
 
-\begin{comment}
-Niels suggested that I show that I am aware of such issue with determining
-optimality for deployment which is not clear for WuKong yet, there are many
-ways or metrics to optimize for, all I can do in this work is to identify some
-tradeoffs certain deployment for fault tolerance could influence the system
-with certain metrics.
+There are timeouts set accordingly to prevent deviation in wireless communication quality,
+internal crystal clock to reduce the chances of getting false positives. Right
+now there is no way to find the correct timeout for the network, so we set it to
+right around 2x times of the heartbeat period we set fo the network.
 
-Limits will be hard to define here
-\end{comment}
+\section{Deploying Application with Fault Tolerance}
 
-%RASCO achieves this by introducing the use of strips. Strips
-%enable the system to track, maintain replicas and maintain consistency in the
-%presence of failures. However, the number of failures RASCO can handle is still
-%limited by the number of spare nodes that could provide required services. It is
-%possible after a large change in the network, none of the nodes providing
-%a service is there anymore, so it is impossible for the newly joined
-%nodes to tap in and take over. To handle this large and permanent changes,
-%WuKong supports a system progression framework that could handle such large
-%change in the underlying network with dynamic \emph{reconfiguration}. WuKong
-%reconfiguration reassigns associations between software components and hosts.
-%But it does not have a solution to what the new assignment would look like.
-%This deployment problem is a gap that should be considered.
+In WuKong, deployment consists of discoverying available resources and network
+topology, converting application from high-level abstractions to low-level
+machine instructions, then determine the parameters based on user policy,
+finally combine all together and deploy to the network. The process was briefly
+described in section~\ref{c:background}, however, the thesis has made some
+significant changes to the process to support strip, an redundancy abstraction
+used in failure recovery and reconfiguration algorithms. First, we add a new
+process in mapper to take the routing topology results in discovered network
+info, so we could know the neighbors for each device. Next we take the existing
+mapping process, and convert it to outputting strips. So instead of one-to-one
+mapping from components to devices, now each component maps to a strip, which
+could be seen as a list of devices supporting such service ordered by the
+ordering function used. The default ordering function uses first-fit in a first
+come first process fashion, thus the ordering of the strip is randomized, as it
+depends on the order of processing.
 
-%In the case of RASCO where deployment has to be continuously adjusted, the
-%deployment problem is more of a online problem, so there is a tighter limit on
-%time available to compute the assignment and strips, which makes the problem 
-%a lot more interesting.
+An first-fit algorithm for mapping is shown in algorithm~\ref{alg:mapping}
 
-\section{Optimal deployment}
+\begin{pseudocode}[framebox]{FirstFitComponentToStripMapping}{S, F}
+\label{alg:mapping}
+C \GETS {S}\\
+X \GETS {F}\\
 
-The problem of deploying a specific distributed system onto a network structure
-typically consists of mapping the components of the system onto the hosts of
-the network. The mapping is subject to constraints. In the case for RASCO, the
-constraints are whether a node supports certain service to host certain
-components, and how much communication overhead would induce from the
-assignment to maintain consistency for the strips, and from the perspective of
-WuKong, some components need to seaparate from other components to achieve
-fault tolerance, and some needs to place together to function properly.
+\FOREACH c \in C, x \in X \DO
+  \BEGIN
+    \IF c \in x \THEN
+      \BEGIN
+        c << x\\
+        \COMMENT{Append x to c}
+      \END\\
+  \END\\
 
-Determining such an optimal deployment is a \emph{combinatorial optimization}
-problem. Combinatorial optimization problems are generally extremely
-challenging computationally. However, the problem is ubiquitous as it happens
-all around our lifes, whether it is companies trying to assign limited
-resources to meet certain objectives, or institutions allocating resources to
-its staff members to minimize cost, are examples of combinatorial optimization
-problems. However it is difficult to predict what will and what will not work.
-It is unlikely that a single approach will be effective on all problems or 
-instances of the same problems. As we also want the system to come up with a solution within a time limit, there is a time constriant on the algorithms. So finding a good balance between the \emph{quality} of a solution of the \emph{time} it takes to come up with a good enough solution is critical.
+\RETURN C
+\end{pseudocode}
 
+S is the set of components, F is the set of
+sets each represents a network node with service capabilities. This algorithm
+will produce a mapping of C, a set of lists in first-come-first-serve order.
 
+Once the mapping is produced, each device would be reprogrammed to create
+corresponding WuObjects to host the services.
 
-
-\subsection{Reconfigurable Redundancy Architecture for Service-Oriented WSNs}
-
-To keep track of heterogeneity of resources in distributed networks, WuKong
-proposed WuClasses and WuObjects, as part of profile framework, to model after
-physical resources such as sensor, actuators and virtual resources such as
-computation, arithmatic.~\cite{Reijers} Each device host one or many WuObjects
-where each represents the gateway to a certain hardware or virtual resource of
-which the host could provide as a service.
-
-\subsection{Strip}
+\section{Strip}
 \label{s:ss}
 
 \begin{figure}[h!]
@@ -148,8 +126,21 @@ node could carry multiple WuObjects, therefore many of these strips in the
 network would crisscross with one and others. It is not unlikely to see a node
 carrying active and inactive WuObjects at once.
 
+\section{Reconfigurable Redundancy Architecture}
+
+Once the application is deployed, each target device would host one or many
+WuObjects where each represents a service for an application component. However,
+the network has to be resilient to failures, it has to detect and recovery
+autonomously. In the following paragraphs, we will be describing the subsystem
+which is used to support failure detection and recovery.
+
 \subsection{Decentralized Failure Detection}
 \label{s:dfd}
+
+We want the heartbeat protocol to able to reach the entire network so any
+failures will be detected. In order to avoid single point of failures, the
+protocol will have to be decentralized, thus the failure one of component would
+not bring the whole failure detection system down.
 
 %Note to self: mention single-hop, multi-hop in limitations or future work
 Distributed failure detection enables high-availability in distributed systems
@@ -205,12 +196,7 @@ every node will have a copy of its monitoring node's strips view as shown in
 figure~\ref{fig:strip1} below the "Monitored Strips" section where node 1 has
 knowledge of the strips views of its monitoring node 2.
 
-\begin{algorithm}
-\label{alg:recovery}
-\begin{pseudocode}{UpdateView}{k}
-f \GETS {x}
-\end{pseudocode}
-\end{algorithm}
+% TODO: better to have a figure here to explain view update
 
 Our work proposed an algorithm attempting to recover by letting the
 detector of the failure to initiate the recovery algorithms.
@@ -249,50 +235,64 @@ come to the same conclusion given each receiver receive the same messages. The
 overhead are messages required to update each member's internal membership
 information.
 
+
 \subsubsection{Reconfiguration}
 \label{s:reconfig}
 
+
+Even though consensus of the new view for each strip in the failure nodes has been
+reached, other devices in the network with connected components would also need
+to be updated. 
+
+The detector after finishing synchronizing views, will initiate
+the reconfiguration algorithm. First, the initiator will identify application components
+that are connected with the components carried by the failed device (linked in the
+FBP). Then initiator would issue the update message to each head of the strips of the connected components
+to reconfigure the new heads of the affected strips.
+
+As shown in figure~\ref{fig:strip7}, node 1 with its updated view of the strips
+after the failure of node 2 would need to update the new head of component A,
+which is still node 1 in this case, with the new head of compoennt B since
+component B is connected to compoennt A; node 1 also needs to update the new
+head of component B with the new head of component A as well. Thus node 1 will
+send a reconfiguration message to node 1 and node 6 about the changes in both
+heads of component A and component B.
+
+To keep the nodes updated after reconfiguration, as most services in WuKong
+applications does not store any past data, the devices with connected components whose WuObjects
+originally are sending data to the WuObjects on the failed devices would force a data push to
+bring the new heads up to date, and vice versa, so instead the devices with
+connected components whose WuObjects originally are receiving data from the
+failed devices would force a data pull.
+
+The detector needs to update its knowledge of the "Monitored" section after
+reconfiguration. The detector knows which node the monitoring node is
+monitoring, it will send a update heartbeat message request and instruct it to
+send heartbeats to itself, then it will send a request for its knowledge of
+local section and update its "Monitored" section, both the strips and the node
+it is monitoring. As illustrated in figure~\ref{fig:strip9}, node 1 will get
+updated with the heartbeat information from node 3, which is monitored by node
+2. And also in figure~\ref{fig:strip10}, node 1 will also get updated with the strip
+information from node 3.
+
+
 \begin{figure}[h!]
-\caption{A reconfiguration of a Network}
-\label{fig:reconfig-network}
+\caption{Reconfigure application links}
+\label{fig:strip7}
 \centering
-    \includegraphics[width=\linewidth]{figures/reconfig-network}
+    \includegraphics[width=\linewidth]{figures/strip7}
 \end{figure}
 
-Even though consensus of the new configuration for each affected strip has been
-reached, some nodes with component that acts as a client to another component
-for data or the reverse would also have to have consensus on the updated
-primary holder of each affected component. And the node that is monitoring the
-node monitored by the dead node would also need to update on its knowledge of
-its monitored node in order to recover the next possible failure.
+\begin{figure}[h!]
+\caption{Reconfigure heartbeat protocols}
+\label{fig:strip9}
+\centering
+    \includegraphics[width=\linewidth]{figures/strip9}
+\end{figure}
 
-RASCO will initiate a reconfiguration service to reconfigure the network to adapt
-to the new strip configurations. Reconfiguration service is implemented by
-a distributed algorithm which is inititated by the detected nodes. First the
-initiator node would have to identify the components that are reading/writing
-data with the components carried by the dead host. This would be done by
-requesting the link information between components at the higher level provided
-by the application. Then each member of the strips of the connected components
-would be updated with the information about the change in the host of the
-failed components with a \emph{reconfig} message containing the change in the
-location of the specific WuObjects. Right after receiving the \emph{reconfig}
-message, if the connected nodes whose WuObjects are pushing data to the
-WuObjects on the failed nodes, they will force to initiate a data push to
-update and bring the recovered nodes up to date, and vice versa, so the nodes
-whose WuObjects are receiving data from the failed nodes will initiate a data
-pull after receiving the \emph{reconfig} message.
-
-As shown in figure~\ref{fig:reconfig-network}, the network on the right has
-a node failed that bring both current heads of strips A, and B down. As shown
-on the right, after recovery, the nodes that have the active WuObjects
-connecting to each new heads in both strips A and B both will be updated on the
-current location of the heads of both strips. Because the bottom left node
-contains the new head of strip B and is connected to strip A, therefore it will
-be updated on the location of the new head of strip B, and vice versa.
-
-Reconfiguration service has message complexity of $O(m)$ where m is the
-number of strips where its components are linked to the failed components.
-
-
-\subsection{System Implementation}
-
+\begin{figure}[h!]
+\caption{Update monitored information}
+\label{fig:strip10}
+\centering
+    \includegraphics[width=\linewidth]{figures/strip10}
+\end{figure}

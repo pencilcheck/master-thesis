@@ -4,7 +4,7 @@ MAIN=thesis
 
 all: $(MAIN).pdf
 
-$(MAIN).pdf: $(MAIN).tex ntu.sty
+$(MAIN).pdf: $(wildcard *.tex) ntu.sty
 	pdflatex $(MAIN)
 	bibtex $(MAIN)
 	pdflatex $(MAIN)

@@ -4,16 +4,23 @@
 \label{c:intro}
 \doublespacing\nointerlineskip
 
-This chapter provides an overview of the thesis. First, we describe why
-deployment and maintenance of M2M systems such as WSN are still difficult and then we introduce the reconfigurable fault tolerance system problem and approaches to solving this
-problem. Next, we describe some related work on a reconfigurable fault tolerant distributed system. Lastly, we present our proposed solution to this problem.
+%This chapter provides an overview of the thesis. First, we describe why
+%deployment and maintenance of M2M systems such as WSN are still difficult and then we introduce the reconfigurable fault tolerance system problem and approaches to solving this
+%problem. Next, we describe some related work on a reconfigurable fault tolerant distributed system. Lastly, we present our proposed solution to this problem.
 
-\section{Wireless Sensor Network Deployment is Hard}
+Failover mechanism is is essential in any distributed networks. It is especially
+crucial for enabling Internet-of-Things (IoT) in the sense that applications
+could "deploy-once, run forever." Where applications degrade gracefully under
+failures.
 
-Wireless sensor networks are areas filled with network of tiny, resource
-limited sensors communicating wirelessly. Each sensor is capable of sensing the
-enviornment in its proximity. Wireless sensor networks are typically employed in
-a variety of applications ranging from home automation to millitary.
+%\section{Wireless Sensor Network Deployment is Hard}
+
+Internet-of-Things is being realized in Machine-to-Machine (M2M) systems such as
+wireless sensor networks (WSN).  WSNs are areas filled with network of tiny,
+resource limited sensors communicating wirelessly. Each sensor is
+capable of sensing the enviornment in its proximity. Wireless sensor
+networks are typically employed in a variety of applications ranging
+from home automation to millitary.
 
 Sensor networks offer the ability to monitor real-world phenomena in detail and
 at large scale by embedding devices into the environment. Deployment is
@@ -30,94 +37,110 @@ only model to a very limited extent of those influences.
 
 There have been several reports on sensor network installations where they
 encountered problems during their
-deployment\cite{Barrenetxea2008}\cite{Polastre2004}\cite{Arora2004}\cite{Tateson2005}\cite{Padhy2005}\cite{Stoianov2007}\cite{Tolle2005}\cite{Werner-Allen2006a}.
+deployment\cite{Barrenetxea2008,Polastre2004,Arora2004,Tateson2005,Padhy2005,Stoianov2007,Tolle2005,Werner-Allen2006a}.
 
 Testbed in laboratory environment can still not model the full extents of the
 influences a real world enviroment could do. Deployment still a big problem in
 wireless sensor network applications.
 
-\section{Redundancy architecture}
+However, Wireless Sensor Network (WSN) programming can only be performed by
+experts, because of resource constraints and their high failure probatility.
+Hence, transforming the paradigm of service-oriented architecture (SOA) to
+sensor networks becomes an important research in the last few
+years.~\cite{Koutsoukos2007,Hughes2012}
 
-A distributed system usually consists of hosts that host services that clients or
-other services could read or write with some associated communication
-frequencies according to the application requirements. The
-problem of partial failures makes service redundancy a fundamental technique to
-distributed systems as it improves availability, eliminiates single points of
-failure. A system that is hardwired to get data from node X will fail when
-X fails. The problem of designing a system with replicas where node Y, which
-can provide the same service as X, can take over when X fails. To design such
-system, it is important to have a clear definition of a service such that it
-could be replicated onto heterogeneous hosts. It is
-also essential that the system could track and manage available replicas in the
-network. Autonomy is an important attribute of distributed systems since most
-of them would be left unattended for a long period of time; systems should be
-able to reconfigure and recover themselves in the event of failure.
+WuKong, a middleware for service-oriented M2M systems, has set out to allow
+developers develop M2M applications with ease by introducing users to a new
+programming paradigm called flow based programming (FBP) with automatic sensor
+identifications, node configuration, and system re-configuration.~\cite{Reijers}
 
-\section{Problem Definition}
+In this thesis, we present our fault tolerance system for WuKong.
 
-The problem of designing a distributed system that could handle failures and
-increase availability for all services is different depending on the system and
-application requirements. However, some generalities can be established. There will
-usually be a set of components which will be assigned to a set of hosts where 
-components are associated with some communication frequencies and are
-reading/writing data from other components. Hosts could fail, and there is
-a time constraints on the recovery process. The objective is to detect and
-handle failures with mimimum communication and memory overhead.
+\section{Goals} % was Problem Definition
 
-In this thesis, the problem of reconfigurable fault tolerant system based on
-WuKong component based architecture is considered. The problem is
-interesting and worth solving by itself as this problem existed in all
-kinds of distributed systems.
+Users of WuKong deploy applications written in the form of flow based
+programming. Applications consist of a set of components linked together.  Each
+component represents a service in network. When application is deployed, each
+component is mapped to a service in the network. However, partial failures could
+bring the whole system down, since each service depends on each other to
+function. However, as users have drastically different requirements even for the
+same applications, we don't force the system to do in our way, we allow user
+preference to influence our system via user policy. 
 
-\subsection{WuKong: Intelligent Middleware for Flexible Sensor Configurations in
-  M2M Systems}
+The goal of this system is to provide failover for application components such
+that it meets user's requirements through user policy. Thus the system also
+needs to design a generally accessible user policy for fault tolerance such that
+it is easy and intuitive to specify how much fault tolerance a component should
+have. It is also important that the deployed system would be able to detect,
+  recover from failures, and reconfigure the system autonomously. 
 
-WuKong: Intelligent Middleware for Flexible Sensor Configurations in M2M
-Systems~\cite{Reijers} consists of frameworks that supports flexible
-configurations of application specifications from flow-based programming.
-It uses component based architecture where services could be represented by
-software components which will be deployed to a set of hosts, and each host
-could hold more than one component.
 
-\subsection{Challenges}
+\section{Challenges}
 
-Distributed systems have some unique properties that makes this problem really hard is that communication between nodes are not reliable and the ordering of the messages received could be out of order or dropped. Therefore most existing work treat the problem as a consensus problem where, mostly a variant of the solution proposed by Leslie Lamport in his paper~\cite{Lamport2001} where acceptors need to come to a consensus for the value of a particular variable made by the proposers, and the learners will have to learn of that decision. Under the assumption of a finite state machine for every process, the ordering properties is really important among the acceptors so none of them could reach a different state thus deviating from consensus. However, we will show that this is unnecessary in our approach.
+The way WuKong presents and models resources and applications, along with user
+policy and requirements, makes it a unique challenge: User requirements might
+vary drastically from one to another. System has to embrace a variety of
+top-level and low-level configurations so components would play along with each
+other and eventually produce a working failover architecture for the network.
+Encompassing a variety of devices with different form factors, memory storage,
+radio bandwidth is also a distinct characteristics in IoT,
+therefore the system and algorithmic design has to work among nodes
+with different specifications. In addition, duplications can be
+costly and redundant when devices are heterogeneous or versaile,
+such that instead of replaced by a device counterpart, it would be
+taken over by another local service peers.
 
-It is a challenege designing a solution that is scalable and also pertaining to the limitations when typical distributed systems such as wireless sensor networks have tight resource constraints and usually deploy in large quantity which dooms the thought of storing or maintaining any additional states, resouces has to be used economically. 
+%Distributed systems have some unique properties that makes this problem really hard is that communication between nodes are not reliable and the ordering of the messages received could be out of order or dropped. Therefore most existing work treat the problem as a consensus problem where, mostly a variant of the solution proposed by Leslie Lamport in his paper~\cite{Lamport2001} where acceptors need to come to a consensus for the value of a particular variable made by the proposers, and the learners will have to learn of that decision. Under the assumption of a finite state machine for every process, the ordering properties is really important among the acceptors so none of them could reach a different state thus deviating from consensus. However, we will show that this is unnecessary in our approach.
 
-\section{Approach}
+%It is a challenege designing a solution that is scalable and also pertaining to the limitations when typical distributed systems such as wireless sensor networks have tight resource constraints and usually deploy in large quantity which dooms the thought of storing or maintaining any additional states, resouces has to be used economically. 
 
-This thesis proposed an original approach that hasn't been done before.
-Previous work on the problems has been considered the use of consensus
-protocols with some sort of configurations that contain a set of members, and
-for every failure the configuration will be reconfigured using the said
-consensus protocol to reach consensus in the system. However, the results
-haven't shown to work under heterogeneous network with nodes that could carry
-multiple components. This thesis proposed a novel algorithm with the use of
-a distributed data structure to maintain the list of members in order that
-provides a way to track redundancies and recovery from failures when nodes
-could potentially be both a backup and a service provider, and it also
-eliminates the needs for messages ordering to reach consensus.
+\section{Approaches}
 
-\subsection{Related Work}
+Previous work on the problems has not considered failover architecture for
+multiple services where relationship among services are critical and which would
+also be influenced by user policies pre-deployment. Furthermore, after every
+failure recovery, none explained how existing services could find replaced
+services in such environment. This thesis proposed a novel algorithm to achieve
+recovery from failures by combining heartbeat protocol, for failure detection,
+with Strips, which are used to maintain and track service redundancy. 
 
-The problem of a distributed fault tolerant system has been addressed in many
-literature~\cite{Neumann2010,Lamport2001,Luna2008,Liu2009,Sussman2000,Lynch2002},
-however none of the results considered the case of nodes that could carry
-multiple components and applications with complicated structure with sensors,
-computation, and actuators. In contrast, most of their assumptions
-are based on homogeneous network with nodes with reasonable large memory and computation constraints and services with states.
+\section{Related Work}
+
+% I don't if I really need related work if it is based on the technique I used
+% Or work with the similar settings (WuKong??)
+
+In WSNs, failover techniques for data replications, and service redundancy are
+typically adapt for applications only with predefined services, fixed user
+requirements and services with only end-to-end links: read/write to local data
+storage. One example of such work with local storage for replications is
+described in~\cite{Ratnasamy2002}. In this work, some distinguished storage
+nodes are specified by Hash functions to collect data of certain types.
+Redundancy is achieved by storing replicas directly on neighbors nodes. But
+applications are still restricted to end-to-end links, since there is only one
+type of links in the application.
+
+In \cite{Piotrowski2009}, a dynamic replication approach for local data storage
+where replicas are randomly distributed within a predefined replication range
+influenced by the specific replica number and/or its density is presented. 
+Another dynamic replication approach for local data storage where replicas are
+selected based on the scoring system defined by several physical resource traits
+from self-inspection that could reactivate services based on already collected
+and generated data~\cite{Neumann2010}. However, this approach does not consider
+applications with dynamic user requirements, services with more complex links.
 
 \section{Thesis Organization}
 
 % an overview of subsequent chapters
-Our work overlaps many diverse but interconnected domains, each topic being 
+Our work overlaps many diverse but interconnected domains, each topic being
 itself a subject of advanced research and abundant literature.
-Chapter~\ref{c:intro} gives an introduction to the problem and outline of the
-approach used to solve the problem. Chapter~\ref{c:background}
-gives a brief background overview of the topic that this work based on. 
-We start by describing wireless sensor networks. Then we go on to discuss fault
-tolerant design for distributed systems, it's objectives and recent
-developments. Then we proceed to talk about component model based middleware and WuKong. Chapter~\ref{c:rasco} described our work on a reconfigurable component 
-based fault tolerance system. In this chapter we give detail description of our method and algorithms.%, then we present deployment to evaluate the performance, correctness of each mechanism followed up with a deployment with an application from WuKong. 
-Chapter~\ref{c:deploy} discussed the tradeoffs and one possible direction in future research. Finally, chapter ~\ref{c:conclusion} presented some conclusions of the work, list of contributions and future work.
+Chapter~\ref{c:intro} gives an introduction to the system goals and challenges
+and outline the approach used to solve the problem. Chapter~\ref{c:background}
+gives a brief background overview of the topic that this work based on.  We
+start by describing IoT, M2M networks and WSNs. The chapter ends with an
+overview of WuKong. Chapter~\ref{c:design} describes our system design for the
+WuKong fault tolerance system. In this chapter we give detail description of our
+method and algorithms, including user policy for fault tolerance, strips, and
+reconfigurable redundancy architecture.  Chapter~\ref{c:evaluation} presents the
+metrics we would use to measure system performance, which is followed by
+evaluation of the results. Finally, chapter ~\ref{c:conclusion} presents some
+conclusions of the work, list of contributions and future work.

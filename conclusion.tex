@@ -4,33 +4,108 @@
 \label{c:conclusion}
 \doublespacing\nointerlineskip
 
-Previous chapters have described the work that has been done on WuKong platform with WuObjects. It is useful to reflect on what has been accomplished and place them in the broader context of the more general fault tolerance problem as well as the specific contributions of this work.
+%Previous chapters have described the work that has been done on WuKong platform.
+%It is useful to reflect on what has been accomplished and place them in the
+%broader context of the more general fault tolerance problem as well as the
+%specific contributions of this work.
 
 \section{Discussion}
 
-We introduced RASCO, a reconfigurable fault tolerance system for tracking, 
-managing duplicated WuObjects, or software components where multi-model nodes 
-are assumed in the network. We also described Strips, a redundancy 
-abstraction, on how they are used in RASCO to achieve consistent views 
-among strip members with no need of any message ordering guarantees. Then 
-we described algorithms that made this kind of architecture recovery from 
-failures and reconfigure other parts of the network in linear message 
-complexity. The solutions developed for WuKong system performs very consistently, as the recovery time is always under two secs on average with a handful of sensors. However, occationally heartbeats could report erroneous failures and result in a quick false recovery, and left the partitioned nodes behind, but the system as a whole still function properly.
+This thesis proposed a novel algorithm to achieve
+recovery from failures by combining heartbeat protocol, for failure detection,
+with Strips, which are used to maintain and track service redundancy.
 
-The developed methods adds new and useful solutions to build a fault tolerant system that could be reasoned easily and with a performance as expected on average. This method might not be superior to other methods in terms of completeness and complexity, but it serves as a quick, easy and unbias solution to provide decent fault tolerance for distributed systems.
+We have presented a fault tolerance system able to provide failover for failed
+services in service-oriented WSNs that comply with user policy requirements. We
+have also described strip, a redundancy abstraction for service peers along with
+distributed algorithms to synchronize strip views among members and
+reconfigurate the network for the new structure to recover from node failure.
+The system allows user intervention through means of user policy, which could
+directly influence underlying system configurations and structure.
+
+The developed methods adds new and useful solutions to build a fault tolerant
+system that could be reasoned easily and with a performance as expected on
+average. This method might not be superior to other methods in terms of
+completeness and complexity, but it serves as a quick and easy solution
+to provide practical fault tolerance for WuKong applications.
+
+% TODO: summarize the results of the experiments here, etc
+% e.g. The solutions developed for WuKong system performs very consistently, as
+% the recovery time is always under two secs on average with a handful of
+% sensors. However, occationally heartbeats could report erroneous failures and
+% result in a quick false recovery, and left the partitioned nodes behind, but
+% the system as a whole still function properly.
+
+The experimental results have shown to be consistent and stable among first
+failures in different rank of members in strip around 2.5 secs. The failover
+have been successful in all deployments. It is also shown that the performance
+degraded quickly when the hardware or the wireless communication quality
+degraded. Therefore it is important that the network setup is as optimized as
+possible. 
 
 \section{Future Work}
 
-We have shown that it is possible to design a reconfigurable fault tolerant system without any message ordering properties to achieve consensus compared to other related works with minimum communication overhead. Strips makes it really easy to describe a component system with redundancy and it scales with well with complexity. The reconfiguration algorithm is also shown to take linear message complexity to recover from failures. However, there is clearly more work to be done. This section will address some directions future research can take.
+We have shown a design for a reconfigurable fault tolerant system for WuKong.
+Strips makes it really easy to describe a component system with redundancy for
+heterogeneous services and devices. Nevertheless, there is still room for
+improvements. This section will address some directions future research can take.
 
-Even though when failure occurs, RASCO does not do lock step to prevent other parts of the system to halt while doing the recovery, RASCO can only handle one failure at a time, since without a distributed locking mechanism, simultaneous failures occurring across the network would put detectors in discordance and causes confusion as they all assume the rest of the network stays the same as before the failure. It is possible to be clever about when to relax the requirements to only update the critical component holders first, before synchronizing the rest, so when failures occurs recovery could be done more quickly and leave more time for the detector to figure out and update the rest that are still in inconsistency. 
+WuKong Fault Tolerance System didn't considered for multi-hop networks where it
+introduces higher latency and network partitions.  Network partition is when
+a network of nodes got partitioned into two subnetworks where none can detect
+each other for a period of time. One of the possible direction is to create
+a more complex failure model that could handle network partition. In this thesis
+we assume failstop model where nodes, once dead, will not come back. Therefore
+when network partition occurs, each subpart of the network would not be able to
+recognize each other and would cause conflicts and confusions.
 
-RASCO also could not account for network partitions where a group of nodes could be disconnected from the network for a period of time and then come back as RASCO encourages the system to recovery as quickly as possible given the current events, it leaves no room of tolerance for nodes partitioning away from the network. But given how often those partitioning occurs, it is important to be able to tell from a partition or not, or employ a tolerance period to compensate when the nodes are gone, and revert back when they are back. But in a partition scenario, two partitions of the network could both be thinking each other's dead, therefore both will try to be active and take over the network, this is typically described as the split brain problem in literature. Therefore it is also important that the split brain problem will be prevented when the split occurs. One possible direction is enhancing failure model. Heartbeat is a useful heuristic to detect possible failures in a distributed network, however the binary failure model supporting this heuristic is usually too simple in the context of most distributed systems that it usually gives false positive results on the health of the monitored nodes, thus it couldn't detect possible network partition as a result. There are existing work on more accurate failure detection models that could shine a light on this problem.
+Our current heartbeat protocol is distributed and easy to construct, but it is
+not shown to work under networks where messages are sent in multiple hops, since
+the algorithm used to produce where each node should be sending heartbeat
+messages does not consider the topology of the network. Heartbeat is sensitive
+on latency, so if a heartbeat message was not received within tolerance period,
+a failure event could occur and the node is suspected of failure and will
+never come back. If the node is still alive, it would be treated as if it is
+dead. And that will creates an artificial network isolation where a few nodes
+are excluded from the network before of latency.
 
-As we have stated in previous chapters, this thesis assumed a stateless application where no services need to store any past states, such as a transactional database. There is also a direction this research can take is to take Strips and make it work on applications with states, as a field of applications require services that store past records in a certain order.
+Although we didn't mentioned in system design, it is possible to handle multiple
+consecurive errors by storing in advance more node's strip and heartbeat
+protocol data, so when consecutive nodes failed simultaenously, the surviving
+detector would be able to recover all dead services and reconfigure the network
+correctly.  But there is a limitation of the memory a node could store,
+a possible future direction for research could be to improve the design so it
+could handle multiple simultaneous failures in large network.
 
-That beings us to another important element, which is the applicability of the developed methods on other types of distributed systems. Even though we have shown how the developed method works under systems with stateless applications. There are other problems that might emerged from different time or frequency communciation requirements between nodes that would require a more rigorous methods to handle.
 
-Another important element is the deployment problem as we have stated in chapter~\ref{c:deploy} when reconfiguration needs the assistent of external mastermind such as WuKong Master. As there are limitations to the number of failures one network could take, the optimal deployment problem is definitely one direction this research could take. 
+\begin{comment}
+Niels suggested that I show that I am aware of such issue with determining
+optimality for deployment which is not clear for WuKong yet, there are many
+ways or metrics to optimize for, all I can do in this work is to identify some
+tradeoffs certain deployment for fault tolerance could influence the system
+with certain metrics.
 
-The major limitation on the developed methods is the scale of the distributed systems on which they are applied. Many real world deployment is much larger in size which consist of more nodes with components. Currently, our method cannot scale well enough for such network. As the network size increases, the memory used for Strips will exceed the limits and reconfiguration time will explode. A challenging and interesting direction is to investigate the possibilities of scalability with Strips, and reconfiguration algorithms. A possible option is to divide a large network into small partitions which can be deployed. But whether it could still maintain atomic services, and to what extend this approach can lead to desired performance still remains something to be investigated.
+Limits will be hard to define here
+Niels:about the tradeoffs in determining the deployment from your fault
+tolerance perspective
+Penn:Remember what the prof told me, about policy, first fit, last fit, etc
+\end{comment}
+
+Another important element is the optimization problem for deployment of
+applications. This thesis didn't consider finding a optimal deployment for the
+level of redundancy specified in the user policy. The problem of deploying
+a specific distributed system onto a network structure typically consists of
+mapping the components of the system onto the hosts of the network. The mapping
+is subject to constraints. The constraints could be whether a node supports
+certain service to host certain components, and how much communication overhead
+would induce from the assignment to maintain consistency for the strips, and
+from the perspective of WuKong, some components need to seaparate from other
+components to achieve fault tolerance, and some needs to place together to
+function properly.  Determining such an optimal deployment is a combinatorial
+optimization problem, and combinatorial optimization problems generally
+extremely challenging computationally. It is difficult to predict what will and
+what will not work.  It is unlikely that a single approach will be effective on
+all problems or instances of the same problems. As we also want the system to
+come up with a solution within a time limit. So finding a good balance between
+the quality of a solution of the time it takes to come up with a good enough
+solution is critical.

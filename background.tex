@@ -4,8 +4,26 @@
 \label{c:background}
 \doublespacing\nointerlineskip
 
-\section{Wireless Sensor Networks}
+\section{Internet-of-Things}
 
+Internet-of-Things is a powerful paradigm in the scenario of modern wireless
+telecommunications. It refers to the pervasive presence of uniquely identifiable
+objects (things) around us - such as Radio Frequency IDentification (RFID) tags,
+sensors, actuators, mobile phones, etc, which would be able to interact with
+each other forming a network like structure.~\cite{Atzori20102787}
+
+\section{Machine-to-Machine}
+
+Machine-to-Machine refers to technology that enables both wireless and wired
+systems to communicate with other devices with the same ability. Thus a device
+(equipped with sensors) could capture an event (such as photodetector,
+    temperature, etc), which is relayed through a network (wired, wireless or
+      hybrid) to an application which will translate that into a meaningful
+    information to perform action upon (e.g. turn on actuators).
+
+\subsection{Wireless Sensor Networks}
+
+Wireless sensor networks are a network of sensor nodes.
 Sensor nodes are equipped with low-power, low-cost, and failure-prone
 sensors or actuators. Sensor networks are networks of sensor nodes that connect to the physical space that are intrumented to produce data that could be meaningful
 for further research. They collaborate to collect, process and disseminate
@@ -19,7 +37,22 @@ resources. Wireless sensor networks are nodes that communicate through air by
 sending electronic signals. Wireless communications aren't stable, as it is
 highly influenced by environmental factors.
 
-\subsection{Redundancy}
+\section{Redundancy architecture}
+
+%A distributed system usually consists of hosts that host services that clients or
+%other services could read or write with some associated communication
+%frequencies according to the application requirements. The
+%problem of partial failures makes service redundancy a fundamental technique to
+%distributed systems as it improves availability, eliminiates single points of
+%failure. A system that is hardwired to get data from node X will fail when
+%X fails. The problem of designing a system with replicas where node Y, which
+%can provide the same service as X, can take over when X fails. To design such
+%system, it is important to have a clear definition of a service such that it
+%could be replicated onto heterogeneous hosts. It is
+%also essential that the system could track and manage available replicas in the
+%network. Autonomy is an important attribute of distributed systems since most
+%of them would be left unattended for a long period of time; systems should be
+%able to reconfigure and recover themselves in the event of failure.
 
 Sensor networks are usually deployed in large scale and unattended in long
 period of time. Sensor networks communicate with
@@ -31,6 +64,7 @@ homogeneous resources, redundancy is used in sensor networks to increase fault
 tolerance against node failures. The system is designed with backup nodes that
 could automatically recover and replace should one node fail.
 
+\begin{comment}
 \section{Component Based Middleware}
 
 Middleware enables communication and management of data that simplfies 
@@ -48,6 +82,17 @@ It is also not successful in terms of making them adapatable and evolvable
 for new services in new environments.
 
 Next section presents an instance of a component based middleware.
+
+\subsection{WuKong: Intelligent Middleware for Flexible Sensor Configurations in
+  M2M Systems}
+
+WuKong: Intelligent Middleware for Flexible Sensor Configurations in M2M
+Systems~\cite{Reijers} consists of frameworks that supports flexible
+configurations of application specifications from flow-based programming.
+It uses component based architecture where services could be represented by
+software components which will be deployed to a set of hosts, and each host
+could hold more than one component.
+\end{comment}
 
 \section{WuKong: The intelligent middleware for M2M applications}
 

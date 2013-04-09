@@ -1,39 +1,34 @@
 \begin{abstractEN}
 
-% from Shao-Wen
-Enabled failover for M2M platforms in a distributed manner
-Dynamic resource management on distributed networks is a prerequisite to
-enabling Internet-of-Things (IoT) in the sense of “deploy-once, run forever.”
-Resource reconfiguration is inevitable to achieve failover mechanisms upon
+% credit to Shao-Wen
+%\textbf{Enabled failover for M2M platforms in a distributed manner}
+\noindent Failover for service-oriented distributed networks is a prerequisite
+to enabling Internet-of-Things (IoT) in the sense of “deploy-once, run forever.”
+Resource reconfiguration is required to achieve failover mechanisms upon
 replacement of devices or failure of services. It can be particularly
-challenging when devices are heterogeneous or versatile, for which duplications
-can be costly and redundant. Specifically, a device with a failed service shall
-be taken over by another service peer, instead of a device counterpart. Strip is
-introduced to store a list of peer services, and, within the network, each
-service maintains a consistent view of strips. In combination with the heartbeat
-protocol widely applies for failure detection, recovery from failure can be
-achieved by manipulating strips in a distributed manner, without a centralized
-repository. Experiments using Arduino Mega 2560 devices show that our approach
-is capable of failover in small networks, whereas experiments in larger networks
-are underway. Future extensions include addressing the scalability issue and
-tackling simultaneous failures.
-
-% my original
-As the variety of sensors and actuators increase, applications for distributed systems are getting more complex. Repairment becomes difficult to perform manually. It is appealing to design a system that could achieve fault tolerance without require human intervention.
-
-This thesis investigated this problem. There are many different techniques exist to solve this problem under different assumptions with varying guarantees, what works best for one instance of a problem does not always apply to the others. This thesis proposed a new technique to solve the problem under the assumption of stateless application and heterogeneous network with a varity of hardware specifications where some nodes could perform multiple services at a time. The technique we proposed does not require any strong message ordering properties, and it requires only linear message complexity
-
-% Do I need to describe what this thesis will present??
+challenging when services in applications have more than end-to-end
+transmissions between devices that are heterogeneous or versatile, for which
+duplications can be costly and redundant. Specifically, a device with a failed
+service shall be taken over by another service peer, instead of a device
+counterpart to recover application as a whole. Strip is introduced to store
+a list of duplicated services, and, each service peer
+maintains a consistent view of strips. In combination with the heartbeat
+protocol which was widely applied for failure detection, recovery from failure
+can be achieved by manipulating strips in a distributed manner, without
+a centralized repository. Experiments using Arduino Mega 2560 compatible devices
+show that our approach is capable of failover in small networks, whereas
+experiments in larger networks are underway. Future research directions include
+addressing the scalability issue, network partitions and tackling simultaneous
+failures.
 
 \end{abstractEN}
 
 \begin{comment}
 
-\category{I2.10}{Computing Methodologies}{Artificial Intelligence --
-Vision and Scene Understanding}
+%\category{I2.10}{Computing Methodologies}{Artificial Intelligence -- Vision and Scene Understanding}
 
 \terms{System, Policy}
 
-\keywords{Component Architecture Middleware, Fault Tolerance}
+\keywords{Service-Oriented WSN, Fault Tolerance}
 
 \end{comment}
