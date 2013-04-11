@@ -6,63 +6,159 @@
 
 \section{Internet-of-Things}
 
-Internet-of-Things is a powerful paradigm in the scenario of modern wireless
-telecommunications. It refers to the pervasive presence of uniquely identifiable
-objects (things) around us - such as Radio Frequency IDentification (RFID) tags,
-sensors, actuators, mobile phones, etc, which would be able to interact with
-each other forming a network like structure.~\cite{Atzori20102787}
+\subsection{What is Internet-of-Things}
 
-\section{Machine-to-Machine}
+Internet-of-Things, also known as machine-to-machine (M2M), is a powerful
+paradigm in the scenario of modern wireless telecommunications. It refers to the
+pervasive presence of uniquely identifiable objects (things) around us - such as
+Radio Frequency IDentification (RFID) tags~\cite{Shepard2005}, sensors,
+      actuators, mobile phones, etc, which would be able to interact with each
+      other forming a network like structure~\cite{Atzori20102787}. Alarms clock
+      goes off early if there is traffic; plants communicate to the sprinkler
+      system when it's time for them to be watered; running shoes communicate
+      time, speed and distance so that their wearers can compete in real time
+      with people on the other side of the world; medicine containers tell your
+      family members if you forget to take the medicine.
 
-Machine-to-Machine refers to technology that enables both wireless and wired
-systems to communicate with other devices with the same ability. Thus a device
-(equipped with sensors) could capture an event (such as photodetector,
-    temperature, etc), which is relayed through a network (wired, wireless or
-      hybrid) to an application which will translate that into a meaningful
-    information to perform action upon (e.g. turn on actuators).
+The paradigm gradually leads to all objects surrounding us to become connected
+to the internet, to interact with other connected objects on the other end of
+the web and have access to comparative information which would not be possible
+before.
 
-\subsection{Wireless Sensor Networks}
+\subsection{The Evolution of Internet-of-Things}
 
-Wireless sensor networks are a network of sensor nodes.
-Sensor nodes are equipped with low-power, low-cost, and failure-prone
-sensors or actuators. Sensor networks are networks of sensor nodes that connect to the physical space that are intrumented to produce data that could be meaningful
-for further research. They collaborate to collect, process and disseminate
-environmental information\cite{ArchanaBharathidasan}.
+Communication between computers already exists that made possible for two PCs to
+send messages across large geographical areas. With the internet, all the
+computers connected to the internet can talk to each other and now with mobile
+phones, the connections have become mobile.
+It would be unimaginable 20 years ago, when you have to communicate with someone
+far away in immediate urgency, you can open up your phone and make a call to
+someone far away from you and initiate a conversation. Nowadays even more so
+with 3G networks, even phones can connect to the internet and be part of the
+netwrok.
+Social media, such as email, blog, facebook, twitter, etc, has been uniting
+people on the internet up until now. With social media, we could go beyong
+physical limits with whom we can keep in direct contact. Internet-of-Things will
+further make possible for massive amount of objects to be online and to enable
+objects to access external information about themselves through external
+services in their vicinity.~\cite{Associati2011a}
+
+\begin{figure}[h!]
+\caption{The Evolution from Internet of People to Internet of Things}
+\label{fig:evolution}
+\centering
+    \includegraphics[width=\linewidth]{figures/evolution}
+\end{figure}
+
+The figure~\ref{fig:evolution} illustrates an evolution of internet.
+
+\subsection{Potential Applications}
+
+Today more things than humans are connected to the internet~\cite{CISCO}. It is
+estimated things will have 24 billion devices connected to the internet by
+2020~\cite{Malik}. In addition, the computation capabilities per device are
+increasing. Today's smart phones are about 15 times faster than CPUs used in
+1979 Cray-1~\cite{Randomly2010}. 
+
+Potential applications of this new emerging paradigm is skyrocketing as more
+sensor networks, actuators, have been more common as sensing, communication, and
+analytics have matured that are ubiquitously embedded into everyday objects
+surrounding every where we go. Some examples are highlighted below:
+\begin{enumerate}
+\item Smart Home: At home, embedded sensors can sense human presence and could
+undestand human activities to properly adjust air quality and temperature by
+commanding the air conditioner on or off to save energy without sacrificing
+human comfort.
+\item Economical agriculture: In a vast farm land, remote sensors can detect and
+identify the outbreak of pests and initiate spreading pesticide at only the
+areas of outbreak.
+\item Vehicle safety: Sensors on the car can help drivers understand its own
+driving conditions and monitor driver condition to help others to understand
+driver's condition to prevent traffic accidents.
+\end{enumerate}
+
+In conclusion, connected embedded things could enhance people's lives
+tremendously in a way never seen before. This paradigm shift creates numerous
+opportunities and challenges for engineering~\cite{Chen2012}.
+
+\subsection{Challenges}
+
+In the future, enormous amount of sensors, actuators, or things will be
+deployed. The cost of serving such amount of things will be a major concern. One
+big challenge is to reduce and minimize costs to deploy and maintain the system.
+Many domestic ubiquitous computing projects have failed because of high
+complexity in sensor network deployment~\cite{Beckmann2004}.
+
+Once the network of sensors have been deployed, it is almost always impossible to
+perform manual effort to repair such as battery replacement, case
+replacement. Therefore, another challenge is low power sensor design, or
+self-sustainable design eliminating the needs for battery over the lifetime of
+sensors. For example, if the sensors are deployed in mountain range where human
+contact is costly, the lifetime of sensors should last as long as the lifetime
+of the project.
+
+After the data has been collected, the sensors will communicate the data
+collected with other parts of the network. Since the number of sensors have far
+exceed the number of humans, and this gap will only accelerate faster in the
+future~\cite{CISCO}, it is a challenge to serve the huge amount of data
+generated by sensors when the base station can only provide quality of service
+up to an arbitrary threshold. The ability to provide critical analytics to the
+ocean of data generated by IoT will be a key role in the new computing era.
+
+\section{Wireless Sensor Networks}
+
+\subsection{What is Wireless Sensor Networks}
+
+Wireless sensor network (WSN), a M2M network, consists a network of sensor
+nodes, each is uniquely identifiable. Each sensor node is equipped with
+low-power, low-cost, and failure-prone sensors or actuators.  Sensor nodes
+collaborate to collect, process and disseminate environmental
+information\cite{ArchanaBharathidasan}.
 
 Sensor network could be homogeneous, meaning all nodes are identical with same
 sensors, actuators and hardware setup. Sensor networks could also be
 heterogeneous where nodes have different sensors, actuators and hardware setup.
 Heterogeneous networks require higher level management and organization
-resources. Wireless sensor networks are nodes that communicate through air by
+resources. Sensor nodes could communicate wirelessly through air by
 sending electronic signals. Wireless communications aren't stable, as it is
 highly influenced by environmental factors.
 
-\section{Redundancy architecture}
+\subsection{Benefits of Decentralized Architecture}
 
-%A distributed system usually consists of hosts that host services that clients or
-%other services could read or write with some associated communication
-%frequencies according to the application requirements. The
-%problem of partial failures makes service redundancy a fundamental technique to
-%distributed systems as it improves availability, eliminiates single points of
-%failure. A system that is hardwired to get data from node X will fail when
-%X fails. The problem of designing a system with replicas where node Y, which
-%can provide the same service as X, can take over when X fails. To design such
-%system, it is important to have a clear definition of a service such that it
-%could be replicated onto heterogeneous hosts. It is
-%also essential that the system could track and manage available replicas in the
-%network. Autonomy is an important attribute of distributed systems since most
-%of them would be left unattended for a long period of time; systems should be
-%able to reconfigure and recover themselves in the event of failure.
+In general, centralized architecture is easy to implement but if the central
+node failed, the whole system would went down. A decentralized architecture
+might be more expensive to design, implement and more delicate to manage, but it
+is easier to scale and become more robust. In a decentralized architecture, each
+node capture a localized measurement. As the number of sensor node increases,
+     the system could provide much greater accuracy and finer resolution in the
+     information gathered compared to what a single sensor would obtain over
+     a period of time.
 
-Sensor networks are usually deployed in large scale and unattended in long
-period of time. Sensor networks communicate with
-low-power wireless radios to aid scientists in collecting spatial data that
-could lead to more understanding of the environment. However, several
-challenges such as node failures, message loss, and sensor calibration leaves
-the effectiveness of sensor networks in question. With the assumption of spare
-homogeneous resources, redundancy is used in sensor networks to increase fault
-tolerance against node failures. The system is designed with backup nodes that
-could automatically recover and replace should one node fail.
+In addition, new sensor nodes could be added to the network dynamically, and
+the system could continue to provide services. If a sensor node failed, nearby
+nodes could substitude for it and keep capturing the local information.
+Redundancy, or failover mechanism, is desirable as it makes the system more
+fault tolerant.
+
+\subsection{Challenges}
+
+Most of the challenges in WSN are similar to the challenges in building IoT
+system.  However, in addition to the challenges above, it is difficult to
+develop a complex distributed applications with low end hardware and programming
+language. Most programming environment have been designed to work for
+a monolitic system that executes one instruction at a time contrasts to
+distributed systems with multiple instances of the program running
+asynchronously and each is prone to failure.
+
+\subsubsection{Service-Oriented Architecture for WSN}
+
+Service-oriented architecture (SOA) is an established approach which eases the
+development of complex distributed applications. Using the concept, sensor
+network applications are composed of successively of independent software
+building blocks (services) which are situated on the sensor nodes in order to
+perform predetermined tasks.~\cite{Neumann2010, Marin-Perianu2007} SOA provides
+an easy-to-use interaction paradigm and decouple the application from the
+low-level technologies.
 
 \section{WuKong: The intelligent middleware for M2M applications}
 
@@ -230,3 +326,32 @@ outside world. In WuKong system, one of the gateways will take on the role of
 higher management decision maker called \emph{Master} to making the decisions for
 deployment and producing the configuration of wireless sensor networks.
 
+
+\begin{comment}
+\section{Redundancy Architecture}
+
+%A distributed system usually consists of hosts that host services that clients or
+%other services could read or write with some associated communication
+%frequencies according to the application requirements. The
+%problem of partial failures makes service redundancy a fundamental technique to
+%distributed systems as it improves availability, eliminiates single points of
+%failure. A system that is hardwired to get data from node X will fail when
+%X fails. The problem of designing a system with replicas where node Y, which
+%can provide the same service as X, can take over when X fails. To design such
+%system, it is important to have a clear definition of a service such that it
+%could be replicated onto heterogeneous hosts. It is
+%also essential that the system could track and manage available replicas in the
+%network. Autonomy is an important attribute of distributed systems since most
+%of them would be left unattended for a long period of time; systems should be
+%able to reconfigure and recover themselves in the event of failure.
+
+Sensor networks are usually deployed in large scale and unattended in long
+period of time. Sensor networks communicate with
+low-power wireless radios to aid scientists in collecting spatial data that
+could lead to more understanding of the environment. However, several
+challenges such as node failures, message loss, and sensor calibration leaves
+the effectiveness of sensor networks in question. With the assumption of spare
+homogeneous resources, redundancy is used in sensor networks to increase fault
+tolerance against node failures. The system is designed with backup nodes that
+could automatically recover and replace should one node fail.
+\end{comment}

@@ -296,3 +296,51 @@ information from node 3.
 \centering
     \includegraphics[width=\linewidth]{figures/strip10}
 \end{figure}
+
+\section{Complexity Analysis}
+
+% Complexity analysis
+% TODO:Just pasted, need revision
+The lower bound of message overhead for heartbeats arranged in a daisy chain
+loop in a network of size n is $\Omega(n)$, the upper bound is also $O(n)$, since
+there is only one message sent by a node at any given moment.
+
+% Complexity analysis
+% TODO:Just pasted, need revision
+For an application with m components deployed to a network with n nodes where
+n > 1, the lower bound of memory overhead of the strips for a random member in
+the network is $\Omega(1)$ since a node must carry at least one strip and lowest
+member requirement of a strip is 2. The upper bound is $O(m*n)$ since the strips
+could span the whole network. But in reality, since the nodes typically have
+fixed memory and fixed capability for the duration of the lifetime in the
+network, the upper bounds cannot grow indefinitely. The memory overhead a strip
+could impose on a node is determined by node's capability and memory size.
+
+
+% Complexity analysis
+% TODO:Just pasted, need revision
+The lower bound of message overhead by the reconfiguration protocol
+with one node failure in the same network is $\Omega(1)$, since if there is only
+one component with 2 members on the failed node, the detector would only need to
+send 1 messages to the remaining strip member of the failing node, and none if
+the component is not connected to any other components, and finally 1 more
+message to get the information from the nodes monitored by the failed node. The
+upper bound is $O(n + m)$ since if the failed node carried m components where each
+strip contains n members, the detector would have to send (n-2) messages to all
+functioning members of the m strips carried excluding itself plus the messages
+to all other strip heads connected to the failing node. 
+
+The time to recover highly depends on the messages sent for the reconfiguration
+and the detection time. The lower bound is $\Omega(1)$ with the same assumption
+with constant component and members, but the upper bound is $O(b + n + m)$ where
+b is the heartbeat period.
+
+The cost for time for recover is the time itself. Time is the overhead. Thus the
+longer time it take to recover the higher the overhead. By setting a shorter
+heartbeat period, it would take a shorter time to recover, thus a lower
+overhead. I assume every message takes at least a fixed amount of time, and
+there need at least amount of messages to recover, so the more messages it takes
+to recover, the longer the time it will take to recover. Here it is assumed that
+heartbeat messages are never lost/dropped, and in-node computation take
+negligible amount of time thus it is ignore. %If it is about the message overhead within a certain time period, then of course the higher the period the lower the message overhead.
+
