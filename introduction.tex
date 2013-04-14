@@ -4,27 +4,31 @@
 \label{c:intro}
 \doublespacing\nointerlineskip
 
-%This chapter provides an overview of the thesis. First, we describe why
-%deployment and maintenance of M2M systems such as WSN are still difficult and then we introduce the reconfigurable fault tolerance system problem and approaches to solving this
-%problem. Next, we describe some related work on a reconfigurable fault tolerant distributed system. Lastly, we present our proposed solution to this problem.
+Internet-of-Things (IoT), also known as machine-to-machine (M2M), refers to the
+pervasive presence of uniquely identifiable objects (things) around us - such as
+Radio Frequency IDentification (RFID) tags~\cite{Shepard2005}, sensors,
+actuators, mobile phones, etc, which would be able to interact with each
+other forming a network like structure~\cite{Atzori20102787}. 
+The paradigm gradually leads to all objects surrounding us to become connected
+to the internet, to interact with other connected objects on the other end of
+the web and have access to comparative information which would not be possible
+before.
+An example would be environmental monitoring where sensors are scattered across
+a vast land, where they could detect, identify phenomena at the area when it is
+happening. However, if a number of sensors failed, the whole system would be
+brought down, therefore failover mechanism is especially crucial for enabling
+IoT in the sense that applications could "deploy-once, run forever," and where
+applications degrade gracefully under failures.
 
-Failover mechanism is is essential in any distributed networks. It is especially
-crucial for enabling Internet-of-Things (IoT) in the sense that applications
-could "deploy-once, run forever." Where applications degrade gracefully under
-failures.
-
-%\section{Wireless Sensor Network Deployment is Hard}
-
-Internet-of-Things is being realized in Machine-to-Machine (M2M) systems such as
-wireless sensor networks (WSN).  WSNs are areas filled with network of tiny,
-resource limited sensors communicating wirelessly. Each sensor is
-capable of sensing the enviornment in its proximity. Wireless sensor
-networks are typically employed in a variety of applications ranging
-from home automation to millitary.
+IoT is being realized in M2M systems such as wireless sensor networks (WSN).
+WSNs are areas filled with network of tiny, resource limited sensors
+communicating wirelessly. Each sensor is capable of sensing the enviornment in
+its proximity. Wireless sensor networks are typically employed in a variety of
+applications ranging from home automation to millitary.
 
 Sensor networks offer the ability to monitor real-world phenomena in detail and
 at large scale by embedding devices into the environment. Deployment is
-about setting up an sensor network in a real-world environment. Deployment is
+about setting up an sensor network in a real-world environment, and it is
 a labor-intensize and cumbersome task since environmental influences or
 loose program logic in code might trigger bugs or sensor failures that
 degrade performance in any way that has not been observed during pre-deployment
@@ -50,14 +54,16 @@ sensor networks becomes an important research in the last few
 years.~\cite{Koutsoukos2007,Hughes2012}
 
 WuKong, a middleware for service-oriented M2M systems, has set out to allow
-developers develop M2M applications with ease by introducing users to a new
-programming paradigm called flow based programming (FBP) with automatic sensor
+programmers develop M2M applications with ease by introducing a new
+programming paradigm called flow based programming (FBP) to offer drag-and-drop
+software components and flow-chart like programs with automatic sensor
 identifications, node configuration, and system re-configuration.~\cite{Reijers}
 
-In this thesis, we present our fault tolerance system for WuKong.
+
 
 \section{Goals} % was Problem Definition
 
+In this thesis, we present our fault tolerance system for WuKong.
 Users of WuKong deploy applications written in the form of flow based
 programming. Applications consist of a set of components linked together.  Each
 component represents a service in network. When application is deployed, each
@@ -78,7 +84,7 @@ have. It is also important that the deployed system would be able to detect,
 \section{Challenges}
 
 The way WuKong presents and models resources and applications, along with user
-policy and requirements, makes it a unique challenge: User requirements might
+policy and requirements, makes an unique challenge: User requirements might
 vary drastically from one to another. System has to embrace a variety of
 top-level and low-level configurations so components would play along with each
 other and eventually produce a working failover architecture for the network.
@@ -100,14 +106,12 @@ Previous work on the problems has not considered failover architecture for
 multiple services where relationship among services are critical and which would
 also be influenced by user policies pre-deployment. Furthermore, after every
 failure recovery, none explained how existing services could find replaced
-services in such environment. This thesis proposed a novel algorithm to achieve
-recovery from failures by combining heartbeat protocol, for failure detection,
-with Strips, which are used to maintain and track service redundancy. 
+services in such environment to the best of my knowledge. This thesis proposed
+a novel algorithm to achieve recovery from failures by combining heartbeat
+protocol, for failure detection, with Strips, which are used to maintain and
+track service redundancy. 
 
 \section{Related Work}
-
-% I don't if I really need related work if it is based on the technique I used
-% Or work with the similar settings (WuKong??)
 
 In WSNs, failover techniques for data replications, and service redundancy are
 typically adapt for applications only with predefined services, fixed user
@@ -118,6 +122,9 @@ nodes are specified by Hash functions to collect data of certain types.
 Redundancy is achieved by storing replicas directly on neighbors nodes. But
 applications are still restricted to end-to-end links, since there is only one
 type of links in the application.
+Having more than end-to-end links in a M2M system allows a higher degree of
+complexity in applications to meet the user requirements when services could
+build on top of other low-level services.
 
 In \cite{Piotrowski2009}, a dynamic replication approach for local data storage
 where replicas are randomly distributed within a predefined replication range
@@ -142,5 +149,5 @@ WuKong fault tolerance system. In this chapter we give detail description of our
 method and algorithms, including user policy for fault tolerance, strips, and
 reconfigurable redundancy architecture.  Chapter~\ref{c:evaluation} presents the
 metrics we would use to measure system performance, which is followed by
-evaluation of the results. Finally, chapter ~\ref{c:conclusion} presents some
-conclusions of the work, list of contributions and future work.
+evaluation of the results. Finally, chapter ~\ref{c:conclusion} presents the
+conclusion of the work, list of contributions and future work.

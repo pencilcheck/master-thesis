@@ -23,10 +23,10 @@ reconfigurate the network for the new structure to recover from node failure.
 The system allows user intervention through means of user policy, which could
 directly influence underlying system configurations and structure.
 
-The developed methods adds new and useful solutions to build a fault tolerant
+The developed methods add new and useful solutions to build a fault tolerant
 system that could be reasoned easily and with a performance as expected on
-average. This method might not be superior to other methods in terms of
-completeness and complexity, but it serves as a quick and easy solution
+average. This method makes an extension to other methods in terms of
+completeness and complexity. It serves as a quick and easy solution
 to provide practical fault tolerance for WuKong applications.
 
 % TODO: summarize the results of the experiments here, etc
@@ -64,14 +64,13 @@ Strips makes it really easy to describe a component system with redundancy for
 heterogeneous services and devices. Nevertheless, there is still room for
 improvements. This section will address some directions future research can take.
 
-WuKong Fault Tolerance System didn't considered for multi-hop networks where it
-introduces higher latency and network partitions.  Network partition is when
-a network of nodes got partitioned into two subnetworks where none can detect
-each other for a period of time. One of the possible direction is to create
-a more complex failure model that could handle network partition. In this thesis
-we assume failstop model where nodes, once dead, will not come back. Therefore
-when network partition occurs, each subpart of the network would not be able to
-recognize each other and would cause conflicts and confusions.
+WuKong Fault Tolerance System did not consider for network partition. Network
+partition occurs when a network of nodes got partitioned into two subnetworks where
+none can detect each other for a period of time. One of the possible direction
+is to create a more sophisticated failure model that could handle network partition.
+In this thesis we assume failstop model where nodes, once dead, will not come
+back. Therefore when network partition occurs, each part of the network would
+not be able to recognize each other and would cause conflicts and confusions.
 
 Our current heartbeat protocol is distributed and easy to construct, but it is
 not shown to work under networks where messages are sent in multiple hops, since
@@ -83,14 +82,13 @@ never come back. If the node is still alive, it would be treated as if it is
 dead. And that will creates an artificial network isolation where a few nodes
 are excluded from the network before of latency.
 
-Although we didn't mentioned in system design, it is possible to handle multiple
-consecurive errors by storing in advance more node's strip and heartbeat
-protocol data, so when consecutive nodes failed simultaenously, the surviving
-detector would be able to recover all dead services and reconfigure the network
-correctly.  But there is a limitation of the memory a node could store,
-a possible future direction for research could be to improve the design so it
-could handle multiple simultaneous failures in large network.
-
+Current system can only allow the detector to handle one failure at a time. It
+would be a desirable future research direction to investigate handling
+consecutive node failures. One possible way is by storing ahead multiple nodes'
+strips and heartbeat protocol data, such that when consecutive nodes failure
+occurred the detector would be able to recover those services it backed up.
+However there is a tradeoff on the memory a node could store and the number of
+consecutive node failures a network could handle.
 
 \begin{comment}
 Niels suggested that I show that I am aware of such issue with determining
@@ -105,8 +103,8 @@ tolerance perspective
 Penn:Remember what the prof told me, about policy, first fit, last fit, etc
 \end{comment}
 
-Another important element is the optimization problem for deployment of
-applications. This thesis didn't consider finding a optimal deployment for the
+The optimization problem for application deployment is also an important element
+in this system. This thesis didn't consider finding a optimal deployment for the
 level of redundancy specified in the user policy. The problem of deploying
 a specific distributed system onto a network structure typically consists of
 mapping the components of the system onto the hosts of the network. The mapping
