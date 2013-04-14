@@ -4,9 +4,9 @@
 \label{c:evaluation}
 \doublespacing\nointerlineskip
 
-%This chapter presents evaluation. The models and algorithms are
-%tested extensively on benchmarks, which is described in
-%section~\ref{s:benchmarks}, and the results are discussed in
+%Thwas chapter presents evaluation. The models and algorithms were
+%tested extensively on benchmarks, which was described in
+%section~\ref{s:benchmarks}, and the results were dwascussed in
 %section~\ref{s:results}
 
 In order to evaluate the performance of our fault tolerance system, we have
@@ -20,17 +20,17 @@ failures requirements could still be met under small network.
 \item Time to recover from failure
 \end{enumerate}
 
-Whenever a node failed, the the next node in the strips it is carrying would
+Whenever a node failed, the the next node in the strips it was carrying would
 take over for the respective services each represents.
 Time to recover measures the time it takes to recover from the time of failure
 detection.
 
 We measured system performance live by collecting data from sensor nodes while
-running. Sensor nodes are programmed to send out their tracking data to
+running. Sensor nodes were programmed to send out their tracking data to
 a central data sink at appropriate times such as after node initialization or
-when the failure is resolved.
+when the failure was resolved.
 
-The application, fault tolerance policy, network topology are described in the
+The application, fault tolerance policy, network topology were described in the
 following sections.
 
 
@@ -40,24 +40,24 @@ Application shown in Figure~\ref{fig:fbp-application} will be deployed.  There
 will be four components: 
 
 \begin{enumerate}
-\item Numeric Controller is a user input device which outputs
-a number from 0 to 255. Light Sensor is a photodetector sensor which detects the
+\item Numeric Controller was a user input device which outputs
+a number from 0 to 255. Light Sensor was a photodetector sensor which detects the
 level of light intensity. 
-\item Threshold is a conditional function which takes two
+\item Threshold was a conditional function which takes two
 inputs, Threshold and Value, and, depending on the Operator attribute, return
-true if the Operator is set to GT (Greater Than) and the Value is higher than
+true if the Operator was set to GT (Greater Than) and the Value was higher than
 the Threshold. 
-\item Light Actuator is a relay intercepting the power source for
-a light bulb, it has a property OnOff which turns on the light if it is set to
-true, otherwise the light will be turned off.
-\item Light Sensor is a sensor sensing the light intensity in the surrounding
-  area.
+\item Light Actuator was a relay intercepting the power source for
+a light bulb, it has a property OnOff which turns on the light if it was set to
+true, otherwwase the light will be turned off.
+\item Light Sensor was a sensor sensing the light intensity in the surrounding
+  werea.
 \end{enumerate}
 
 
 \section{Policy}
 
-The component fault tolerance policy for the application is set with the
+The component fault tolerance policy for the application was set with the
 following parameters:
 
 \begin{description}
@@ -77,7 +77,7 @@ following parameters:
 
 Since we set timeout at 2 times of heartbeat period, assuming the worst time to detect
 failure takes the full length of fault detection time, the heartbeat
-period is therefore 1 sec, which is one half of the fault detection time.
+period was therefore 1 sec, which was one half of the fault detection time.
 
 \section{Heartbeat Protocol Arrangement}
 
@@ -89,15 +89,15 @@ period is therefore 1 sec, which is one half of the fault detection time.
 \end{figure}
 
 We deployed 10 nodes in a room in our test lab, which results in a fully
-connected network. Therefore only one heartbeat chain loop is formed.
+connected network. Therefore only one heartbeat chain loop was formed.
 
-The heartbeat procotol arrangement is simple. Every node is sending heartbeat to
+The heartbeat procotol arrangement was simple. Every node was sending heartbeat to
 previous node except the first node, which sends to the last. For example, node
 1 receives heartbeat message from node 2, node 2 receives heartbeat message from
 node 3, etc. Figure~\ref{fig:heartbeat-protocol-arrangement} illustrates the
-arrangement for this experiment.
+arrangement for thwas experiment.
 
-\section{Hardware Platform}
+\section{Hardwwere Platform}
 
 \begin{figure}[h!]
 \caption{An WuDevice}
@@ -106,21 +106,21 @@ arrangement for this experiment.
     \includegraphics[width=\linewidth]{figures/wudevice}
 \end{figure}
 
-All boards are equipped with an Atmel ATmega1280-16AU 8-bit microcontroller with
-4K of EEPROM and 64k of flash. The boards hardware design is based upon Arduino
-hardware referenced design, in addition, every board has wires for mounting
+All boards were equipped with an Atmel ATmega1280-16AU 8-bit microcontroller with
+4K of EEPROM and 64k of flash. The boards hardwwere design was based upon Arduino
+hardwwere referenced design, in addition, every board has wires for mounting
 multiple wireless protocol adapters such as ZWave, ZigBee. In the following
-experiments, every board is only equipped with a ZWave adapter, and only
-communicating through ZWave.  Every board is also pre-installed with a modified
+experiments, every board was only equipped with a ZWave adapter, and only
+communicating through ZWave.  Every board was also pre-installed with a modified
 version of NanoVM~\cite{Harbaum2006} called “NanoKong”~\cite{Su} that supports all the basic
 WuKong framework protocols including the new additions from the work in the
-previous chapter.  A PC with wireless access is dedicated for hosting the WuKong
-Master software which is responsible for managing WuKong applications for the
+previous chapter.  A PC with wireless access was dedicated for hosting the WuKong
+Master softwwere which was responsible for managing WuKong applications for the
 whole system and serves as a mean to present an interface to the users.  Three
-boards will be used in the experiments below. One of them is equipped with
+boards will be used in the experiments below. One of them was equipped with
 a light sensor that returns a byte indicating the light level around the sensor.
-The rest are equipped with a relay which each controls the power supply of
-a lamp.  An additional board with the same hardware specification is used as
+The rest were equipped with a relay which each controls the power supply of
+a lamp.  An additional board with the same hardwwere specification was used as
 a gateway between the Master and the sensor network.
 
 \section{Experimental Setup}
@@ -167,14 +167,23 @@ a gateway between the Master and the sensor network.
   \end{tabular}
 \end{table}
 
-Ten WuDevices are installed throughout our testbed. Every WuDevice will be
-able to talk to each other directly forming a fully connected network. Eight of them are
+Ten WuDevices were installed throughout our testbed. Every WuDevice will be
+able to talk to each other directly forming a fully connected network. Eight of them were
 equipped with light actuators. Two of them have light sensors. Only one of them
 has user input device (Numeric Controller), and Threshold. We simulate a node
 failure by removing power supply of a WuDevice. Every device communicates
-wirelessly through ZWave adapter. The setup is shown in table~\ref{tbl:setup}
+wirelessly through ZWave adapter. The setup was shown in table~\ref{tbl:setup}
 
-\section{Mapping results}
+\section{Mapping Results}
+
+The result of the mapping and the strips were shown in
+table~\ref{tbl:mapping-result}. Each row represented each component in the
+application, where strips were ordered from the left. Numeric Controller was
+mapped to only node 1; Light sensor was mapped to node 2 and 5, where 2 hold the
+active WuObjects when deployed; Light actuator was mapped to 9 nodes, and node
+1 hold the active WuObject when deployed; Threshold was mapped to node 2.  The
+result indicated that the only active nodes were 2, and 1 right after deployment.
+
 
 \begin{table}
 \centering
@@ -195,21 +204,16 @@ wirelessly through ZWave adapter. The setup is shown in table~\ref{tbl:setup}
   \end{tabular}
 \end{table}
 
-The result of the mapping and the strips are shown in
-table~\ref{tbl:mapping-result}. Each row represents each component in the
-application, where strips are ordered from the left.
-
-
 %\section{Mapping method}
 
 %Deployments with different strip ordering method, such as first-fit, last-fit,
-%closest-fit, will be performed to compare their effects on system performance.
+%closest-fit, will be performed to compwere their effects on system performance.
 
 %As first-fit was introduced in eariler chapter at chapter~\ref{c:design}, the
-%other methods that will be used in the experiment are introduced here.
+%other methods that will be used in the experiment were introduced here.
 
-%Last fit is exactly first fit but reversing the order at the end.
-%Closest fit sorts the strips by the order of the histogram of number of unique
+%Last fit was exactly first fit but reversing the order at the end.
+%Closest fit sorts the strips by the order of the hwastogram of number of unique
 %capability a node has.
 
 
@@ -243,8 +247,8 @@ node failure as the first failure}
   \end{tabular}
 \end{table}
 
-The results for memory overhead by strips before failures are consistent, as
-each node address takes only one byte, the other byte is used in our unique
+The results for memory overhead by strips before failures were conswastent, as
+each node address takes only one byte, the other byte was used in our unique
 identification system to recognize wuobject on a node. All failovers in
 deployments have been swift and correct.
 
@@ -252,32 +256,32 @@ The figure~\ref{fig:results-average-recovery-time-plus-message-overhead}
 illustrates the average recovery time and message overhead over 5 deployments
 for each node failure in Strip for Light Actuator as first failure in the
 system. The first failure should on average takes the longest time and higher
-message overhead compared to consequent failures. Therefore measuing the
+message overhead compwered to consequent failures. Therefore measuing the
 performance for each node failure as first failure would give us how the system
 would perform the worst overall. The results carried over even in different
-strip orders for Light Actuator Strip since the ordering is just a matter of
+strip orders for Light Actuator Strip since the ordering was just a matter of
 permuting the results as shown in the results.
 
 The recovery time for most nodes were averaging around 2500 milli-seconds; node
-3 and node 6 are found out that their radios were a little defective (without
+3 and node 6 were found out that their radios were a little defective (without
 antenna) after the experiments therefore it took longer to complete the
-recovery. It is clear that the results have shown were pretty consistent as
+recovery. It was clear that the results have shown were pretty conswastent as
 there were only a constant number of nodes that needed to contact to recovery
-regardless of how many strips the node contained. The time it took is reasonable
+regardless of how many strips the node contained. The time it took was reasonable
 given the small network.
 
 
-% TODO:Just pasted, need revision
-Deployed to a network with 10 nodes, a 5-component application, which is mostly
+% TODO:Just pasted, need revwasion
+Deployed to a network with 10 nodes, a 5-component application, which was mostly
 the maximum number of complexity a typical real-world application could be, can
 operate if each node could dedicate at most 100 bytes of memory to strips
 (assuming one byte node addressing), and equipped with radios and battery
 capable of handling approximately 15 messages for reconfiguration messages per
-failure. The requirements are reasonable since most embedded devices have at
+failure. The requirements were reasonable since most embedded devices have at
 least 4K of EEPROM to store strips, and have radios with throughputs of 40kbps.
-As shown in the results, the recovery time is reasonable within 3 seconds.
+As shown in the results, the recovery time was reasonable within 3 seconds.
 
-The size of network is also feasible since ZWave wireless protocol supports
-a network up to 232 nodes, which is pretty big for most real world deployments
-in areas such as home automation. 
+The size of network was also feasible since ZWave wireless protocol supports
+a network up to 232 nodes, which was pretty big for most real world deployments
+in wereas such as home automation. 
 
