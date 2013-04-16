@@ -27,6 +27,7 @@ before.
 
 \subsection{The Evolution of Internet-of-Things}
 
+The figure~\ref{fig:evolution} illustrates an evolution of internet.
 Communication between computers already exists that made possible for two PCs to
 send messages across large geographical areas. With the internet, all the
 computers connected to the internet can talk to each other and now with mobile
@@ -44,13 +45,12 @@ objects to access external information about themselves through external
 services in their vicinity.~\cite{Associati2011a}
 
 \begin{figure}[h!]
-\caption{The Evolution from Internet of People to Internet of Things}
-\label{fig:evolution}
 \centering
     \includegraphics[width=\linewidth]{figures/evolution}
+\caption{The Evolution from Internet of People to Internet of Things}
+\label{fig:evolution}
 \end{figure}
 
-The figure~\ref{fig:evolution} illustrates an evolution of internet.
 
 \subsection{Potential Applications}
 
@@ -182,13 +182,6 @@ environment\cite{Reijers}.
 
 \subsection{Flow Based Programming}
 
-\begin{figure}[h!]
-\caption{A FBP application}
-\centering
-    \includegraphics[width=\linewidth]{figures/fbp-application}
-\label{fig:fbp-application}
-\end{figure}
-
 M2M applications are by definition distributed where the application
 requirements involve a network of nodes collaborating for some common 
 goals. M2M applications are typically defined by its flow of information
@@ -228,6 +221,13 @@ Threshold. If the light value sensed is below the threshold value, Threshold
 will output a boolean to set the on off property of Light Actuator to turn the
 device, which will be deteremined during deployment, that it is represented by
 on or off.
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{figures/fbp-application}
+\caption{A FBP application}
+\label{fig:fbp-application}
+\end{figure}
 
 \subsection{Sensor Profile Framework}
 
@@ -280,13 +280,6 @@ propagation to the linked WuObjects.
 
 \subsection{Compilation and Mapping}
 
-\begin{figure}[h!]
-\caption{WuKong application build flow}
-\centering
-    \includegraphics[width=\linewidth]{figures/wukong-flow}
-\label{fig:wukong-flow}
-\end{figure}
-
 Figure~\ref{fig:wukong-flow} shows the overview of WuKong's build flow. The
 left part represents the build process for NanoKong VM which will be installed
 on the sensor nodes as part of the WuKong framework. The top part represents
@@ -315,6 +308,13 @@ discovery phase that probe the network for node's capabilities in terms of
 available WuClasses, then mapper will decide the final candidates that will be
 hosting for a component. If no native version of a component is found on the
 nodes, mapper will substitute with a Java version of it.
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{figures/wukong-flow}
+\caption{WuKong application build flow}
+\label{fig:wukong-flow}
+\end{figure}
 
 \subsection{System Progression Framework}
 

@@ -16,16 +16,16 @@ and simple in terms of engineering design.
 \section{User Preference for Fault Tolerance}
 
 \begin{figure}[h!]
-\caption{An example of categories a user policy could impose on a component}
 \centering
     \includegraphics[width=\linewidth]{figures/fbp-policy}
+\caption{An example of categories a user policy could impose on a component}
 \label{fig:fbp-policy}
 \end{figure}
 
 \begin{figure}[h!]
-\caption{An example of fault tolerance policy}
 \centering
     \includegraphics[width=\linewidth]{figures/fbp-ft-policy}
+\caption{An example of fault tolerance policy}
 \label{fig:fbp-ft-policy}
 \end{figure}
 
@@ -99,10 +99,10 @@ corresponding WuObjects to host the services.
 \label{s:ss}
 
 \begin{figure}[h!]
-\caption{An example network with several strips}
-\label{fig:strip1}
 \centering
     \includegraphics[width=\linewidth]{figures/strip1}
+\caption{An example network with several strips}
+\label{fig:strip1}
 \end{figure}
 
 Representing a component in WuKong application, each Strip contains a list of
@@ -177,10 +177,10 @@ sections.
 \subsubsection{Consistent view of strips}
 
 \begin{figure}[h!]
-\caption{A failure occurred at node 2 in the network}
-\label{fig:strip3}
 \centering
     \includegraphics[width=\linewidth]{figures/strip3}
+\caption{A failure occurred at node 2 in the network}
+\label{fig:strip3}
 \end{figure}
 
 Consistent view of strips is required to pick a replacement node in the event
@@ -198,8 +198,7 @@ knowledge of the strips views of its monitoring node 2.
 
 % TODO: better to have a figure here to explain view update
 
-Our work proposed an algorithm attempting to recover by letting the
-detector of the failure to initiate the recovery algorithms.
+The detector of the failure would initiate the recovery algorithms.
 Since the detector will be responsible for recoverying for the failed node,
 every node needs to have membership knowledge of the strips from the nodes it
 is monitoring. For example, if node A is monitoring node B, A would know the
@@ -277,24 +276,24 @@ information from node 3.
 
 
 \begin{figure}[h!]
-\caption{Reconfigure application links}
-\label{fig:strip7}
 \centering
     \includegraphics[width=\linewidth]{figures/strip7}
+\caption{Reconfigure application links}
+\label{fig:strip7}
 \end{figure}
 
 \begin{figure}[h!]
-\caption{Reconfigure heartbeat protocols}
-\label{fig:strip9}
 \centering
     \includegraphics[width=\linewidth]{figures/strip9}
+\caption{Reconfigure heartbeat protocols}
+\label{fig:strip9}
 \end{figure}
 
 \begin{figure}[h!]
-\caption{Update monitored information}
-\label{fig:strip10}
 \centering
     \includegraphics[width=\linewidth]{figures/strip10}
+\caption{Update monitored information}
+\label{fig:strip10}
 \end{figure}
 
 \section{Complexity Analysis}
