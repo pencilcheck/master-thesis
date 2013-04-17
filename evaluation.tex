@@ -228,10 +228,34 @@ result indicated that the only active nodes were 2, and 1 right after deployment
 \section{Results}
 \label{s:results}
 
-The results for memory overhead by strips before failures were consistent, as
-each node address takes only one byte, the other byte was used in our unique
-identification system to recognize wuobject on a node. All failovers were
-correct.
+The results for memory overhead by strips before failures were consistent as
+shown in figure~\ref{fig:results-system-overhead-vs-network-size}, as each entry
+in strip takes two bytes as one byte is used by node address defined in ZWave
+protocol, the other byte was used for our internal WuObject identification
+system to recognize wuobject on a node. The growth of the overhead is quadratic,
+as shown in previous chapter that $O(m*n)$ when $m = n$. We have also observed
+that none of the failovers were incorrect.
+
+Table~\ref{tbl:results-memory-overhead-strip} listed the overhead of memory in
+bytes used by each strip. Each entry in the strip consumes 2 bytes, one byte for
+addressing and the other is for internal addressing for WuObjects. Strips for Light Actuator takes up 18 bytes because there are 9 nodes assigned as members.
+
+The message overhead as related to the node as first failure is also shown in
+figure~\ref{fig:results-message-overhead}. The size of message overhead was
+measured by averaging 5 deployments of the number of messages sent or received,
+including retries, by the detector during the recovery process multipled by the
+maximum package size which was 32 bytes.
+
+The detection time plus recovery time for different heartbeat period is plotted
+in figure~\ref{fig:results-heartbeat-vs-detection-recovery-time}. Heartbeat
+period is the interval between heartbeat messages a node sent to
+another node for health monitoring. The detection time is the time from 
+which a node failed to when the detector detects failure and initiated recovery
+algorithm. It's not the same as recovery time, as recovery time is the time took
+to recovery the network. The plot showed a linear relationship between heartbeat
+period and total time to recovery from failure. Recovery time is relatively
+constant in every deployment with the same network and strip size, therefore the
+only deciding factor is heartbeat period. 
 
 The figure~\ref{fig:results}
 illustrates the average recovery time and message overhead over 5 deployments
@@ -249,32 +273,54 @@ antenna) after the experiments therefore it took longer to complete the
 recovery. It was clear that the results have shown were pretty consistent as
 there were only a constant number of nodes that needed to contact to recovery
 regardless of how many strips the node contained. The time it took was reasonable
-given the small network.
+given the small network. The above results have shown that the system
+could sustain failures and reliably recover and maintain predictable performance
+over a small network.
 
-Figure~\ref{tbl:results-memory-overhead-strip} listed the overhead of memory in
-bytes used by each strip. Each entry in the strip consumes 2 bytes, one byte for
-addressing and the other is for internal addressing for WuObjects. Strips for Light Actuator takes up 18 bytes because there are 9 nodes assigned as members.
 
 
 % TODO:Just pasted, need revision
-Deployed to a network with 10 nodes, a 5-component application, which was mostly
-the maximum number of complexity a typical real-world application could be, can
-operate if each node could dedicate at most 100 bytes of memory to strips
-(assuming one byte node addressing), and equipped with hardware
-capable of handling approximately 15 messages for reconfiguration messages per
-failure. The requirements were reasonable since most embedded devices have at
+Theoretically, deploying to a network with 10 nodes with a 5-component application, which was mostly
+the maximum number of complexity a typical real-world application could have, can
+operate reliably if each node could dedicate 100 bytes of memory to strips
+(assuming one byte node addressing including the WuObject identification 
+bit), and equipped with hardware
+capable of handling approximately 20 messages for reconfiguration messages per
+failure with a handful of room for retries. The requirements were reasonable since most embedded devices have at
 least 4K of EEPROM to store strips, and have radios with throughputs of 40kbps.
-As shown in the results, the recovery time was reasonable within 3 seconds.
 
-The size of network was also feasible since ZWave wireless protocol supports
-a network up to 232 nodes, which was pretty big for most real world deployments
-in areas such as home automation. 
+The size of network was also feasible and the limiting factor is ZWave wireless
+protocol since it only supports a network up to 232 nodes; nevertheless
+a network of that size was pretty big for most real world deployments in areas
+such as home automation which would require complex application logic and
+service oriented architecture.
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{figures/results-system-overhead-vs-network-size}
+\caption{Nodes taking Light Actuator component versus the overhead used by the
+Light Actuator Strip}
+\label{fig:results-system-overhead-vs-network-size}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{figures/results-message-overhead}
+\caption{Message overhead used to recover for node as first failure}
+\label{fig:results-message-overhead}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{figures/results-heartbeat-vs-detection-recovery-time}
+\caption{Detection plus recovery time in milli-seconds for heartbeat period in seconds}
+\label{fig:results-heartbeat-vs-detection-recovery-time}
+\end{figure}
 
 \begin{figure}[h!]
 \centering
     \includegraphics[width=\linewidth]{figures/results-average-recovery-time-plus-message-overhead}
-\caption{Average recovery time and message overhead over 5 deployments for each
-node failure as the first failure}
+\caption{Recovery time averaging over 5 deployments for each node failure as the first failure}
 \label{fig:results}
 \end{figure}
 
