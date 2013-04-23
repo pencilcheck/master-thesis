@@ -100,7 +100,7 @@ arrangement for this experiment.
 
 \section{Hardware Platform}
 
-All boards were equipped with an Atmel ATmega1280-16AU 8-bit microcontroller
+All boards were equipped with an Atmel ATmega2560-16AU 8-bit microcontroller
 with 4K of EEPROM and 64k of flash. The figure~\ref{fig:wudevice} showed the
 board used in the experiments. The boards hardware design was based upon Arduino
 hardware referenced design, in addition, every board has wires for mounting
@@ -127,7 +127,7 @@ Master and the sensor network.
 \centering
     \includegraphics[width=\linewidth]{figures/wudevice}
 \caption{An WuDevice equipped with ZWave radio on the top, and running
-  a ATmega1280 8-bit microcontroller in the middle}
+  a ATmega2560 8-bit microcontroller in the middle}
 \label{fig:wudevice}
 \end{figure}
 
@@ -251,13 +251,13 @@ addressing and the other is for internal addressing for WuObjects. Strips for Li
 \section{Results}
 \label{s:results}
 
-The total memory overhead of a Light Actuator strip aggregated among its members
+The total memory overhead of a Light Actuator strip aggregated from its members
 at different member size were shown in
-figure~\ref{fig:results-system-overhead-vs-network-size}; each entry in strip
+figure~\ref{fig:results-system-overhead-vs-network-size}. Each entry in strip
 takes two bytes as one byte is used by node address defined in ZWave protocol,
 and the other byte was used for our internal WuObject identification system to
-recognize wuobject on a node. The growth of the overhead is quadratic, as shown
-in previous chapter that $O(m*n)$ when $m = n$. 
+identify wuobject on a node. The growth of the overhead is quadratic, confirming
+the analysis in previous chapter that $O(m*n)$ when $m = n$. 
 
 %The message overhead used to recover node failure was shown in
 %figure~\ref{fig:results-message-overhead}.
@@ -266,17 +266,6 @@ used to recovery random Light Actuator strip member failure against different
 strip sizes. The message overhead contains incoming and outgoing messages,
 including retries, for the detector during the recovery process. The growth in
 the figure is linear, comfirming the analysis in the previous chapter that $O(m+n)$.
-
-The detection time plus recovery time for different heartbeat period is plotted
-in figure~\ref{fig:results-heartbeat-vs-detection-recovery-time}. Heartbeat
-period is the interval between heartbeat messages a node sent to
-another node for health monitoring. The detection time is the time from 
-which a node failed to when the detector detects failure and initiated recovery
-algorithm. It's not the same as recovery time, as recovery time is the time took
-to recovery the network. The plot showed a linear relationship between heartbeat
-period and total time to recovery from failure. Recovery time is relatively
-constant in every deployment with the same network and strip size, therefore the
-only deciding factor is heartbeat period. 
 
 The figure~\ref{fig:results} illustrates the recovery time averaging over
 5 deployments for each node failure in Strip for Light Actuator as first failure
@@ -292,29 +281,40 @@ antenna) after the experiments therefore it took longer to complete the
 recovery. It was clear that the results have shown were pretty consistent as
 there were only a constant number of nodes that needed to contact to recovery
 regardless of how many strips the node contained. The time it took was
-reasonable given the small network. We have observed that none of the
-deployments failed so all failovers were successful and correct. The above
-results have shown that the system could reliablt handle failures with
-predictable performance over a small network.
+reasonable given the small network. 
+
+The results of detection time plus recovery time for different heartbeat
+periods are plotted
+in figure~\ref{fig:results-heartbeat-vs-detection-recovery-time}. Heartbeat
+period is the interval between heartbeat messages a node sent to
+another node for health monitoring. Detection time is the time it took to detect
+failure and initiate recovery algorithm by the detector.
+The results have shown a linear relationship between heartbeat
+period and total time to recovery from failure. 
+
+Throughout the experiments, we found out that none of the deployments failed, in
+other words, all failovers were successful and correct. The experimental results
+above have shown the feasibility of the system that it could reliably handle
+single failure at a time with great performance over a small network.
 
 
 
 % TODO:Just pasted, need revision
-Theoretically, deploying to a network with 10 nodes with a 5-component
-application, which was mostly the maximum number of complexity a typical
-real-world application could have, can operate reliably if each node could
-dedicate 100 bytes of memory to strips (assuming one byte node addressing
-including the WuObject identification bit), and equipped with hardware capable
-of handling approximately 20 messages for reconfiguration messages per failure
-with a handful of room for retries. The requirements were reasonable since most
-embedded devices have at least 4K of EEPROM to store strips, and have radios
-with throughputs of 40kbps.
+%Theoretically, deploying to a network with 10 nodes with a 5-component
+%application, which was mostly the maximum number of complexity a typical
+%real-world application could have, can operate reliably if each node could
+%dedicate 100 bytes of memory to strips (assuming one byte node addressing
+%including the WuObject identification bit), and equipped with hardware capable
+%of handling approximately 20 messages for reconfiguration messages per failure
+%with a handful of room for retries. The requirements were reasonable since most
+%embedded devices have at least 4K of EEPROM to store strips, and have radios
+%with throughputs of 40kbps.
 
-The size of network was also feasible and the limiting factor is ZWave wireless
-protocol since it only supports a network up to 232 nodes; nevertheless
-a network of that size was pretty big for most real world deployments in areas
-such as home automation which would require complex application logic and
-service oriented architecture.
+%The size of network was also feasible and the limiting factor is ZWave wireless
+%protocol since it only supports a network up to 232 nodes; nevertheless
+%a network of that size was pretty big for most real world deployments in areas
+%such as home automation which would require complex application logic and
+%service oriented architecture.
 
 \begin{figure}[h!]
 \centering
