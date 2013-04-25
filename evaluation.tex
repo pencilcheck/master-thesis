@@ -14,16 +14,11 @@ introduced some metrics to test how well it perform, and whether after node
 failures requirements could still be met under small network.
 
 \begin{enumerate}
-\item Whether the next node in strip take over after failure
+\item Whether failover kickoff successfully after failure
 \item Memory overhead for Strips
 \item Message overhead for failure recovery, including reconfiguration
-\item Time to recover from failure
+\item Time to detect and recover from failure
 \end{enumerate}
-
-Whenever a node failed, the the next node in the strips it was carrying would
-take over for the respective services each represents.
-Time to recover measures the time it takes to recover from the time of failure
-detection.
 
 We measured system performance live by collecting data from sensor nodes while
 running. Sensor nodes were programmed to send out their tracking data to
@@ -40,17 +35,17 @@ Application shown in Figure~\ref{fig:fbp-application} will be deployed.  There
 will be four components: 
 
 \begin{enumerate}
-\item Numeric Controller was a user input device which outputs
+\item Numeric Controller component represents a user input device which outputs
 a number from 0 to 255. Light Sensor was a photodetector sensor which detects the
 level of light intensity. 
-\item Threshold was a conditional function which takes two
+\item Threshold component represents a conditional function which takes two
 inputs, Threshold and Value, and, depending on the Operator attribute, return
 true if the Operator was set to GT (Greater Than) and the Value was higher than
-the Threshold. 
-\item Light Actuator was a relay intercepting the power source for
+the Threshold value.
+\item Light Actuator component represents a relay intercepting the power source for
 a light bulb, it has a property OnOff which turns on the light if it was set to
 true, otherwise the light will be turned off.
-\item Light Sensor was a sensor sensing the light intensity in the surrounding
+\item Light Sensor component represents a sensor sensing the light intensity in the surrounding
   area.
 \end{enumerate}
 
@@ -61,16 +56,16 @@ The component fault tolerance policy for the application was set with the
 following parameters:
 
 \begin{description}
-  \item[Numeric Controller] \hfill \\
+  \item[Numeric Controller component] \hfill \\
     Redundancy Level: 1\\
     Fault Detection Time: 2 sec\\
-  \item[Light Sensor] \hfill \\
+  \item[Light Sensor component] \hfill \\
     Redundancy Level: 2\\
     Fault Detection Time: 2 sec\\
-  \item[Threshold] \hfill \\
+  \item[Threshold component] \hfill \\
     Redundancy Level: 1\\
     Fault Detection Time: 2 sec\\
-  \item[Light Actuator] \hfill \\
+  \item[Light Actuator component] \hfill \\
     Redundancy Level: 9\\
     Fault Detection Time: 2 sec\\
 \end{description}
@@ -150,7 +145,7 @@ Master and the sensor network.
 \label{tbl:setup}
   \begin{tabular}{|l|l|}
   \hline
-  \textbf{Node Id} & \textbf{Equipped resources} \\
+  \textbf{Node Id} & \textbf{Equipped Resources} \\
   \hline
   1 & Light Actuator \\
   \hline
@@ -175,10 +170,10 @@ Master and the sensor network.
   \end{tabular}
 \end{table}
 
-Ten WuDevices were deployed. Every WuDevice will be able to talk to each other
+Ten WuDevices were deployed. Every WuDevice would be able to talk to each other
 directly through ZWave adapter forming a fully connected network. Eight of them
-were equipped with light actuators. Two of them have light sensors. Only one of
-them has user input device (Numeric Controller), and Threshold. We simulate
+were equipped with light actuators. Two of them had light sensors. Only one of
+them had user input device (Numeric Controller), and Threshold. We simulated
 a node failure by removing power supply of a WuDevice. The setup was shown in
 table~\ref{tbl:setup}.
 
@@ -194,7 +189,9 @@ result indicated that the only active nodes were 2, and 1 right after deployment
 
 Table~\ref{tbl:results-memory-overhead-strip} listed the memory overhead of each
 strip in the application. Each entry in the strip consumes 2 bytes, one byte for
-addressing and the other is for internal addressing for WuObjects. Strips for Light Actuator, for example, takes up 18 bytes because there are 9 nodes assigned as members.
+addressing and the other is for internal addressing for WuObjects. Strips for
+Light Actuator, for example, takes up 18 bytes because there are 9 nodes
+assigned as members.
 
 \begin{table}
 \centering
@@ -217,11 +214,11 @@ addressing and the other is for internal addressing for WuObjects. Strips for Li
 
 \begin{table}
 \centering
-\caption{Memory overhead of Strips in bytes}
+\caption{Memory Overhead of Strips in Bytes}
 \label{tbl:results-memory-overhead-strip}
   \begin{tabular}{|l|l|}
   \hline
-  \textbf{Application Component Strip} & \textbf{Memory size (bytes)} \\
+  \textbf{Application Component of Strip} & \textbf{Memory size (bytes)} \\
   \hline
   Numeric Controller & 2 \\
   \hline

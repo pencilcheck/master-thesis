@@ -11,19 +11,18 @@
 
 \section{Discussion}
 
-We have presented a fault tolerance system able to provide failover for failed
-services in service-oriented WSNs that comply with user policy requirements. We
-have also described strip, a redundancy abstraction for service peers along with
-distributed algorithms to synchronize strip views among members and
-reconfigurate the network for the new structure to recover from node failure.
-The system allows user intervention through means of user policy, which could
-directly influence underlying system configurations and structure.
+We have presented a fault tolerance system for WuKong able to configure itself
+based on user policy and requirements. And it is able to recover the system from failed
+services in service-oriented WSNs as shown in experimental results. We
+have described strip, a redundancy abstraction for service peers. We also
+described the distributed algorithms to recover from node failures with strip
+views synchronization among members and service reconfiguratation.
 
 The developed methods add new and useful solutions to build a fault tolerant
-system that could be reasoned easily and with a performance as expected on
-average. This method makes an extension to other methods in terms of
-completeness and complexity. It serves as a quick and easy solution
-to provide practical fault tolerance for WuKong applications.
+system that could be reasoned easily and with a performance as expected. Our
+system provides an extension to other solutions in terms of completeness and
+complexity. It serves as a quick and easy solution to provide practical fault
+tolerance for service-oriented applications.
 
 % TODO: summarize the results of the experiments here, etc
 % e.g. The solutions developed for WuKong system performs very consistently, as
@@ -32,12 +31,6 @@ to provide practical fault tolerance for WuKong applications.
 % result in a quick false recovery, and left the partitioned nodes behind, but
 % the system as a whole still function properly.
 
-The experimental results have shown to be consistent and stable among first
-failures in different rank of members in strip around 2.5 secs. The failover
-have been successful in all deployments. It is also shown that the performance
-degraded quickly when the hardware or the wireless communication quality
-degraded. Therefore it is important that the network setup is as optimized as
-possible. 
 
 \section{Future Work}
 

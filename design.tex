@@ -47,9 +47,8 @@ when the service failed. Fault Detection Time represents the time the system
 should take at most to detect an failure in seconds.
 
 There are timeouts set accordingly to prevent deviation in wireless communication quality,
-internal crystal clock to reduce the chances of getting false positives. Right
-now there is no way to find the correct timeout for the network, so we set it to
-right around 2x times of the heartbeat period we set fo the network.
+internal crystal clock to reduce the chances of getting false positives. 
+We set it to right around double of the heartbeat period we set for the network.
 
 \section{Deploying Application with Fault Tolerance}
 
@@ -101,7 +100,8 @@ corresponding WuObjects to host the services.
 \begin{figure}[h!]
 \centering
     \includegraphics[width=\linewidth]{figures/strip1}
-\caption{An example network with several strips}
+\caption{An example network with several strips and heartbeat protocol forming
+  a daisy loop chaining node 3 to 1}
 \label{fig:strip1}
 \end{figure}
 
@@ -131,19 +131,19 @@ carrying active and inactive WuObjects at once.
 Once the application is deployed, each target device would host one or many
 WuObjects where each represents a service for an application component. However,
 the network has to be resilient to failures, it has to detect and recovery
-autonomously. In the following paragraphs, we will be describing the subsystem
-which is used to support failure detection and recovery.
+autonomously. In the following sections, we will be describing the subsystem
+used to support failure detection and recovery.
 
 \subsection{Decentralized Failure Detection}
 \label{s:dfd}
 
-We want the heartbeat protocol to able to reach the entire network so any
+We want the failure detection to able to reach the entire network so any
 failures will be detected. In order to avoid single point of failures, the
-protocol will have to be decentralized, thus the failure one of component would
+protocol will have to be decentralized, thus failure of one system component would
 not bring the whole failure detection system down.
 
 %Note to self: mention single-hop, multi-hop in limitations or future work
-Distributed failure detection enables high-availability in distributed systems
+Decentralized failure detection enables high-availability in distributed systems
 where partial failures is rather common.  We utilize heartbeats to detect
 failures, a common technique widely used to detect failures in high-availability
 distributed systems.  Heartbeats are messages sent periodically until it's
