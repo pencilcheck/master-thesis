@@ -15,10 +15,7 @@ the web and have access to comparative information which would not be possible
 before.
 An example would be environmental monitoring where sensors are scattered across
 a vast land, where they could detect, identify phenomena at the area when it is
-happening. However, if a number of sensors failed, the whole system would be
-brought down, therefore failover mechanism is especially crucial for enabling
-IoT in the sense that applications could "deploy-once, run forever," and where
-applications degrade gracefully under failures.
+happening. 
 
 IoT is being realized in M2M systems such as wireless sensor networks (WSN).
 WSNs are areas filled with network of tiny, resource limited sensors
@@ -36,45 +33,48 @@ The real world has strong influences of the function of a sensor network that
 could change the quality of wireless communication links, and by putting
 extreme physical strains on sensor nodes. Laboratory testbed or simulator can 
 only model to a very limited extent of those influences.
-
 There have been several reports on sensor network installations where they
 encountered problems during their
 deployment\cite{Barrenetxea2008,Polastre2004,Arora2004,Tateson2005,Padhy2005,Stoianov2007,Tolle2005,Werner-Allen2006a}.
 Testbed in laboratory environment can still not model the full extents of the
 influences a real world enviroment could do. Deployment still a big problem in
 wireless sensor network applications.
-However, Wireless Sensor Network (WSN) programming can only be performed by
-experts, because of resource constraints and their high failure probatility.
-Hence, transforming the paradigm of service-oriented architecture (SOA) to
-sensor networks becomes an important research in the last few
-years.~\cite{Koutsoukos2007,Hughes2012}
+This is exacerbated by the fact that Wireless Sensor Network (WSN) programming
+can only be performed by experts because of resource constraints and their high
+failure probability. Hence, transforming the paradigm of service-oriented
+architecture (SOA) to sensor networks becomes an important research in the last
+few years.~\cite{Koutsoukos2007,Hughes2012}
 
 WuKong, a middleware for service-oriented M2M systems, has set out to allow
 programmers develop M2M applications with ease by introducing a new
 programming paradigm called flow based programming (FBP) to offer drag-and-drop
 software components and flow-chart like programs with automatic sensor
 identifications, node configuration, and system re-configuration.~\cite{Reijers}
-
+However, if a number of sensors or services failed, the whole system would be
+brought down, therefore failover mechanism is especially crucial for enabling
+IoT in the sense that applications could "deploy-once, run forever," and where
+applications degrade gracefully under failures.
 
 
 \section{Goals} % was Problem Definition
 
-In this thesis, we present our fault tolerance system for WuKong.
+In this thesis, we present the fault tolerance system for WuKong.
 Users of WuKong deploy applications written in the form of flow based
-programming. Applications consist of a set of components linked together.  Each
-component represents a service in network. When application is deployed, each
+programming. Application consists of a network of components where each
+component represents a service in the physical network. When application is deployed, each
 component is mapped to a service in the network. However, partial failures could
 bring the whole system down, since each service depends on each other to
-function. However, as users have drastically different requirements even for the
-same applications, we don't force the system to do in our way, we allow user
-preference to influence our system via user policy. 
+function. As users might have drastically different requirements for the
+applications at different context, we don't force the system to do in a certain way, we allow user
+preference to influence our system via user policy.
 
 The goal of this system is to provide failover for application components such
-that it meets user's requirements through user policy. Thus the system also
-needs to design a generally accessible user policy for fault tolerance such that
-it is easy and intuitive to specify how much fault tolerance a component should
-have. It is also important that the deployed system would be able to detect,
-  recover from failures, and reconfigure the system autonomously. 
+that it meets user's requirements specified in user policy. Thus the system also
+needs to design a user friendly user policy for fault tolerance such that it is
+intuitive for users to specify quantitatively how strong the fault tolerance
+a component should have that could directly being mapped to the lower physical
+layer. It is also important that the deployed system would be
+able to detect, recover from failures, and reconfigure the system autonomously. 
 
 
 \section{Challenges}
@@ -96,16 +96,13 @@ taken over by another local service peers.
 
 %It is a challenege designing a solution that is scalable and also pertaining to the limitations when typical distributed systems such as wireless sensor networks have tight resource constraints and usually deploy in large quantity which dooms the thought of storing or maintaining any additional states, resouces has to be used economically. 
 
-\section{Approaches}
+\section{Related Work}
 
 Previous work on the problems have not considered failover architecture for
-multiple services where relationship among services are critical and which would
-also be influenced by user policies pre-deployment. Furthermore, after every
+applications where relationships among services are critical and for which they would
+heavily influenced by user policies. Furthermore, after every
 failure recovery, none explained how existing services could find replaced
-services in such environment to the best of my knowledge. This thesis proposed
-a novel system to achieve failover for services in a WuKong application.
-
-\section{Related Work}
+services in such environment to the best of my knowledge.
 
 In WSNs, failover techniques for data replications, and service redundancy are
 typically adapt for applications only with predefined services, fixed user
@@ -137,10 +134,10 @@ itself a subject of advanced research and abundant literature.
 Chapter~\ref{c:intro} gives an introduction to the system goals and challenges
 and outline the approach used to solve the problem. Chapter~\ref{c:background}
 gives a brief background overview of the topic that this work based on.  We
-start by describing IoT, M2M networks and WSNs. The chapter ends with an
-overview of WuKong. Chapter~\ref{c:design} describes our system design for the
-WuKong fault tolerance system. In this chapter we give detail description of our
-method and algorithms, including user policy for fault tolerance, strips, and
+start by describing IoT, WSNs, and ends with an overview of WuKong.
+Chapter~\ref{c:design} describes our system design for the WuKong fault
+tolerance system. In this chapter we give detail description of our method and
+algorithms, including user policy for fault tolerance, strips, and
 reconfigurable redundancy architecture.  Chapter~\ref{c:evaluation} presents the
 metrics we would use to measure system performance, which is followed by
 evaluation of the results. Finally, chapter ~\ref{c:conclusion} presents the
