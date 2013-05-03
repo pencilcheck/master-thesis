@@ -11,7 +11,7 @@
 
 \section{Discussion}
 
-We have presented a fault tolerance system for WuKong able to configure itself
+We have presented a fault tolerance primitive for WuKong able to configure itself
 based on user policy and requirements. And it is able to recover the system from failed
 services in service-oriented WSNs as shown in experimental results. We
 have described strip, a redundancy abstraction for service peers. We also
@@ -48,12 +48,12 @@ tolerance for service-oriented applications.
 %research could take on.
 
 
-We have shown a design for a reconfigurable fault tolerant system for WuKong.
+We have shown a design for a reconfigurable fault tolerant primitive for WuKong.
 Strips makes it really easy to describe a component system with redundancy for
 heterogeneous services and devices. Nevertheless, there is still room for
 improvements. This section will address some directions future research can take.
 
-WuKong Fault Tolerance System did not consider for network partition. Network
+This study did not consider for network partition. Network
 partition occurs when a network of nodes got partitioned into two subnetworks where
 none can detect each other for a period of time. One of the possible direction
 is to create a more sophisticated failure model that could handle network partition.
@@ -79,19 +79,6 @@ occurred the detector would be able to recover those services it backed up.
 However there is a tradeoff on the memory a node could store and the number of
 consecutive node failures a network could handle.
 
-\begin{comment}
-Niels suggested that I show that I am aware of such issue with determining
-optimality for deployment which is not clear for WuKong yet, there are many
-ways or metrics to optimize for, all I can do in this work is to identify some
-tradeoffs certain deployment for fault tolerance could influence the system
-with certain metrics.
-
-Limits will be hard to define here
-Niels:about the tradeoffs in determining the deployment from your fault
-tolerance perspective
-Penn:Remember what the prof told me, about policy, first fit, last fit, etc
-\end{comment}
-
 The optimization problem for application deployment is also an important element
 in this system. This thesis didn't consider finding a optimal deployment for the
 level of redundancy specified in the user policy. The problem of deploying
@@ -104,9 +91,8 @@ from the perspective of WuKong, some components need to seaparate from other
 components to achieve fault tolerance, and some needs to place together to
 function properly.  Determining such an optimal deployment is a combinatorial
 optimization problem, and combinatorial optimization problems generally
-extremely challenging computationally. It is difficult to predict what will and
-what will not work.  It is unlikely that a single approach will be effective on
-all problems or instances of the same problems. As we also want the system to
-come up with a solution within a time limit. So finding a good balance between
-the quality of a solution of the time it takes to come up with a good enough
-solution is critical.
+extremely challenging computationally. It is unlikely that a single approach
+will be effective on all problems or instances of the same problems. As we also
+want the system to come up with a solution within a time limit. So finding
+a good balance between the quality of a solution of the time it takes to come up
+with a good enough solution is critical.

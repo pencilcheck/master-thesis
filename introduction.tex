@@ -58,15 +58,14 @@ applications degrade gracefully under failures.
 
 \section{Goals} % was Problem Definition
 
-In this thesis, we present the fault tolerance system for WuKong.
+In this thesis, we study the fault tolerance capability in WuKong.
 Users of WuKong deploy applications written in the form of flow based
 programming. Application consists of a network of components where each
 component represents a service in the physical network. When application is deployed, each
 component is mapped to a service in the network. However, partial failures could
 bring the whole system down, since each service depends on each other to
-function. As users might have drastically different requirements for the
-applications at different context, we don't force the system to do in a certain way, we allow user
-preference to influence our system via user policy.
+function. In WuKong, users are allowed to specify different user policies for
+the same application so that systems can show personalized behaviors. 
 
 The goal of this system is to provide failover for application components such
 that it meets user's requirements specified in user policy. Thus the system also
@@ -129,8 +128,6 @@ applications with dynamic user requirements, services with more complex links.
 \section{Thesis Organization}
 
 % an overview of subsequent chapters
-Our work overlaps many diverse but interconnected domains, each topic being
-itself a subject of advanced research and abundant literature.
 Chapter~\ref{c:intro} gives an introduction to the system goals and challenges
 and outline the approach used to solve the problem. Chapter~\ref{c:background}
 gives a brief background overview of the topic that this work based on.  We

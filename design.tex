@@ -4,7 +4,7 @@
 \label{c:design}
 \doublespacing\nointerlineskip
 
-The design for WuKong fault tolerance system is guided by the goals and
+The design for the WuKong fault tolerance primitive is guided by the goals and
 challenges outlined in chapter~\ref{c:intro}: We want fault tolerance
 policy to be expressive, component specific, yet decoupled from physical
 hardware specifications so it will work with a range of network configurations.
@@ -68,28 +68,31 @@ ordering function used. The default ordering function uses first-fit in a first
 come first process fashion, thus the ordering of the strip is randomized, as it
 depends on the order of processing.
 
-An first-fit algorithm for mapping is shown in algorithm~\ref{alg:mapping}
+A first-fit algorithm for mapping is shown in algorithm~\ref{alg:mapping}.
+Algorithm~\ref{alg:mapping} takes two arguments, C and N. C is the set of
+components; each component has a \textit{mapping} attribute representing a list
+of nodes assigned to it. N is the set of node infos; each node info has
+a \textit{services} attribute representing a set of components on the node. This
+algorithm outputs a mapping of S, a set of components with mapping to a list of
+nodes. 
 
-\begin{pseudocode}[framebox]{FirstFitComponentToStripMapping}{S, F}
+\begin{pseudocode}[framebox]{FirstFitComponentToStripMapping}{C, N}
 \label{alg:mapping}
-C \GETS {S}\\
-X \GETS {F}\\
+S \GETS{\emptyset} \\
 
-\FOREACH c \in C, x \in X \DO
+\FOREACH c \in C, n \in N \DO
   \BEGIN
-    \IF c \in x \THEN
+    s \GETS{c} \\
+    \IF s \in n.services \THEN
       \BEGIN
-        c << x\\
-        \COMMENT{Append x to c}
-      \END\\
-  \END\\
+        s.mapping << n \\
+      \END \\
+    S \GETS{S \cup \{s\}}
+  \END \\
 
-\RETURN C
+\RETURN S
 \end{pseudocode}
 
-S is the set of components, F is the set of
-sets each represents a network node with service capabilities. This algorithm
-will produce a mapping of C, a set of lists in first-come-first-serve order.
 
 Once the mapping is produced, each device would be reprogrammed to create
 corresponding WuObjects to host the services.

@@ -9,7 +9,7 @@
 %section~\ref{s:benchmarks}, and the results were dwascussed in
 %section~\ref{s:results}
 
-In order to evaluate the performance of our fault tolerance system, we have
+In order to evaluate the performance of our fault tolerance primitive, we have
 introduced some metrics to test how well it perform, and whether after node
 failures requirements could still be met under small network.
 
@@ -106,17 +106,12 @@ light commercial environments.
 
 In the following experiment, every board was only equipped with a ZWave adapter
 and only communicating wirelessly through the ZWave adapter.  Every board was
-also pre-installed with a modified version of NanoVM~\cite{Harbaum2006} called
-“NanoKong”~\cite{Su} that supports all the basic WuKong framework protocols
-including the new additions from the work in the previous chapter.  A PC with
-wireless access was dedicated for hosting the WuKong Master software which was
-responsible for managing WuKong applications for the whole system and serves as
-a mean to present an interface to the users.  Three boards will be used in the
-experiments below. One of them was equipped with a light sensor that returns
-a byte indicating the light level around the sensor.  The rest were equipped
-with a relay which each controls the power supply of a lamp.  An additional
-board with the same hardware specification was used as a gateway between the
-Master and the sensor network.
+also pre-installed with “NanoKong”~\cite{Su}, which includes
+NanoVM~\cite{Harbaum2006} and WuKong Profile Framework that supports all the
+basic WuKong framework protocols including the new additions from the work in
+the previous chapter. A PC with wireless access was dedicated for hosting the
+WuKong Master software which was responsible for managing WuKong applications
+for the whole system and serves as a mean to present an interface to the users.  
 
 \begin{figure}[h!]
 \centering
@@ -170,12 +165,24 @@ Master and the sensor network.
   \end{tabular}
 \end{table}
 
-Ten WuDevices were deployed. Every WuDevice would be able to talk to each other
-directly through ZWave adapter forming a fully connected network. Eight of them
-were equipped with light actuators. Two of them had light sensors. Only one of
-them had user input device (Numeric Controller), and Threshold. We simulated
-a node failure by removing power supply of a WuDevice. The setup was shown in
-table~\ref{tbl:setup}.
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\linewidth]{figures/system-setup}
+    \caption{Whole system setup with ten nodes, two of them were equipped with light sensors}
+  \label{fig:system-setup}
+\end{figure}
+
+The complete system setup is shown in figure~\ref{fig:system-setup}. Ten boards
+were used in the experiments. Two of them were equipped with a Arduino brick
+light sensor~\cite{brick} that returns light intensity value from 0 to 1023. The
+rest were equipped with a onboard LED as a simple light source. Boards with
+light sensor were assigned a light sensor component. Boards with light actuator
+were assigned a light actuator component.  One of them were assigned a Numeric
+Controller component, and Threshold component for the deployed application.
+Every WuDevice would be able to talk to each other directly through ZWave
+wireless adapter. The deployment formed a fully connected network. We simulated
+a node failure by removing power supply from a WuDevice. The detail of each node
+setup was shown in table~\ref{tbl:setup}.
 
 \section{Mapping Results}
 
