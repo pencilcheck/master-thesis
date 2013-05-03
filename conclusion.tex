@@ -16,7 +16,7 @@ based on user policy and requirements. And it is able to recover the system from
 services in service-oriented WSNs as shown in experimental results. We
 have described strip, a redundancy abstraction for service peers. We also
 described the distributed algorithms to recover from node failures with strip
-views synchronization among members and service reconfiguratation.
+views synchronization among members and service reconfiguration.
 
 The developed methods add new and useful solutions to build a fault tolerant
 system that could be reasoned easily and with a performance as expected. Our
@@ -24,10 +24,10 @@ system provides an extension to other solutions in terms of completeness and
 complexity. It serves as a quick and easy solution to provide practical fault
 tolerance for service-oriented applications.
 
-% TODO: summarize the results of the experiments here, etc
+% TODO: summarize the results of the experiments here
 % e.g. The solutions developed for WuKong system performs very consistently, as
 % the recovery time is always under two secs on average with a handful of
-% sensors. However, occationally heartbeats could report erroneous failures and
+% sensors. However, occasionally heartbeats could report erroneous failures and
 % result in a quick false recovery, and left the partitioned nodes behind, but
 % the system as a whole still function properly.
 
@@ -37,7 +37,7 @@ tolerance for service-oriented applications.
 % Probably move it to future work? Probably don't do it.
 %Of course there are a lot of room for improvements. For example, if we want to
 %go beyond this limitation of 232 nodes by Zwave, one of the ways we could do is
-%to build another zwave network and have a routing agent to route messages
+%to build another Zwave network and have a routing agent to route messages
 %between networks. And we would also want to handle network partitions. One of
 %the possible research directions is to merge the partitions back to one if they
 %come back together, or by using some arbitrary flags to indicate primary
@@ -57,7 +57,7 @@ This study did not consider for network partition. Network
 partition occurs when a network of nodes got partitioned into two subnetworks where
 none can detect each other for a period of time. One of the possible direction
 is to create a more sophisticated failure model that could handle network partition.
-In this thesis we assume failstop model where nodes, once dead, will not come
+In this thesis we assume fail-stop model where nodes, once dead, will not come
 back. Therefore when network partition occurs, each part of the network would
 not be able to recognize each other and would cause conflicts and confusions.
 
@@ -87,7 +87,7 @@ mapping the components of the system onto the hosts of the network. The mapping
 is subject to constraints. The constraints could be whether a node supports
 certain service to host certain components, and how much communication overhead
 would induce from the assignment to maintain consistency for the strips, and
-from the perspective of WuKong, some components need to seaparate from other
+from the perspective of WuKong, some components need to separate from other
 components to achieve fault tolerance, and some needs to place together to
 function properly.  Determining such an optimal deployment is a combinatorial
 optimization problem, and combinatorial optimization problems generally

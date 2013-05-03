@@ -11,7 +11,7 @@
 Internet-of-Things is a powerful paradigm in the scenario of modern wireless
 telecommunications. It refers to the pervasive presence of uniquely identifiable
 objects (things) around us - such as Radio Frequency IDentification (RFID)
-tags~\cite{Shepard2005}, sensors, actuators, mobile phones, etc, which would be
+tags~\cite{Shepard2005}, sensors, actuators, mobile phones, which would be
 able to interact with each other forming a network like
 structure~\cite{Atzori20102787}. Example scenarios where IoT would shine: alarms
 clock goes off early if there is traffic; plants communicate to the sprinkler
@@ -21,24 +21,24 @@ the other side of the world; medicine containers tell your family members if you
 forget to take the medicine.
 
 The paradigm gradually leads to all objects surrounding us to become connected
-to the internet, to interact with other connected objects on the other end of
+to the Internet, to interact with other connected objects on the other end of
 the web and have access to comparative information which would not be possible
 before.
 
 \subsection{The Evolution of Internet-of-Things}
 
-The figure~\ref{fig:evolution} illustrates an evolution of internet.
+The figure~\ref{fig:evolution} illustrates an evolution of Internet.
 Communication between computers already exists that made possible for two PCs to
-send messages across large geographical areas. With the internet, all the
-computers connected to the internet can talk to each other and now with mobile
+send messages across large geographical areas. With the Internet, all the
+computers connected to the Internet can talk to each other and now with mobile
 phones, the connections have become mobile.
 It would be unimaginable 20 years ago, when you have to communicate with someone
 far away in immediate urgency, you can open up your phone and make a call to
 someone far away from you and initiate a conversation. Nowadays even more so
-with 3G networks, even phones can connect to the internet and be part of the
-netwrok.
-Social media, such as email, blog, facebook, twitter, etc, has been uniting
-people on the internet up until now. With social media, we could go beyong
+with 3G networks, even phones can connect to the Internet and be part of the
+network.
+Social media, such as email, blog, facebook, twitter, has been uniting
+people on the Internet up until now. With social media, we could go beyond
 physical limits with whom we can keep in direct contact. Internet-of-Things will
 further make possible for massive amount of objects to be online and to enable
 objects to access external information about themselves through external
@@ -54,8 +54,8 @@ services in their vicinity.~\cite{Associati2011a}
 
 \subsection{Potential Applications}
 
-Today more things than humans are connected to the internet~\cite{CISCO}. It is
-estimated things will have 24 billion devices connected to the internet by
+Today more things than humans are connected to the Internet~\cite{CISCO}. It is
+estimated things will have 24 billion devices connected to the Internet by
 2020~\cite{Malik}. In addition, the computation capabilities per device are
 increasing. Today's smart phones are about 15 times faster than CPUs used in
 1979 Cray-1~\cite{Randomly2010}. 
@@ -66,7 +66,7 @@ analytics have matured that are ubiquitously embedded into everyday objects
 surrounding every where we go. Some examples are highlighted below:
 \begin{enumerate}
 \item Smart Home: At home, embedded sensors can sense human presence and could
-undestand human activities to properly adjust air quality and temperature by
+understand human activities to properly adjust air quality and temperature by
 commanding the air conditioner on or off to save energy without sacrificing
 human comfort.
 \item Economical agriculture: In a vast farm land, remote sensors can detect and
@@ -136,7 +136,7 @@ node capture a localized measurement. As the number of sensor node increases,
 
 In addition, new sensor nodes could be added to the network dynamically, and
 the system could continue to provide services. If a sensor node failed, nearby
-nodes could substitude for it and keep capturing the local information.
+nodes could substitute for it and keep capturing the local information.
 Redundancy, or failover mechanism, is desirable as it makes the system more
 fault tolerant.
 
@@ -146,7 +146,7 @@ Most of the challenges in WSN are similar to the challenges in building IoT
 system.  However, in addition to the challenges above, it is difficult to
 develop a complex distributed applications with low end hardware and programming
 language. Most programming environment have been designed to work for
-a monolitic system that executes one instruction at a time contrasts to
+a monolithic system that executes one instruction at a time contrasts to
 distributed systems with multiple instances of the program running
 asynchronously and each is prone to failure.
 
@@ -174,9 +174,9 @@ abstractions and low-level hardware has not been successful.
 
 In Intel-NTU Center Special Interests Group for Context Analysis and Management 
 (SIGCAM), we have been collaborating on a project, called WuKong, aiming to develop 
-an intelligent middleware for developing, and deploying machine-to-mahicne 
+an intelligent middleware for developing, and deploying machine-to-machine 
 (M2M) applications with ease. The main goal of this project is to support
-inlligent mapping from a high-level logical component flow (FBP) to
+intelligent mapping from a high-level logical component flow (FBP) to
 self-discovered devices with selected network connections a target
 environment\cite{Reijers}.
 
@@ -199,19 +199,20 @@ Applications are designed and constructed on FBP canvas by dragging a set of
 abstract components from the library as illustrated in Figure~\ref{fig:fbp-application} 
 Each component is
 illustrated by a green block, each block has a set of properties, each with
-different access modes, such as readonly, writeonly, readwrite. Properties on
-the left of the greenblocks are properties that could be written, and
+different access modes, such as \textit{readonly}, \textit{writeonly},
+          \textit{readwrite}. Properties on
+the left of the green blocks are properties that could be written, and
 properties on the right are readable. Components are connected by links, which
 is drawn by linking two properties in different components.
 
 Some components represent physical hardware such as a sensor, or an actuator
 while some other components could represent virtual processes such as
-mathmatical computations, comparisons, etc. However, the final physical implementations
+mathematical computations, comparisons, etc. However, the final physical implementations
 of the components are only made during application deployment by the Master but
 not during FBP construction.
 
 Components expose their interface through properties. A link is only made with
-properties with matchinkg data type. The FBP applciation in
+properties with matching data type. The FBP application in
 Figure~\ref{fig:fbp-application} illustrates a simple scenario where the light actuator
 will turn on the light if light level drops below some value. The Numeric
 Controller component will be assigned to a user input device used by users to
@@ -219,7 +220,7 @@ set its desire light threshold, which its output is sent to Threshold
 component. The light value is sensed from Light Sensor component and sent to
 Threshold. If the light value sensed is below the threshold value, Threshold
 will output a boolean to set the on off property of Light Actuator to turn the
-device, which will be deteremined during deployment, that it is represented by
+device, which will be determined during deployment, that it is represented by
 on or off.
 
 \begin{figure}[h!]
@@ -302,7 +303,7 @@ native language, or uploaded as part of the Java bytecode if it is written in
 Java language. Second, it contains information about the mapping from
 application component ids to actual node identifications and positions. The
 purpose of a mapping which separates from the actual link makes it easier to
-substitude the actual host of the WuObject later during
+substitute the actual host of the WuObject later during
 reconfiguration from the Master. This mapping is created by the Master during
 discovery phase that probe the network for node's capabilities in terms of
 available WuClasses, then mapper will decide the final candidates that will be
@@ -321,7 +322,7 @@ nodes, mapper will substitute with a Java version of it.
 There are a few popular wireless communication protocols in M2M applications:
 ZigBee, ZWave. It is expected that in the future more diverse
 wireless nodes equipped with radios that support protocols such as low-power
-bluebooth and WiFi that all have one or more powerful gateway to connect to the
+Bluetooth and WiFi that all have one or more powerful gateway to connect to the
 outside world. In WuKong system, one of the gateways will take on the role of
 higher management decision maker called \emph{Master} to making the decisions for
 deployment and producing the configuration of WSNs.
@@ -334,7 +335,7 @@ deployment and producing the configuration of WSNs.
 %other services could read or write with some associated communication
 %frequencies according to the application requirements. The
 %problem of partial failures makes service redundancy a fundamental technique to
-%distributed systems as it improves availability, eliminiates single points of
+%distributed systems as it improves availability, eliminates single points of
 %failure. A system that is hardwired to get data from node X will fail when
 %X fails. The problem of designing a system with replicas where node Y, which
 %can provide the same service as X, can take over when X fails. To design such

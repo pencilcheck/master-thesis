@@ -52,7 +52,7 @@ We set it to right around double of the heartbeat period we set for the network.
 
 \section{Deploying Application with Fault Tolerance}
 
-In WuKong, deployment consists of discoverying available resources and network
+In WuKong, deployment consists of discovering available resources and network
 topology, converting application from high-level abstractions to low-level
 machine instructions, then determine the parameters based on user policy,
 finally combine all together and deploy to the network. The process was briefly
@@ -162,7 +162,7 @@ chain as represented by the black arrows in figure~\ref{fig:strip1}.
 
 To prevent tight coupling and redundancy in heartbeats, strips are separated
 from heartbeats so the order of the strip does not affect the ordering of
-heartbetas and vice versa. The heartbeat protocol is a support layer below
+heartbeats and vice versa. The heartbeat protocol is a support layer below
 strips, the layers above will take advantage of the given information from the
 layer below to recover the system.
 
@@ -202,7 +202,7 @@ knowledge of the strips views of its monitoring node 2.
 % TODO: better to have a figure here to explain view update
 
 The detector of the failure would initiate the recovery algorithms.
-Since the detector will be responsible for recoverying for the failed node,
+Since the detector will be responsible for recovering for the failed node,
 every node needs to have membership knowledge of the strips from the nodes it
 is monitoring. For example, if node A is monitoring node B, A would know the
 members of all strips in node B in addition to its local strips. Strips only
@@ -232,7 +232,7 @@ a different starting state, that implies the strips have different members or
 member orders to start with, a contradiction.
 \end{comment}
 Therefore there is no need for extra communication overhead to maintain
-ordering to gaurantee level of consistency between members since they will all
+ordering to guarantee level of consistency between members since they will all
 come to the same conclusion given each receiver receive the same messages. The
 overhead are messages required to update each member's internal membership
 information.
@@ -254,8 +254,8 @@ to reconfigure the new heads of the affected strips.
 
 As shown in figure~\ref{fig:strip7}, node 1 with its updated view of the strips
 after the failure of node 2 would need to update the new head of component A,
-which is still node 1 in this case, with the new head of compoennt B since
-component B is connected to compoennt A; node 1 also needs to update the new
+which is still node 1 in this case, with the new head of component B since
+component B is connected to component A; node 1 also needs to update the new
 head of component B with the new head of component A as well. Thus node 1 will
 send a reconfiguration message to node 1 and node 6 about the changes in both
 heads of component A and component B.

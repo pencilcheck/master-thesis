@@ -4,9 +4,9 @@
 \label{c:evaluation}
 \doublespacing\nointerlineskip
 
-%Thwas chapter presents evaluation. The models and algorithms were
+%This chapter presents evaluation. The models and algorithms were
 %tested extensively on benchmarks, which was described in
-%section~\ref{s:benchmarks}, and the results were dwascussed in
+%section~\ref{s:benchmarks}, and the results were discussed in
 %section~\ref{s:results}
 
 In order to evaluate the performance of our fault tolerance primitive, we have
@@ -244,7 +244,7 @@ assigned as members.
 %Deployments with different strip ordering method, such as first-fit, last-fit,
 %closest-fit, will be performed to compare their effects on system performance.
 
-%As first-fit was introduced in eariler chapter at chapter~\ref{c:design}, the
+%As first-fit was introduced in earlier chapter at chapter~\ref{c:design}, the
 %other methods that will be used in the experiment were introduced here.
 
 %Last fit was exactly first fit but reversing the order at the end.
@@ -269,12 +269,12 @@ Figure~\ref{fig:results-message-overhead-vs-strip-size} showed message overhead
 used to recovery random Light Actuator strip member failure against different
 strip sizes. The message overhead contains incoming and outgoing messages,
 including retries, for the detector during the recovery process. The growth in
-the figure is linear, comfirming the analysis in the previous chapter that $O(m+n)$.
+the figure is linear, confirming the analysis in the previous chapter that $O(m+n)$.
 
 The figure~\ref{fig:results} illustrates the recovery time averaging over
 5 deployments for each node failure in Strip for Light Actuator as first failure
 in the system. The first failure should on average takes the longest time
-compared to consequent failures, therefore, measuing the performance for each
+compared to consequent failures, therefore, measuring the performance for each
 node failure as first failure would give us how the system would perform the
 worst overall. The results carried over different strip orders since the
 ordering was just a matter of permuting the results as shown in the results.
@@ -312,7 +312,7 @@ single failure at a time with great performance over a small network.
 %of handling approximately 20 messages for reconfiguration messages per failure
 %with a handful of room for retries. The requirements were reasonable since most
 %embedded devices have at least 4K of EEPROM to store strips, and have radios
-%with throughputs of 40kbps.
+%with throughputs of 40Kbps.
 
 %The size of network was also feasible and the limiting factor is ZWave wireless
 %protocol since it only supports a network up to 232 nodes; nevertheless
@@ -337,7 +337,7 @@ single failure at a time with great performance over a small network.
 \begin{figure}[h!]
 \centering
     \includegraphics[width=\linewidth]{figures/results-message-overhead-vs-strip-size}
-\caption{Message overhead for recovery of a random Light Actuator strip member failure against dfferent strip sizes}
+\caption{Message overhead for recovery of a random Light Actuator strip member failure against different strip sizes}
 \label{fig:results-message-overhead-vs-strip-size}
 \end{figure}
 
