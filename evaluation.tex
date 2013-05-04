@@ -4,14 +4,9 @@
 \label{c:evaluation}
 \doublespacing\nointerlineskip
 
-%This chapter presents evaluation. The models and algorithms were
-%tested extensively on benchmarks, which was described in
-%section~\ref{s:benchmarks}, and the results were discussed in
-%section~\ref{s:results}
-
-In order to evaluate the performance of our fault tolerance primitive, we have
-introduced some metrics to test how well it perform, and whether after node
-failures requirements could still be met under small network.
+In order to evaluate the performance of the system, we have
+introduced some metrics to test how well it would perform, and whether after node
+failures requirements could still be met.
 
 \begin{enumerate}
 \item Whether failover kickoff successfully after failure
@@ -24,35 +19,36 @@ We measured system performance live by collecting data from sensor nodes while
 running. Sensor nodes were programmed to send out their tracking data to
 a central data sink at appropriate times such as after node initialization or
 when the failure was resolved.
-
 The application, fault tolerance policy, network topology were described in the
 following sections.
 
 
 \section{Application}
 
-Application shown in Figure~\ref{fig:fbp-application} will be deployed.  There
-will be four components: 
+Application as shown in figure~\ref{fig:fbp-application} were deployed. It
+consisted of four components: 
 
 \begin{enumerate}
 \item Numeric Controller component represents a user input device which outputs
-a number from 0 to 255. Light Sensor was a photodetector sensor which detects the
-level of light intensity. 
+a number from 0 to 255. 
+
 \item Threshold component represents a conditional function which takes two
 inputs, Threshold and Value, and, depending on the Operator attribute, return
 true if the Operator was set to GT (Greater Than) and the Value was higher than
 the Threshold value.
-\item Light Actuator component represents a relay intercepting the power source for
-a light bulb, it has a property OnOff which turns on the light if it was set to
-true, otherwise the light will be turned off.
-\item Light Sensor component represents a sensor sensing the light intensity in the surrounding
-  area.
+
+\item Light Actuator component represents a light source or a relay intercepting
+the power source for a light source. It has a property OnOff which turns on the
+light if it was set to true, otherwise the light will be turned off.
+
+\item Light Sensor represents a photodetector sensor which detects the level of
+light intensity. 
 \end{enumerate}
 
 
 \section{Policy}
 
-The component fault tolerance policy for the application was set with the
+Component fault tolerance policy for the application was set with the
 following parameters:
 
 \begin{description}
@@ -70,20 +66,23 @@ following parameters:
     Fault Detection Time: 2 sec\\
 \end{description}
 
-Since we set timeout at 2 times of heartbeat period, assuming the worst time to detect
-failure takes the full length of fault detection time, the heartbeat
+In order to reduce the probability of getting false positives caused by
+environmental factors such as poor wireless communication quality, timeouts for
+heartbeat were set accordingly.  We set it to right around double of the
+heartbeat period we set for the network.  Thus, assuming the worst time to
+detect failure takes the full length of fault detection time, the heartbeat
 period was therefore 1 sec, which was one half of the fault detection time.
 
 \section{Heartbeat Protocol Arrangement}
 
-We deployed 10 nodes in a room in our test lab, which results in a fully
-connected network. Therefore only one heartbeat chain loop was formed.
-
-The heartbeat procotol arrangement was simple. Every node was sending heartbeat to
-previous node except the first node, which sends to the last. For example, node
-1 receives heartbeat message from node 2, node 2 receives heartbeat message from
-node 3, etc. Figure~\ref{fig:heartbeat-protocol-arrangement} illustrates the
-arrangement for this experiment.
+The devices were deployed in proximity to each other in a room, forming a fully
+connected network.
+The heartbeat protocol arrangement was arranged in a loop so every node was
+sending heartbeat to previous node except the first node, which sends to the
+last. For example, node 1 receives heartbeat message from node 2, node
+2 receives heartbeat message from node 3, etc.
+Figure~\ref{fig:heartbeat-protocol-arrangement} illustrates the arrangement for
+this experiment.
 
 \begin{figure}[h!]
 \centering
@@ -96,17 +95,17 @@ arrangement for this experiment.
 \section{Hardware Platform}
 
 All boards were equipped with an Atmel ATmega2560-16AU 8-bit microcontroller
-with 4K of EEPROM and 64k of flash. The figure~\ref{fig:wudevice} showed the
-board used in the experiments. The boards hardware design was based upon Arduino
-hardware referenced design, in addition, every board has wires for mounting
+with 4K of EEPROM and 64k of flash. The figure~\ref{fig:wudevice} shows the
+board used in the experiments. The hardware design was based upon Arduino
+hardware referenced design; in addition, every board has wires for mounting
 multiple wireless protocol adapters supporting protocol standards such as
 ZWave~\cite{ZWave}. ZWave is a wireless communication protocol designed for home
 automation, specifically to remotely controlled applications in residential and
 light commercial environments.
 
 In the following experiment, every board was only equipped with a ZWave adapter
-and only communicating wirelessly through the ZWave adapter.  Every board was
-also pre-installed with “NanoKong”~\cite{Su}, which includes
+and only communicating wirelessly through the ZWave adapter. In addition, every
+board was installed with “NanoKong”~\cite{Su}, which includes
 NanoVM~\cite{Harbaum2006} and WuKong Profile Framework that supports all the
 basic WuKong framework protocols including the new additions from the work in
 the previous chapter. A PC with wireless access was dedicated for hosting the

@@ -11,18 +11,19 @@
 
 \section{Discussion}
 
-We have presented a fault tolerance primitive for WuKong able to configure itself
-based on user policy and requirements. And it is able to recover the system from failed
-services in service-oriented WSNs as shown in experimental results. We
-have described strip, a redundancy abstraction for service peers. We also
-described the distributed algorithms to recover from node failures with strip
-views synchronization among members and service reconfiguration.
+We have presented a fault tolerance primitive for WuKong that is able to
+configure itself based on user policy and requirements. We have described strip,
+          a redundancy abstraction for service peers. We also described the
+          reconfigurable redundancy architecture with distributed algorithms
+          that synchronize strip view across network and perform network
+          reconfiguration for the replaced services. It was shown in experiments
+          that our approach is capable of failover in a small network.
 
 The developed methods add new and useful solutions to build a fault tolerant
-system that could be reasoned easily and with a performance as expected. Our
-system provides an extension to other solutions in terms of completeness and
-complexity. It serves as a quick and easy solution to provide practical fault
-tolerance for service-oriented applications.
+primitive that could be reasoned easily and with a performance under
+expectation. Our system provides an extension to other solutions in terms of
+completeness and complexity. It serves as a quick and easy solution to provide
+practical failover for service-oriented applications.
 
 % TODO: summarize the results of the experiments here
 % e.g. The solutions developed for WuKong system performs very consistently, as
@@ -48,36 +49,39 @@ tolerance for service-oriented applications.
 %research could take on.
 
 
-We have shown a design for a reconfigurable fault tolerant primitive for WuKong.
-Strips makes it really easy to describe a component system with redundancy for
-heterogeneous services and devices. Nevertheless, there is still room for
-improvements. This section will address some directions future research can take.
+We have shown a design for a fault tolerance primitive for WuKong
+in which system could be configured based on user requirements, strips makes it
+really easy to describe a component system with redundancy for heterogeneous
+services and devices, and the reconfigurable redundancy architecture ensure
+consistency after services recovery. Nevertheless, there is still room for
+improvements. This section will address some directions future research can
+take.
 
-This study did not consider for network partition. Network
-partition occurs when a network of nodes got partitioned into two subnetworks where
-none can detect each other for a period of time. One of the possible direction
-is to create a more sophisticated failure model that could handle network partition.
-In this thesis we assume fail-stop model where nodes, once dead, will not come
-back. Therefore when network partition occurs, each part of the network would
-not be able to recognize each other and would cause conflicts and confusions.
+This study did not consider network partition. Network partition occurs when
+a network of nodes got partitioned into two subnetworks where none can detect
+each other for a period of time, but none of the nodes were dead. In this thesis
+we assumed fail-stop failures where nodes, once dead, will not come back;
+therefore, when network partition occurred, each part of the network would not
+be able to recognize each other and would cause conflicts and confusions.  Our
+current heartbeat protocol is decentralized and easy to construct, but it is not
+shown to work under networks where messages are sent in multiple hops, since
+algorithms used to produce heartbeat protocol arrangement does not consider
+topology of the network. Heartbeat, by its nature, is sensitive to delay, so if
+a heartbeat message was not received within tolerance period, under the current
+implementation, the node would be suspected of failure and was assumed dead
+forever. However, if the node was still alive, since the revived nodes was
+treated as if it was dead, it would create an artificial network isolation, and
+that is a network partition. One of the possible directions is to create a more
+sophisticated failure model or heartbeat protocol that could handle network
+partition.
 
-Our current heartbeat protocol is distributed and easy to construct, but it is
-not shown to work under networks where messages are sent in multiple hops, since
-the algorithm used to produce where each node should be sending heartbeat
-messages does not consider the topology of the network. Heartbeat is sensitive
-on latency, so if a heartbeat message was not received within tolerance period,
-a failure event could occur and the node is suspected of failure and will
-never come back. If the node is still alive, it would be treated as if it is
-dead. And that will creates an artificial network isolation where a few nodes
-are excluded from the network before of latency.
-
-Current system can only allow the detector to handle one failure at a time. It
-would be a desirable future research direction to investigate handling
-consecutive node failures. One possible way is by storing ahead multiple nodes'
-strips and heartbeat protocol data, such that when consecutive nodes failure
-occurred the detector would be able to recover those services it backed up.
-However there is a tradeoff on the memory a node could store and the number of
-consecutive node failures a network could handle.
+Current implmentation can only allow the detector to handle one failure at
+a time. It would be a desirable future research direction to investigate
+handling consecutive node failures. One possible way is by storing strips and
+heartbeat protocol data from nodes ahead, such that when consecutive nodes
+failure occurred the detector would be able to recover those services it backed
+up.  However there is a tradeoff on the memory a node could store and the number
+of consecutive node failures a network could handle.
 
 The optimization problem for application deployment is also an important element
 in this system. This thesis didn't consider finding a optimal deployment for the

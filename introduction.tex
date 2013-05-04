@@ -58,22 +58,22 @@ applications degrade gracefully under failures.
 
 \section{Goals} % was Problem Definition
 
-In this thesis, we study the fault tolerance capability in WuKong.
-Users of WuKong deploy applications written in the form of flow based
-programming. Application consists of a network of components where each
-component represents a service in the physical network. When application is deployed, each
-component is mapped to a service in the network. However, partial failures could
-bring the whole system down, since each service depends on each other to
-function. In WuKong, users are allowed to specify different user policies for
-the same application so that systems can show personalized behaviors. 
+In this thesis, we study the fault tolerance capability in WuKong.  Users of
+WuKong deploy applications written in the form of flow based programming.
+Application consists of a network of components where each component represents
+a service in the physical network. In WuKong, users are allowed to specify
+different user policies for the same application so that systems can show
+personalized behaviors. When an application is deployed, each component is
+mapped to a service in the network. However, partial failures could bring the
+whole system down since each service depends on each other to function.
 
-The goal of this system is to provide failover for application components such
-that it meets user's requirements specified in user policy. Thus the system also
-needs to design a user friendly user policy for fault tolerance such that it is
-intuitive for users to specify quantitatively how strong the fault tolerance
-a component should have that could directly being mapped to the lower physical
-layer. It is also important that the deployed system would be
-able to detect, recover from failures, and reconfigure the system autonomously. 
+The goal of this study is to provide failover for application components such
+that it would meet user requirements specified in user policy. Thus the system
+also needs to design a user friendly user policy for fault tolerance such that
+it is intuitive for users to specify quantitatively how strong the fault
+tolerance a component should have that could directly being mapped to the lower
+physical layer. It is also important that the deployed system would be able to
+detect, recover from failures, and reconfigure the system autonomously.
 
 
 \section{Challenges}
@@ -98,10 +98,10 @@ taken over by another local service peers.
 \section{Related Work}
 
 Previous work on the problems have not considered failover architecture for
-applications where relationships among services are critical and for which they would
-heavily influenced by user policies. Furthermore, after every
-failure recovery, none explained how existing services could find replaced
-services in such environment to the best of my knowledge.
+applications where relationships among services are critical and for which they
+would heavily influenced by user policies. Furthermore, after every failure
+recovery, none explained how existing services could find replaced services in
+such environment to the best of our knowledge.
 
 In WSNs, failover techniques for data replications, and service redundancy are
 typically adapt for applications only with predefined services, fixed user
@@ -132,10 +132,10 @@ Chapter~\ref{c:intro} gives an introduction to the system goals and challenges
 and outline the approach used to solve the problem. Chapter~\ref{c:background}
 gives a brief background overview of the topic that this work based on.  We
 start by describing IoT, WSNs, and ends with an overview of WuKong.
-Chapter~\ref{c:design} describes our system design for the WuKong fault
-tolerance system. In this chapter we give detail description of our method and
+Chapter~\ref{c:design} describes our system design for the fault
+tolerance primitive. In this chapter we give detail description of our method and
 algorithms, including user policy for fault tolerance, strips, and
 reconfigurable redundancy architecture.  Chapter~\ref{c:evaluation} presents the
 metrics we would use to measure system performance, which is followed by
-evaluation of the results. Finally, chapter ~\ref{c:conclusion} presents the
+evaluation of the results. Finally, chapter~\ref{c:conclusion} presents the
 conclusion of the work, list of contributions and future work.

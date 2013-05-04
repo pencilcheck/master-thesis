@@ -4,7 +4,7 @@
 \label{c:design}
 \doublespacing\nointerlineskip
 
-The design for the WuKong fault tolerance primitive is guided by the goals and
+The design for the fault tolerance primitive is guided by the goals and
 challenges outlined in chapter~\ref{c:intro}: We want fault tolerance
 policy to be expressive, component specific, yet decoupled from physical
 hardware specifications so it will work with a range of network configurations.
@@ -44,37 +44,38 @@ Users are also capable of specifying fault tolerance requirements via the
 user policy for fault tolerance as shown in figure~\ref{fig:fbp-ft-policy}
 Redundancy level indicates the number of devices that will be able to take over
 when the service failed. Fault Detection Time represents the time the system
-should take at most to detect an failure in seconds.
-
-There are timeouts set accordingly to prevent deviation in wireless communication quality,
-internal crystal clock to reduce the chances of getting false positives. 
-We set it to right around double of the heartbeat period we set for the network.
+should take approprimately to detect an failure in seconds.
 
 \section{Deploying Application with Fault Tolerance}
 
-In WuKong, deployment consists of discovering available resources and network
-topology, converting application from high-level abstractions to low-level
-machine instructions, then determine the parameters based on user policy,
-finally combine all together and deploy to the network. The process was briefly
-described in section~\ref{c:background}, however, the thesis has made some
-significant changes to the process to support strip, an redundancy abstraction
-used in failure recovery and reconfiguration algorithms. First, we add a new
-process in mapper to take the routing topology results in discovered network
-info, so we could know the neighbors for each device. Next we take the existing
-mapping process, and convert it to outputting strips. So instead of one-to-one
-mapping from components to devices, now each component maps to a strip, which
-could be seen as a list of devices supporting such service ordered by the
-ordering function used. The default ordering function uses first-fit in a first
-come first process fashion, thus the ordering of the strip is randomized, as it
-depends on the order of processing.
+In WuKong, deployment consists of discovering available resources, converting
+application from high-level abstractions to low-level machine instructions,
+            determining the system parameters based on user policy, and then
+            finally deploying the application to the network. The process was
+            briefly described in section~\ref{c:background}, however, the thesis
+            has made some significant changes to the process to support strip,
+            an redundancy abstraction used in failure recovery and
+            reconfiguration algorithms. First, we add a new process in mapper to
+            take network topology results from discovered sensor network, so we
+            could arrange heartbeat groups for heartbeat protocol. Next we take
+            the existing mapping process, and convert it to outputting strips.
+            So instead of one-to-one mapping from components to devices, now
+            each component maps to a strip, which could be seen as a list of
+            devices supporting such service ordered by the ordering function
+            used. The default ordering function uses first-fit as in
+            first-come, first-serve (FCFS), thus the ordering of the strip is
+            randomized, as it depends on the order of processing.
 
 A first-fit algorithm for mapping is shown in algorithm~\ref{alg:mapping}.
 Algorithm~\ref{alg:mapping} takes two arguments, C and N. C is the set of
-components; each component has a \textit{mapping} attribute representing a list
+components; each component has a \textit{strip} attribute representing a list
 of nodes assigned to it. N is the set of node infos; each node info has
 a \textit{services} attribute representing a set of components on the node. This
 algorithm outputs a mapping of S, a set of components with mapping to a list of
 nodes. 
+Once the mapping is produced, application will be deployed and each device would
+be reprogrammed wirelessly to create corresponding WuObjects to host the
+services.
 
 \begin{pseudocode}[framebox]{FirstFitComponentToStripMapping}{C, N}
 \label{alg:mapping}
@@ -85,7 +86,7 @@ S \GETS{\emptyset} \\
     s \GETS{c} \\
     \IF s \in n.services \THEN
       \BEGIN
-        s.mapping << n \\
+        s.strip << n \\
       \END \\
     S \GETS{S \cup \{s\}}
   \END \\
@@ -93,9 +94,6 @@ S \GETS{\emptyset} \\
 \RETURN S
 \end{pseudocode}
 
-
-Once the mapping is produced, each device would be reprogrammed to create
-corresponding WuObjects to host the services.
 
 \section{Strip}
 \label{s:ss}
@@ -122,33 +120,33 @@ instance, if a strip is constructed like this $\rightarrow 1-2-3-4-5$, when
 3 failed 4 will take over the place of 3, and the new chain will look like this:
 $\rightarrow 1-2-4-5$. Now if 1 failed, 2 will take over which would result in
 $\rightarrow 2-4-5$, since node 2 is now at the head of the strip, its WuObject
-will be active. 
-
-Typically, there would be multiple components deployed to the network and each
-node could carry multiple WuObjects, therefore many of these strips in the
-network would crisscross with one and others. It is not unlikely to see a node
-carrying active and inactive WuObjects at once.
+will be active. Typically, there would be multiple components deployed to the
+network and each node could carry multiple WuObjects, therefore many of these
+strips in the network would crisscross with one and others. It is not unlikely
+to see a node carrying active and inactive WuObjects at once.
 
 \section{Reconfigurable Redundancy Architecture}
 
 Once the application is deployed, each target device would host one or many
 WuObjects where each represents a service for an application component. However,
-the network has to be resilient to failures, it has to detect and recovery
-autonomously. In the following sections, we will be describing the subsystem
-used to support failure detection and recovery.
+          failure would occur, so the network has to be resilient to failures:
+          network has to be able to detect failure and recover autonomously. In
+          the following sections, we will be describing the subsystems used to
+          support failure detection and recovery.
 
 \subsection{Decentralized Failure Detection}
 \label{s:dfd}
 
-We want the failure detection to able to reach the entire network so any
-failures will be detected. In order to avoid single point of failures, the
-protocol will have to be decentralized, thus failure of one system component would
-not bring the whole failure detection system down.
+We want failure detection to reach the entire network so no failures would be
+left undetected. In order to avoid single point of failures and to scale to
+larger networks, the protocol will have to be decentralized, thus failure of one
+system component would not bring the whole failure detection system down and
+would have lower detection latency.
 
 %Note to self: mention single-hop, multi-hop in limitations or future work
 Decentralized failure detection enables high-availability in distributed systems
 where partial failures is rather common.  We utilize heartbeats to detect
-failures, a common technique widely used to detect failures in high-availability
+failures; a common technique widely used to detect failures in high-availability
 distributed systems.  Heartbeats are messages sent periodically until it's
 unable to send messages anymore. Each node is therefore suspected dead when
 others stopped receiving messages from it after an extended period of time.
@@ -170,7 +168,7 @@ layer below to recover the system.
 \label{s:fr}
 
 When a failure is detected, there are two tasks that the system would have to do
-to recover from failures. First it has to make sure all members that carries
+to recover from failures. First, it has to make sure all members that carries
 the strips in the failure nodes will have consistent view of the strips.
 Second, it would need to propagate the changes to reconfigure other parts of
 the system that depend on the locations of the heads of the affected strips in
@@ -241,16 +239,14 @@ information.
 \subsubsection{Reconfiguration}
 \label{s:reconfig}
 
-
-Even though consensus of the new view for each strip in the failure nodes has been
-reached, other devices in the network with connected components would also need
-to be updated. 
-
-The detector after finishing synchronizing views, will initiate
-the reconfiguration algorithm. First, the initiator will identify application components
-that are connected with the components carried by the failed device (linked in the
-FBP). Then initiator would issue the update message to each head of the strips of the connected components
-to reconfigure the new heads of the affected strips.
+After the consensus of the new view for all strips in the failure nodes has
+been reached, other devices in the network with connected components would also
+need to be updated. After finishing synchronizing views, the detector would
+initiate the reconfiguration algorithm. First, it would identify
+application components that are connected with the components carried by the
+failed device (linked in the FBP). Then it would issue the update message
+to each head of the strips of the connected components to reconfigure the new
+heads of the affected strips.
 
 As shown in figure~\ref{fig:strip7}, node 1 with its updated view of the strips
 after the failure of node 2 would need to update the new head of component A,
@@ -261,21 +257,20 @@ send a reconfiguration message to node 1 and node 6 about the changes in both
 heads of component A and component B.
 
 To keep the nodes updated after reconfiguration, as most services in WuKong
-applications does not store any past data, the devices with connected components whose WuObjects
-originally are sending data to the WuObjects on the failed devices would force a data push to
-bring the new heads up to date, and vice versa, so instead the devices with
-connected components whose WuObjects originally are receiving data from the
-failed devices would force a data pull.
+applications does not store any past data, the devices with connected components
+whose WuObjects originally are sending data to the WuObjects on the failed
+devices would force a data push to bring the new heads up to date, and vice
+versa, so instead the devices with connected components whose WuObjects
+originally are receiving data from the failed devices would force a data pull.
 
 The detector needs to update its knowledge of the "Monitored" section after
-reconfiguration. The detector knows which node the monitoring node is
-monitoring, it will send a update heartbeat message request and instruct it to
-send heartbeats to itself, then it will send a request for its knowledge of
-local section and update its "Monitored" section, both the strips and the node
-it is monitoring. As illustrated in figure~\ref{fig:strip9}, node 1 will get
-updated with the heartbeat information from node 3, which is monitored by node
-2. And also in figure~\ref{fig:strip10}, node 1 will also get updated with the strip
-information from node 3.
+reconfiguration. Since it knows which node the monitoring node is monitoring, it
+would instruct the node to reroute heartbeats to itself, and then it would send
+a request to update its "Monitored" section from the knowledge of the node such
+as local strips and the node it is monitoring. As illustrated in
+figure~\ref{fig:strip9}, node 1 will get updated with the heartbeat information
+from node 3, which is monitored by node 2. Also in figure~\ref{fig:strip10},
+     node 1 would get updated with the strip information from node 3.
 
 
 \begin{figure}[h!]
