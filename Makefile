@@ -19,6 +19,6 @@ clean:
 
 purge: 
 	$(MAKE) clean
-	rm -f *.pdf
+	rm -f $(MAIN).pdf
 
 clean-all: clean clean-pdf
