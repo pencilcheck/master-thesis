@@ -1,0 +1,9 @@
+% This is c10nkai.fd for CJK package.
+% created by Edward G.J. Lee <edt1023@info.sayya.org>
+% Thu Mar 22 00:29:31 CST 2007
+%
+\ProvidesFile{c10nkai.fd}
+\DeclareFontFamily{C10}{nkai}{\hyphenchar \font\m@ne}
+\DeclareFontShape{C10}{nkai}{m}{n}{<-> CJK * nkais}{}
+\DeclareFontShape{C10}{nkai}{bx}{n}{<-> CJKb * nkais}{\CJKbold}
+\endinput

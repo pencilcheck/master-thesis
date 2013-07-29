@@ -1,0 +1,30 @@
+New Kai(nkai) Type 1 fonts 1.4.2 for LaTeX CJK.
+新中楷 Type 1 字型 1.4.2.
+
+這是由 opendesktop 新中楷 TrueType 字型 1.4.2 轉換成的中文 Type 1 字型，
+適合 LaTeX CJK 的使用。
+
+此套字型可以適用於 LaTeX CJK 的 UTF8/Bg5/GB/GBK 四種環境，使用的字
+型名稱皆為 nkai。其中只有 UTF8 編碼的字型為實體字型，Bg5/GB 編碼的
+字型為虛擬字型（Virtual font）。
+
+已含中文直排的定義檔及其標點符號字型，可用於中文直排文件。
+
+使用的轉換工具為：
+Fontforge： http://fontforge.sf.net
+CJK subfonts tools： http://cjk.ffii.org
+mkt1.sh：
+http://cle.linux.org.tw/tex/fonts/cjk/tools
+http://edt1023.sayya.org/fonts/tex/mkt1.sh
+
+如果已經安裝了舊版 New Kai Type 1 字型，請先移除後再來安裝。請使用
+所附的 install.sh/uninstall.sh 來安裝、移除安裝。
+
+
+下載處：
+ftp://cle.linux.org.tw/pub2/tex/cjk/fonts/nkait1
+http://edt1023.sayya.org/fonts/tex/
+
+
+
+李果正 Edward G.J. Lee <edt1023@cle.linux.org.tw>

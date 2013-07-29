@@ -1,0 +1,28 @@
+% 使用 nkai 及 CJK UTF8 環境的實例。
+% Edward G.J. Lee <edt1023@info.sayya.org>
+\documentclass[12pt,a4paper]{article}
+\usepackage{CJKutf8}
+%\usepackage[dvipdfm,CJKbookmarks]{hyperref}
+\parskip=2ex
+\parindent=0pt
+\begin{document}
+\begin{CJK}{UTF8}{nkai}
+\Huge
+\section{New Kai 新中楷 Unicode Type 1 字型 \LaTeX\ CJK 測試}
+
+\large
+晉太元中，武陵人，捕魚為業，緣溪行，忘路之遠近；忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛，漁人甚異之。復前行，欲窮其林。林盡水源，便得一山。山有小口，彷彿若有光，便捨船，從口入。
+
+晋太元中，武陵人，捕鱼为业，缘溪行，忘路之远近；忽逢桃花林，夹岸数百步，中无杂树，芳草鲜美，落英缤纷，渔人甚异之。复前行，欲穷其林。林尽水源，便得一山。山有小口，彷佛若有光，便舍船，从口入。
+
+……碁嫺。鍈凃煱凉双崐喆峯酶酞肽脲腚釟鉳鍅鍩迌焿堃韮。
+
+角觸過骨。許功蓋測試。这里是简体字。许功盖测试。
+
+這裡是 Big5 日文： 世界。
+
+這裡是正式 Unicode 日文：こんにちは 世界。
+
+\newpage
+\end{CJK}
+\end{document}

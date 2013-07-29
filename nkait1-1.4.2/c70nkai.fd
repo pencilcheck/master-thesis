@@ -1,0 +1,9 @@
+% This is c70nkai.fd for CJK package.
+% created by Edward G.J. Lee <edt1023@info.sayya.org>
+% Thu Mar 22 00:29:31 CST 2007
+%
+\ProvidesFile{c70nkai.fd}
+\DeclareFontFamily{C70}{nkai}{\hyphenchar \font\m@ne}
+\DeclareFontShape{C70}{nkai}{m}{n}{<-> CJK * nkaiu}{}
+\DeclareFontShape{C70}{nkai}{bx}{n}{<-> CJKb * nkaiu}{\CJKbold}
+\endinput

@@ -1,0 +1,9 @@
+% This is c19nkai.fd for CJK package.
+% created by Edward G.J. Lee <edt1023@info.sayya.org>
+% Thu Mar 22 00:29:31 CST 2007
+%
+\ProvidesFile{c19nkai.fd}
+\DeclareFontFamily{C19}{nkai}{\hyphenchar \font\m@ne}
+\DeclareFontShape{C19}{nkai}{m}{n}{<-> CJK * nkaik}{}
+\DeclareFontShape{C19}{nkai}{bx}{n}{<-> CJKb * nkaik}{\CJKbold}
+\endinput
